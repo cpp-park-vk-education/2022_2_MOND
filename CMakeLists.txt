@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 3.0)
 project(MOND_DB CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS --coverage)
+option(BUILD_FOR_TEST "Build for test" OFF)
 
-add_subdirectory(Tests)
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(${PROJECT_NAME} main.cpp)
+if (BUILD_FOR_TEST)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
+endif ()
+
 
 enable_testing()
-add_test(NAME MOND_DB_TESTS COMMAND MOND_DB_TESTS)
+
+add_subdirectory(Tests)
