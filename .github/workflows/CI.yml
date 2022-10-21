@@ -53,7 +53,7 @@ jobs:
           path: ${{ github.workflow }}/build
 
       - name: Move to workspace
-        run: mv -r ${{ github.workflow }}/build/*/** ${{ github.workspace }}/build
+        run: mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: Display structure of downloaded files
         run: ls -R ${{ github.workspace }}/build
