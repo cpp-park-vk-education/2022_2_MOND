@@ -56,7 +56,7 @@ jobs:
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+        run: ./Tests/MOND_DB_TESTS
 
   linters:
     needs: [ build ]
@@ -93,7 +93,4 @@ jobs:
         run: cmake --build ${{github.workspace}}/build
 
       - name: valgrind
-        run: |
-          ls -la ${{github.workspace}}/build
-          ls -la ${{github.workspace}}/build/Tests/
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+        run: valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
