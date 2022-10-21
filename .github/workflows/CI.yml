@@ -59,7 +59,7 @@ jobs:
       - name: Test
         run: |
           cd ${{ github.workflows }}/build/Tests/
-#          chmod 777 MOND_DB_TESTS
+          chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
 
