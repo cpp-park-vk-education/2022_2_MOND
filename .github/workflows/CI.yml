@@ -49,6 +49,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: build_artifact
+          path: ${{github.workspace}}/build
 
       - name: testing project
         working-directory: ${{github.workspace}}/build
