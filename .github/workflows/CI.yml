@@ -51,7 +51,6 @@ jobs:
     container: morapresence/mond_db_tests
     needs: [ build ]
     steps:
-      -
       - name: clang-tidy
         working-directory: ${{github.workspace}}
         # Execute tests defined by the CMake configuration.
