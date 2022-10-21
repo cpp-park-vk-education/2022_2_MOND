@@ -11,12 +11,14 @@ env:
   BUILD_TYPE: Debug
 
 jobs:
+  runs-on: ubuntu-latest
+  container: morapresence/mond_db_tests
+
   build:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
+
 
     steps:
       - uses: actions/checkout@v3
@@ -31,8 +33,6 @@ jobs:
         run: cmake --build ${{github.workspace}}/build
 
   tests:
-    runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
     needs: [build]
 
     steps:
@@ -47,8 +47,6 @@ jobs:
         run: ${{github.workspace}}/Tests/MOND_DB_TESTS
 
   linters:
-    runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
     needs: [ build ]
     steps:
       - name: clang-tidy
