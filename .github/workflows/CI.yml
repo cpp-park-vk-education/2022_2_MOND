@@ -56,7 +56,11 @@ jobs:
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ./Tests/MOND_DB_TESTS
+        run: |
+          ls -la ${{github.workspace}}/build
+          ls -la ${{github.workspace}}/build/Tests/
+          exec ./Tests/MOND_DB_TESTS
+
 
   linters:
     needs: [ build ]
