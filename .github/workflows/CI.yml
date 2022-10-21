@@ -33,7 +33,7 @@ jobs:
         run: | 
           cmake --build ${{github.workspace}}/build
           ls -la ${{github.workspace}}/build
-          ls -la ${{github.workspace}}/bulid/Tests
+          ls -la ${{github.workspace}}/build/Tests/
   tests:
     needs: [build]
 
