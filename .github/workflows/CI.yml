@@ -46,6 +46,11 @@ jobs:
       #      - name: Build
       #        run: cmake --build ${{github.workspace}}/build
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifact
+          path: ./artefacts/
 
       - name: Test
         run: |
