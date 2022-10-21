@@ -7,6 +7,6 @@ TEST(MOND_DB, TEST1) {
 }
 
 int main() {
-    testing::InitGoogleTest();
+    ::testing::InitGoogleTest();
     return RUN_ALL_TESTS();
 }
