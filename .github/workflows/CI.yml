@@ -52,11 +52,11 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          path: ${{ github.workspace }}/build
+          path: /build
 
       - name: Test
         run: |
-          cd ${{ github.workspace }}/build/Tests/
+          cd /build/Tests/
           ./MOND_DB_TESTS
 
 
