@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: mkdir -p ${{ github.workspace }}/build
+      - run: mkdir -p build
 
       - name: Configure CMake
         run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
@@ -30,7 +30,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ github.workspace }}/build
+          path: build
 
   tests:
     needs: [build]
@@ -50,11 +50,11 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          path: ${{ github.workspace }}/build
+          path: build
 
       - name: Test
         run: |
-          cd ${{ github.workspace }}/build/Tests/
+          cd build/Tests/
           ./MOND_DB_TESTS
 
 
