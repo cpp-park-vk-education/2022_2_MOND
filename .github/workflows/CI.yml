@@ -20,16 +20,16 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configure CMake
-        run: cmake -B /build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{ github.workflows }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run: cmake --build /build
+        run: cmake --build ${{ github.workflows }}/build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: my-artifact
-          path: /build/**/*
+          path: ${{ github.workflows }}/build/**/*
 
   tests:
     needs: [ build ]
@@ -50,15 +50,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: my-artifact
-          path: /build
+          path: ${{ github.workflows }}/build
 
       - name: Display structure of downloaded files
-        run: ls -R /build
-        working-directory: /build
+        run: ls -R ${{ github.workflows }}/build
+        working-directory: ${{ github.workflows }}/build
 
       - name: Test
         run: |
-          cd /build/Tests/
+          cd ${{ github.workflows }}/build/Tests/
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
