@@ -50,21 +50,13 @@ jobs:
 
       - name: Build
         # Build your program with the given configuration
-        run: |
-          ls -la .
-          ls -la ./Tests/
-          cmake --build ${{github.workspace}}/build
-          ls -la .
-          pwd
+        run: cmake --build ${{github.workspace}}/build
 
       - name: Test
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: |
-          ls -la .
-          ls -la ./Tests/
-          exec ./Tests/MOND_DB_TESTS
+        run: ./${{github.workspace}}/build/Tests/MOND_DB_TESTS
 
 
   linters:
