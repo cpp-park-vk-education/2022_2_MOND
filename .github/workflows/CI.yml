@@ -21,7 +21,7 @@ jobs:
 
       - run: |
           mkdir -p build
-          echo hello > build/artifact/world.txt
+          echo hello > build/world.txt
 
       - name: Configure CMake
         run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
