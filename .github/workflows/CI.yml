@@ -12,7 +12,7 @@ env:
 jobs:
 
 
-  build-proj:
+  build-project:
     runs-on: ubuntu-latest
     container: morapresence/mond_db_tests
 
@@ -32,7 +32,7 @@ jobs:
           path: ${{ github.workflows }}/build/**/*
 
   tests:
-    needs: [ build ]
+    needs: [ build-project ]
 
     runs-on: ubuntu-latest
     container: morapresence/mond_db_tests
@@ -64,7 +64,7 @@ jobs:
 
 
   linters:
-    needs: [ build ]
+    needs: [ build-project ]
 
     runs-on: ubuntu-latest
     container: morapresence/mond_db_tests
@@ -78,7 +78,7 @@ jobs:
           ./linters/linters.sh
 
   sanitisers:
-    needs: [ build ]
+    needs: [ build-project ]
 
     runs-on: ubuntu-latest
     container: morapresence/mond_db_tests
