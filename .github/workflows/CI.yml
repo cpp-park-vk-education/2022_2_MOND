@@ -93,5 +93,7 @@ jobs:
         run: cmake --build ${{github.workspace}}/build
 
       - name: valgrind
-        working-directory: ${{github.workspace}}/build
-        run: valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+        run: |
+          ls -la ${{github.workspace}}/build
+          ls -la ${{github.workspace}}/build/Tests/
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
