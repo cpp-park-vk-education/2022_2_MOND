@@ -12,7 +12,7 @@ env:
 jobs:
 
 
-  build-project:
+  build-proj:
     runs-on: ubuntu-latest
     container: morapresence/mond_db_tests
 
