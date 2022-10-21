@@ -52,10 +52,6 @@ jobs:
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build
 
-      - name: testing project
-        working-directory: ${{github.workspace}}/build
-        run: ctest --output-on-failure -C ${{env.BUILD_TYPE}}
-
       - name: Test
         working-directory: ${{github.workspace}}/build
         # Execute tests defined by the CMake configuration.
