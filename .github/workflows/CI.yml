@@ -58,7 +58,7 @@ jobs:
 
       - name: Test
         run: |
-          cd ~/build/Tests/
+          cd /build/Tests/
           ./MOND_DB_TESTS
 
 
