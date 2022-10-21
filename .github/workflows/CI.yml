@@ -50,7 +50,9 @@ jobs:
 
       - name: Build
         # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/build
+        run: |
+          pwd
+          cmake --build ${{github.workspace}}/build
 
       - name: Test
         working-directory: ${{github.workspace}}
