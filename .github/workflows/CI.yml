@@ -54,7 +54,7 @@ jobs:
 
       - name: Test
         run: |
-          cd ${{github.workspace}}/build/Tests/
+          cd /artefacts/build/Tests/
           ./MOND_DB_TESTS
 
 
