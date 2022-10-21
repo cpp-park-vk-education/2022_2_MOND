@@ -19,10 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: |
-          mkdir -p /build
-          echo hello > /build/world.txt
-
       - name: Configure CMake
         run: cmake -B /build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
@@ -56,7 +52,7 @@ jobs:
 
       - name: Test
         run: |
-          cd /build/Tests/
+          cd build/Tests/
           ./MOND_DB_TESTS
 
 
