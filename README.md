@@ -1,2 +1,2 @@
 # 2022_2_MOND
-MOND DB - In-memory key-value база данных
+MOND DB ci_setup_branch
