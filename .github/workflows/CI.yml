@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workspace }}/build
+          path: ./build/Tests/
 
   tests:
     needs: [build]
@@ -50,11 +50,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workspace }}/build
+          path: ./build/Tests/
 
       - name: Test
         run: |
-          cd ${{ github.workspace }}/build/Tests/
+          cd /build/Tests/
           ./MOND_DB_TESTS
 
 
