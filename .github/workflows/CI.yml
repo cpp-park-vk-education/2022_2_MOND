@@ -48,11 +48,11 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          path: /build
+          path: ~/build
 
       - name: Test
         run: |
-          cd build/Tests/
+          cd ~/build/Tests/
           ./MOND_DB_TESTS
 
 
