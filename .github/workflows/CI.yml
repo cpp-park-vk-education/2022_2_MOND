@@ -25,8 +25,8 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/build
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifact
           path: ./artefacts/
