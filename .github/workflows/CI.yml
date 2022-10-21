@@ -50,7 +50,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: my-artifact
-          path: ~/build
+          path: /build
+
+      - name: Display structure of downloaded files
+        run: ls -R /build
+        working-directory: /build
 
       - name: Test
         run: |
