@@ -59,6 +59,7 @@ jobs:
       - name: Test
         run: |
           cd /build/Tests/
+          chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
 
