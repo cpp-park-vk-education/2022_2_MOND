@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 TEST(MOND_DB, TEST1) {
-    EXPECT_EQ(true, true);
+    EXPECT_TRUE(true);
 }
 
 int main() {
