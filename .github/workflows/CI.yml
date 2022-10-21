@@ -32,6 +32,11 @@ jobs:
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build_artifact
+          path: ${{github.workspace}}/build
+
   tests:
     needs: [build]
 
@@ -40,6 +45,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: build_artifact
+
       - name: testing project
         working-directory: ${{github.workspace}}/build
         run: ctest --output-on-failure -C ${{env.BUILD_TYPE}}
