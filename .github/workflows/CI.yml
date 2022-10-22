@@ -46,16 +46,18 @@ jobs:
       #      - name: Build
       #        run: cmake --build ${{github.workspace}}/build
 
-      - name: Download build artifacts
+      - name: making build/ directory
+        run: mkdir -p ${{ github.workspace }}/build
+
+      - name: Downloading build artifacts
         uses: actions/download-artifact@v3
         with:
           name: my-artifact
-          path: ${{ github.workflow }}/build
+          path: ${{ github.workspace }}/build
 
-      - name: Move to workspace
-        run: |
-          mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+      #- name: Move to workspace
+      #  run: mkdir -p ${{ github.workspace }}/build
+      #   mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: Test
         run: |
