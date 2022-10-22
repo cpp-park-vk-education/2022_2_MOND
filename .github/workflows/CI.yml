@@ -99,4 +99,6 @@ jobs:
           mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: valgrind
-        run: valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
