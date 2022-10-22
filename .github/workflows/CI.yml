@@ -46,18 +46,16 @@ jobs:
       #      - name: Build
       #        run: cmake --build ${{github.workspace}}/build
 
-      - name: making build/ directory
-        run: mkdir -p ${{ github.workspace }}/build
-
-      - name: Downloading build artifacts
+      - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: my-artifact
-          path: ${{ github.workspace }}/build
+          path: ${{ github.workflow }}/build
 
-      #- name: Move to workspace
-      #  run: mkdir -p ${{ github.workspace }}/build
-      #   mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+      - name: Move to workspace
+        run: |
+          mkdir -p ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: Test
         run: |
@@ -89,11 +87,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
+          path: ${{ github.workflow }}/build
 
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build
+      - name: Move to workspace
+        run: |
+          mkdir -p ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: valgrind
         run: valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
