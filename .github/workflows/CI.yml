@@ -57,10 +57,6 @@ jobs:
           mkdir -p ${{ github.workspace }}/build
           mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
-      - name: Display structure of downloaded files
-        run: ls -R ${{ github.workspace }}/build
-        working-directory: ${{ github.workspace }}/build
-
       - name: Test
         run: |
           cd ${{ github.workspace }}/build/Tests/
