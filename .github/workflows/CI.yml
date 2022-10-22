@@ -54,7 +54,7 @@ jobs:
 
       - name: Move to workspace
         run: |
-          mkdir ${{ github.workspace }}/build
+          mkdir -p ${{ github.workspace }}/build
           mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: Display structure of downloaded files
