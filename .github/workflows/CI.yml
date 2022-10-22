@@ -31,6 +31,22 @@ jobs:
           name: my-artifact
           path: ${{ github.workflow }}/build/**/*
 
+
+  linters:
+    needs: [ build-project ]
+
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_tests
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: run_linters
+        working-directory: ${{github.workspace}}
+        run: |
+          chmod 777 ./linters/linters.sh
+          ./linters/linters.sh
+          
+
   tests:
     needs: [ build-project ]
 
@@ -62,21 +78,7 @@ jobs:
           cd ${{ github.workspace }}/build/Tests/
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
-
-
-  linters:
-    needs: [ build-project ]
-
-    runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: run_linters
-        working-directory: ${{github.workspace}}
-        run: |
-          chmod 777 ./linters/linters.sh
-          ./linters/linters.sh
+          
 
   sanitisers:
     needs: [ build-project ]
