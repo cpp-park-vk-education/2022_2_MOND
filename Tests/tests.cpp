@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(Test, test_for_test){
+TEST(Test, test_for_test) {
     EXPECT_TRUE(true);
 }
 
