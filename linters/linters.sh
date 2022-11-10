@@ -19,17 +19,17 @@ function check_log() {
   fi
 }
 
-if ${1} -eq "--clang" || ${1} -eq "--all"; then
+if [ "$1" = "--clang" ] || [ "$1" = "--all" ]; then
   print_header "RUN clang-tidy"
   check_log "clang-tidy ./Tests/*.cpp -warnings-as-errors=* -extra-arg=-std=c++17 -- -Iproject/include" "Error (?:reading|while processing)"
 fi
 
-if ${1} -eq "--cpplint" || ${1} -eq "--all"; then
+if [ "$1" = "--cpplint" ] || [ "$1" = "--all" ]; then
   print_header "RUN cpplint"
   check_log "cpplint ./Tests/*.cpp" "Can't open for reading"
 fi
 
-if ${1} -eq "--cppcheck" || ${1} -eq "--all"; then
+if [ "$1" = "--cppcheck" ] || [ "$1" = "--all" ]; then
   print_header "RUN cppcheck"
   check_log "cppcheck ./Tests/*.cpp --enable=all --inconclusive --error-exitcode=1 --suppress=missingIncludeSystem" "\(information\)"
 fi
