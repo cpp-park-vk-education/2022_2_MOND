@@ -18,7 +18,7 @@ jobs:
         working-directory: ${{github.workspace}}
         run: |
           chmod 777 ./linters/linters.sh
-          ./linters/linters.sh --all ./Tests/*.cpp
+          ./linters/linters.sh
 
   build-project:
     runs-on: ubuntu-latest

@@ -26,7 +26,7 @@ fi
 
 if [ "$1" = "--clang" ] || [ "$1" = "--all" ]; then
   print_header "RUN clang-tidy"
-  check_log "clang-tidy $2 -warnings-as-errors=* -extra-arg=-std=c++17" "Error (?:reading|while processing)"
+  check_log "clang-tidy $2 -warnings-as-errors=* -extra-arg=-std=c++17 --" "Error (?:reading|while processing)"
 fi
 
 if [ "$1" = "--cpplint" ] || [ "$1" = "--all" ]; then
