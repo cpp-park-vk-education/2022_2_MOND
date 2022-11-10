@@ -19,18 +19,23 @@ function check_log() {
   fi
 }
 
+if [ $# != 2 ]; then
+  echo "Invalid number of parameters"
+  exit 1
+fi
+
 if [ "$1" = "--clang" ] || [ "$1" = "--all" ]; then
   print_header "RUN clang-tidy"
-  check_log "clang-tidy ./Tests/*.cpp -warnings-as-errors=* -extra-arg=-std=c++17 -- -Iproject/include" "Error (?:reading|while processing)"
+  check_log "clang-tidy $2 -warnings-as-errors=* -extra-arg=-std=c++17" "Error (?:reading|while processing)"
 fi
 
 if [ "$1" = "--cpplint" ] || [ "$1" = "--all" ]; then
   print_header "RUN cpplint"
-  check_log "cpplint ./Tests/*.cpp" "Can't open for reading"
+  check_log "cpplint $2" "Can't open for reading"
 fi
 
 if [ "$1" = "--cppcheck" ] || [ "$1" = "--all" ]; then
   print_header "RUN cppcheck"
-  check_log "cppcheck ./Tests/*.cpp --enable=all --inconclusive --error-exitcode=1 --suppress=missingIncludeSystem" "\(information\)"
+  check_log "cppcheck $2 --enable=all --inconclusive --error-exitcode=1 --suppress=missingIncludeSystem" "\(information\)"
 fi
 print_header "SUCCESS"
