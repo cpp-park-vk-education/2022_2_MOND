@@ -1,265 +1,261 @@
-#ifndef HASHMAPBD_QUADRATICPROBINGTABLE_H
-#define HASHMAPBD_QUADRATICPROBINGTABLE_H
+// Copyright 2022 mora
 
 #pragma once
 
+#include "IHashTable.h"
+#include "HTAllocator.h"
+
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <fstream>
+#include <vector>
 
-#include "HashTable.h"
 
-template<typename K, typename T>
-class QuadraticProbingTable : public HashTableInterface<K, T> {
-    const uint32_t FREE = 0; // свободная ячейка
-    const uint32_t BUSY = 1; // занятая ячейка
-    const uint32_t REMOVED = 2; // удалённая ячейка
+template<typename Key, typename Value, class Hash = defaultHash<Key>>
+class QuadraticProbingTable : public IHashTable<Key, Value, Hash> {
+    const static uint32_t FREE = 0;
+    const static uint32_t BUSY = 1;
+    const static uint32_t REMOVED = 2;
+
+    Hash HashFunc = Hash();
 
     struct HashNode {
-        K key; // значение ключа элемента
-        T value; // значение элемента
-        uint32_t state; // состояние ячейки
+        Key key;
+        Value value;
+        int state = FREE;
     };
 
-    uint32_t capacity; // ёмкость таблицы
-    uint32_t size; // число элементов в таблице
-    HashNode *cells; // массив ячеек
+    size_t _size;
 
-    uint32_t (*h)(K); // указатель на хеш-функцию
+    std::vector<HashNode, NAlloc<HashNode>> _cells;
 
 public:
-    QuadraticProbingTable(uint32_t tableSize, uint32_t (*h)(K)); // конструктор из размера и хеш-функции
-    QuadraticProbingTable(const QuadraticProbingTable &table); // конструктор копирования
 
-    bool Insert(const K &key, const T &value); // добавление значения по ключу
-    bool Remove(const K &key); // удаление по ключу
-    bool Find(const K &key) const; // поиск по ключу
+    QuadraticProbingTable(const uint32_t tableSize);
 
-    bool Clear(); // очистка таблицы
+    QuadraticProbingTable(const QuadraticProbingTable &table);
 
-    [[nodiscard]] uint32_t GetSize() const; // получение размера
-    [[nodiscard]] bool IsEmpty() const; // проверка на пустоту
+    bool Insert(const Key &key, const Value &value);
 
-    T Get(const K &key) const; // получение значения по ключу
+    bool Remove(const Key &key);
 
-    void ChangeValue(const K &key, const T &value);
+    bool Find(const Key &key) const;
 
-    [[nodiscard]] bool PrintToFile(const std::string &path, uint32_t sizeOfNode) const;
+    bool Clear();
 
-    uint8_t *ReadFromFile(const std::string &path, uint32_t *outsize) const;
+    size_t GetSize() const;
+
+    Value Get(const Key &key) const;
+
+    std::vector<Value> GetBusyNodes() const;
+
+    void ChangeValue(const Key &key, const Value &value);
+
+    bool PrintToFile(const std::string &path, size_t sizeOfNode) const;
+
+    char *ReadFromFile(const std::string &path, size_t *outsize) const;
 
     ~QuadraticProbingTable();
 };
 
-// конструктор из размера и хеш-функции
-template<typename K, typename T>
-QuadraticProbingTable<K, T>::QuadraticProbingTable(uint32_t tableSize, uint32_t (*h)(K)) {
-    this->capacity = tableSize; // запоминаем в ёмкости переданный размер
-    this->size = 0; // изначально нет элементов
-    this->cells = new HashNode[tableSize]; // выделяем память под ячейки
 
-    // делаем все ячейки свободными
-    for (size_t i = 0; i < tableSize; i++)
-        cells[i].state = FREE;
-
-    this->h = h; // запоминаем указатель на функцию
+template<typename Key, typename Value, class Hash>
+QuadraticProbingTable<Key, Value, Hash>::QuadraticProbingTable(const uint32_t tableSize) : _size(0) {
+    _cells.reserve(tableSize);
+    _cells.resize(tableSize);
 }
 
-// конструктор копирования
-template<typename K, typename T>
-QuadraticProbingTable<K, T>::QuadraticProbingTable(const QuadraticProbingTable &table) {
-    capacity = table.capacity; // копируем ёмкость
-    size = table.size; // копируем количество элементов
-    cells = new HashNode[capacity]; // выделяем память под массив
-
-    h = table.h; // копируем указатель на функцию
-
-    // проходимся по всем ячейкам таблицы и копируем их содержимое
-    for (size_t i = 0; i < capacity; i++) {
-        cells[i].value = table.cells[i].value;
-        cells[i].key = table.cells[i].key;
-        cells[i].state = table.cells[i].state;
-    }
+template<typename Key, typename Value, class Hash>
+QuadraticProbingTable<Key, Value, Hash>::QuadraticProbingTable(const QuadraticProbingTable &table) : _size(table._size) {
+    *this = table;
 }
 
-// добавление значения по ключу
-template<typename K, typename T>
-bool QuadraticProbingTable<K, T>::Insert(const K &key, const T &value) {
-    uint32_t sequenceLength = 0; // начальная длина пробной последовательности равна нулю
-    uint32_t hash = h(key); // получаем хеш от ключа
+template<typename Key, typename Value, class Hash>
+bool QuadraticProbingTable<Key, Value, Hash>::Insert(const Key &key, const Value &value) {
+    size_t sequenceLength = 0;
+    size_t hash = HashFunc(key);
 
-    for (; sequenceLength < capacity;) {
-        uint32_t q = sequenceLength * sequenceLength;
-        uint32_t index = (hash + q) % capacity;
+    for (; sequenceLength < _cells.capacity();) {
+        auto q = sequenceLength * sequenceLength;
+        auto index = (hash + q) % _cells.capacity();
 
-        if (cells[index].state != BUSY) { // если нашли незанятую ячейку
-            cells[index].key = key; // сохраняем ключ
-            cells[index].value = value; // сохраняем значение
-            cells[index].state = BUSY; // ячейка становится занятой
+        if (_cells[index].state != BUSY) {
+            _cells[index].key = key;
+            _cells[index].value = value;
+            _cells[index].state = BUSY;
 
-            size++; // увеличиваем счётчик числа элементов
-            return true; // выходим
+            _size++;
+
+            return true;
         }
-        sequenceLength++; // увеличиваем длину пробной последовательности
+        sequenceLength++;
     }
-    // прошли всю таблицу
     return false;
 }
 
-// удаление по ключу
-template<typename K, typename T>
-bool QuadraticProbingTable<K, T>::Remove(const K &key) {
-    uint32_t sequenceLength = 0; // начальная длина пробной последовательности равна нулю
-    uint32_t hash = h(key); // получаем хеш от ключа
+template<typename Key, typename Value, class Hash>
+bool QuadraticProbingTable<Key, Value, Hash>::Remove(const Key &key) {
+    size_t sequenceLength = 0;
+    auto hash = HashFunc(key);
 
-    for (; sequenceLength < capacity;) {
-        uint32_t q = sequenceLength * sequenceLength;
-        uint32_t index = (hash + q) % capacity;
-        // если нашли занятую нужным ключом ячейку
-        if (cells[index].state == BUSY && cells[index].key == key) {
-            cells[index].state = REMOVED; // помечаем её как удалённую
-            size--; // уменьшаем счётчик числа элементов
-            return true; // возвращаем истину
+    for (; sequenceLength < _cells.capacity();) {
+        auto q = sequenceLength * sequenceLength;
+        auto index = (hash + q) % _cells.capacity();
+
+        if (_cells[index].state == BUSY && _cells[index].key == key) {
+            _cells[index].state = REMOVED;
+
+            _size--;
+
+            return true;
         }
-        // если нашли свободную ячейку
-        if (cells[index].state == FREE)
-            return false; // возвращаем ложь
 
-        sequenceLength++; // увеличиваем длину пробной последовательности
-    }
-    return false; // не нашли во всей таблице, возвращаем ложь
-}
-
-// поиск по ключу
-template<typename K, typename T>
-bool QuadraticProbingTable<K, T>::Find(const K &key) const {
-    uint32_t sequenceLength = 0; // начальная длина пробной последовательности равна нулю
-    uint32_t hash = h(key); // получаем хеш от ключа
-
-    for (; sequenceLength < capacity;) {
-        uint32_t q = sequenceLength * sequenceLength;
-        uint32_t index = (hash + q) % capacity; // ищем индекс элемента
-
-        // если нашли занятую клетку с нужным ключом
-        if (cells[index].state == BUSY && cells[index].key == key)
-            return true; // значит нашли
-
-        // если нашли свободную ячейку
-        if (cells[index].state == FREE)
-            return false; // значит нет элемента
-
-        sequenceLength++; // увеличиваем длину пробной последовательности
+        if (_cells[index].state == FREE) {
+            return false;
+        }
+        sequenceLength++;
     }
 
-    return false; // не нашли во всей таблице
+    return false;
 }
 
-template<typename K, typename T>
-bool QuadraticProbingTable<K, T>::Clear() {
-    for (size_t i = 0; i < capacity; i++)
-        cells[i].state = FREE;
+template<typename Key, typename Value, class Hash>
+bool QuadraticProbingTable<Key, Value, Hash>::Find(const Key &key) const {
+    size_t sequenceLength = 0;
+    auto hash = HashFunc(key);
 
-    size = 0; // обнуляем счётчик числа элементов
+    for (; sequenceLength < _cells.capacity();) {
+        auto q = sequenceLength * sequenceLength;
+        auto index = (hash + q) % _cells.capacity();
+
+        if (_cells[index].state == BUSY && _cells[index].key == key) {
+            return true;
+        }
+
+        if (_cells[index].state == FREE) {
+            return false;
+        }
+        sequenceLength++;
+    }
+    return false;
+}
+
+template<typename Key, typename Value, class Hash>
+bool QuadraticProbingTable<Key, Value, Hash>::Clear() {
+    _cells.clear();
+
+    _size = 0;
+
+    _cells.resize(_cells.capacity());
+
+    for (auto i = 0; i < _cells.capacity(); i++) {
+        _cells[i].state = FREE;
+    }
+
     return true;
 }
 
-template<typename K, typename T>
-uint32_t QuadraticProbingTable<K, T>::GetSize() const {
-    return size; // возвращаем размер
+template<typename Key, typename Value, class Hash>
+size_t QuadraticProbingTable<Key, Value, Hash>::GetSize() const {
+    return _size;
 }
 
-template<typename K, typename T>
-bool QuadraticProbingTable<K, T>::IsEmpty() const {
-    return size == 0; // таблица пуста, если нет элементов
-}
 
-// получение значения по ключу
-template<typename K, typename T>
-T QuadraticProbingTable<K, T>::Get(const K &key) const {
-    uint32_t sequenceLength = 0;
-    uint32_t hash = h(key); // получаем хеш от ключа
+template<typename Key, typename Value, class Hash>
+Value QuadraticProbingTable<Key, Value, Hash>::Get(const Key &key) const {
+    size_t sequenceLength = 0;
+    auto hash = HashFunc(key);
 
-    for (; sequenceLength < capacity;) {
-        uint32_t q = sequenceLength * sequenceLength;
-        uint32_t index = (hash + q) % capacity;
+    for (; sequenceLength < _cells.capacity();) {
+        auto q = sequenceLength * sequenceLength;
+        auto index = (hash + q) % _cells.capacity();
 
-        // если нашли занятую клетку с нужным ключом
-        if (cells[index].state == BUSY && cells[index].key == key)
-            return cells[index].value; // значит нашли
+        if (_cells[index].state == BUSY && _cells[index].key == key) {
+            return _cells[index].value;
+        }
 
-        // если нашли свободную ячейку, значит нет такого элемента
-        if (cells[index].state == FREE)
-            throw std::runtime_error("No value with this key"); // бросаем исключение FIXME:
-
-        sequenceLength++; // увеличиваем длину пробной последовательности
+        if (_cells[index].state == FREE) {
+            throw std::string("No value with this key");
+        }
+        sequenceLength++;
     }
-
-    // обошли всю таблицу
-    throw std::runtime_error("No value with this key"); // бросаем исключение FIXME:
+    throw std::string("No value with this key");
 }
 
-// деструктор (освобождения памяти)
-template<typename K, typename T>
-QuadraticProbingTable<K, T>::~QuadraticProbingTable() {
-    delete[] cells; // удаляем массив ячеек
+template<typename Key, typename Value, class Hash>
+QuadraticProbingTable<Key, Value, Hash>::~QuadraticProbingTable() {
+    _cells.clear();
 }
 
-template<typename K, typename T>
-void QuadraticProbingTable<K, T>::ChangeValue(const K &key, const T &value) {
-    uint32_t sequenceLength = 0;
-    uint32_t hash = h(key); // получаем хеш от ключа
+template<typename Key, typename Value, class Hash>
+std::vector<Value> QuadraticProbingTable<Key, Value, Hash>::GetBusyNodes() const {
+    std::vector<Value> nodes;
 
-    for (; sequenceLength < capacity;) {
-        uint32_t q = sequenceLength * sequenceLength;
-        uint32_t index = (hash + q) % capacity;
+    for (size_t i = 0; i < _cells.capacity(); ++i) {
+        if (_cells[i].state != BUSY) {
+            continue;
+        }
+        nodes.emplace_back(_cells[i].value);
+    }
+    return nodes;
+}
 
-        // если нашли занятую клетку с нужным ключом
-        if (cells[index].state == BUSY && cells[index].key == key) {
-            cells[index].value = value; // значит нашли
+template<typename Key, typename Value, class Hash>
+void QuadraticProbingTable<Key, Value, Hash>::ChangeValue(const Key &key, const Value &value) {
+    size_t sequenceLength = 0;
+    auto hash = HashFunc(key);
+
+    for (; sequenceLength < _cells.capacity();) {
+        auto q = sequenceLength * sequenceLength;
+        auto index = (hash + q) % _cells.capacity();
+
+        if (_cells[index].state == BUSY && _cells[index].key == key) {
+            _cells[index].value = value;
             return;
         }
 
-
-        // если нашли свободную ячейку, значит нет такого элемента
-        if (cells[index].state == FREE)
-            throw std::runtime_error("No value with this key"); // бросаем исключение FIXME
-
-        sequenceLength++; // увеличиваем длину пробной последовательности
+        if (_cells[index].state == FREE) {
+            throw std::string("No value with this key");
+        }
+        sequenceLength++;
     }
 
-    // обошли всю таблицу
-    throw std::runtime_error("No value with this key"); // бросаем исключение FIXME
+    throw std::string("No value with this key");
 }
 
-template<typename K, typename T>
-bool QuadraticProbingTable<K, T>::PrintToFile(const std::string &path, uint32_t sizeOfNode) const {
+template<typename Key, typename Value, class Hash>
+bool QuadraticProbingTable<Key, Value, Hash>::PrintToFile(const std::string &path, size_t sizeOfNode) const {
     std::ofstream outfile;
     outfile.open(path, std::ios::out | std::ios::binary);
     if (!outfile) return false;
 
-    for (size_t i = 0; i < capacity; i++) {
-        if (cells[i].state != BUSY)
-            continue; // если ячейка не занята, то переходим к следующему элементу
-        outfile.write((char *) (&cells[i].value), sizeOfNode);
+    for (int i = 0; i < _cells.capacity(); i++) {
+        if (_cells[i].state != BUSY) {
+            continue;
+        }
+        outfile.write((char *) (&_cells[i].value), sizeOfNode);
     }
     outfile.close();
+
     return true;
 }
 
-template<typename K, typename T>
-uint8_t *QuadraticProbingTable<K, T>::ReadFromFile(const std::string &path, uint32_t *outsize) const {
+template<typename Key, typename Value, class Hash>
+char *QuadraticProbingTable<Key, Value, Hash>::ReadFromFile(const std::string &path, size_t *outsize) const {
     std::streampos fileSize;
     std::ifstream infile;
-    uint8_t *memblock = nullptr;
+    char *memblock = nullptr;
 
     infile.open(path, std::ios::in | std::ios::binary | std::ios::ate);
 
     if (!infile) return memblock;
 
+
     fileSize = infile.tellg();
-    memblock = new uint8_t[fileSize];
+    memblock = new char[fileSize];
     infile.seekg(0, std::ios::beg);
-    infile.read(reinterpret_cast<char *>(memblock), fileSize);
+    infile.read(memblock, fileSize);
 
     infile.close();
 
@@ -267,5 +263,3 @@ uint8_t *QuadraticProbingTable<K, T>::ReadFromFile(const std::string &path, uint
 
     return memblock;
 }
-
-#endif //HASHMAPBD_QUADRATICPROBINGTABLE_H

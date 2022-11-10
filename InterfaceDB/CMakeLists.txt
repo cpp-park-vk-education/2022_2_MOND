@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 project(InterfaceDB CXX)
 
 if (BUILD_FOR_TEST)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fprofile-arcs -ftest-coverage -fPIC -O0")
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -ftest-coverage -O0")
 endif ()
 
-file(GLOB SOURCES *.h)
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(${PROJECT_NAME} INTERFACE)
