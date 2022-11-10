@@ -3,10 +3,10 @@ project(MOND_DB_TESTS CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if (DEBUG_BUILD)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fprofile-arcs -ftest-coverage -O0")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
-endif ()
+
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-O0 -Wall -Wextra -Werror -Wpedantic -fprofile-arcs -ftest-coverage -fPIC")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov")
+
 
 find_package(GTest REQUIRED)
 
