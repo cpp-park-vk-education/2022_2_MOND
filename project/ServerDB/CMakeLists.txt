@@ -29,10 +29,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/he
 
 if (DEBUG_BUILD)
     # make functions in source files of this project (except main.cpp) available for tests (e.g. sum())
-    set(CLIENT_DB_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/headers ${CMAKE_CURRENT_SOURCE_DIR}/sources)
+    set(SERVER_DB_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/headers ${CMAKE_CURRENT_SOURCE_DIR}/sources)
 
     # make source files of this project (except main.cpp) available for tests
-    set(CLIENT_DB_EXECUTABLES ${SOURCES} ${HEADERS})
+    set(SERVER_DB_EXECUTABLES ${SOURCES} ${HEADERS})
 
     # additional flags when DEBUG_BUILD
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )

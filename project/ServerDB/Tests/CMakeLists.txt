@@ -9,7 +9,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov -pthread"
 
 find_package(GTest REQUIRED)
 
-add_executable(${PROJECT_NAME} tests.cpp ${CLIENT_DB_EXECUTABLES})
+add_executable(${PROJECT_NAME} tests.cpp ${SERVER_DB_EXECUTABLES})
 
 target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
 
@@ -21,7 +21,7 @@ target_link_libraries(
 target_include_directories(
         ${PROJECT_NAME} PUBLIC
         ${LIB_CONNECTOR_INCLUDE_DIRS}
-        ${CLIENT_DB_INCLUDE_DIRS}
+        ${SERVER_DB_INCLUDE_DIRS}
 )
 enable_testing()
 add_test(NAME test_mul COMMAND A_mul_B)
