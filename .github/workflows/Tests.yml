@@ -67,7 +67,7 @@ jobs:
           cd ${{ github.workspace }}/build/Tests/
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
-          ls -la ${{ github.workflow }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir
+          ls -la ${{ github.workflow }}
           cd ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir
           gcov tests.cpp.o
           lcov -t . -o coverage_report.info -c -d .
