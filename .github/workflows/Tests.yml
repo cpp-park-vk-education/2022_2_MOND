@@ -64,12 +64,6 @@ jobs:
       - name: Coverage
         run: |
           cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
-          cd ${{ github.workspace }}/build/Tests/
-          chmod 777 MOND_DB_TESTS
-          ./MOND_DB_TESTS
-          echo ${{ github.workflow }}
-          cd ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir
-          gcov tests.cpp.o
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
