@@ -64,7 +64,7 @@ jobs:
 
       - name: Coverage
         run: |
-          cd ${{ github.workspace }}/build/Tests
+          cd ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir/
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
@@ -97,6 +97,7 @@ jobs:
       - name: coverage
         run: |
           cd ${{ github.workspace }}/build/
+          chmod +777
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
