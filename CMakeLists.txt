@@ -10,6 +10,11 @@ if (DEBUG_BUILD)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
 endif ()
 
-enable_testing()
 
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/CMake")
+
+include(coverage)
+
+enable_testing()
+add_coverage_target("Tests/*")
 add_subdirectory(Tests)

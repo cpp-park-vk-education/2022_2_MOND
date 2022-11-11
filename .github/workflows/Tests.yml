@@ -1,4 +1,4 @@
-name: CI
+name: Tests
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: my-artifact
+          name: build-artifact
           path: ${{ github.workflow }}/build/**/*
 
   tests:
@@ -48,7 +48,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: my-artifact
+          name: build-artifact
           path: ${{ github.workflow }}/build
 
       - name: Move to workspace
@@ -62,6 +62,31 @@ jobs:
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
+  coverage:
+    needs: [ tests ]
+
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_tests
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifact
+          path: ${{ github.workflow }}/build
+
+      - name: Move to workspace
+        run: |
+          mkdir -p ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+
+      - name: coverage
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+
   valgrind:
     needs: [ build-project ]
 
@@ -74,7 +99,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: my-artifact
+          name: build-artifact
           path: ${{ github.workflow }}/build
 
       - name: Move to workspace
