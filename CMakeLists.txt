@@ -11,7 +11,8 @@ option(SERVERDB_BUILD "Server build" OFF)
 option(CLIENTDB_BUILD "Client build" ON)
 
 # adding flags for current project
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wconversion -Werror -Wunreachable-code -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wconversion")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wunreachable-code -pedantic -pthread")
 
 if (RELEASE_BUILD)
     # adding additional flags for release build
