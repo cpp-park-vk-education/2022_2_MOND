@@ -4,8 +4,8 @@ project(MOND_DB CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 option(SERVERDB_BUILD "Server build" OFF)
-option(CLIENTDB_BUILD "Client build" ON)
-option(DEBUG_BUILD "Build for test" ON)
+option(CLIENTDB_BUILD "Client build" OFF)
+option(DEBUG_BUILD "Build for test" OFF)
 
 add_subdirectory(project)
 
