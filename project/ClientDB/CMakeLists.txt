@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(LibConnector)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -Wall -Wextra -pedantic -Wformat=2 -Wfloat-equal -Wconversion -fprofile-arcs")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -Wlogical-op  -Wduplicated-cond -Wcast-qual -Wcast-align")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wformat=2 -Wfloat-equal -Wconversion -fprofile-arcs")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wlogical-op  -Wduplicated-cond -Wcast-qual -Wcast-align")
 
 set(HEADERS
         ${CMAKE_CURRENT_SOURCE_DIR}/headers/header.hpp
