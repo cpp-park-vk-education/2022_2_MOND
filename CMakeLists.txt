@@ -10,9 +10,7 @@ option(RELEASE_BUILD "Release build" OFF)
 option(SERVERDB_BUILD "Server build" OFF)
 option(CLIENTDB_BUILD "Client build" ON)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake)
-include(ClangFormat)
-
+include(CMake/clangformat.cmake)
 # cmake --build build --target clangformat
 # or
 # cd build
