@@ -68,12 +68,6 @@ jobs:
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
-      - name: Upload tests artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: tests-artifact
-          path: ${{ github.workflow }}/build/**/*
-
   client-unit-tests:
     needs: [ build-project ]
 
@@ -106,12 +100,6 @@ jobs:
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
-      - name: Upload tests artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: tests-artifact
-          path: ${{ github.workflow }}/build/**/*
-
   server-unit-tests:
     needs: [ build-project ]
 
@@ -143,12 +131,6 @@ jobs:
           cd ${{ github.workspace }}/build/
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
-
-      - name: Upload tests artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: tests-artifact
-          path: ${{ github.workflow }}/build/**/*
 
   valgrind:
     needs: [ build-project ]
