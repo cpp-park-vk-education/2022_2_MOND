@@ -17,7 +17,6 @@ include(CMake/clangformat.cmake)
 # make clangformat
 clangformat_setup(
         Tests/tests.cpp
-        main.cpp
 )
 
 # adding flags for current project
