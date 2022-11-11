@@ -62,12 +62,6 @@ jobs:
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
-      - name: Coverage
-        run: |
-          cd ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir/
-          lcov -t . -o coverage_report.info -c -d .
-          genhtml -o coverage_report coverage_report.info
-
       - name: Upload tests artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -97,7 +91,7 @@ jobs:
       - name: coverage
         run: |
           cd ${{ github.workspace }}/build/
-          chmod +777
+          chmod +666 Tests/CMakeFiles/MOND_DB_TESTS.dir/*
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
