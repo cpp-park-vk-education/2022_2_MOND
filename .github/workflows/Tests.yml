@@ -84,8 +84,8 @@ jobs:
 
       - name: coverage
         run: |
-          lcov -t /build/Tests/ -o ./coverage_report.info -c -d .
-          genhtml -o ./coverage_report ./coverage_report.info
+          lcov -t /build/Tests/ -o coverage_report.info -c -d .
+          genhtml -o coverage_report coverage_report.info
 
   valgrind:
     needs: [ build-project ]
