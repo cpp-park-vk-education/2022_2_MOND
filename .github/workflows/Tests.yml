@@ -15,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: run_linters
-        working-directory: ${{github.workspace}}
         run: bash scripts/linters/linters.sh
 
   build-project:
@@ -26,16 +25,16 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configure CMake
-        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run: cmake --build ${{ github.workflow }}/build
+        run: cmake --build ${{ github.workspace }}/build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workflow }}/build/**/*
+          path: ${{ github.workspace }}/build/**/*
 
   tests:
     needs: [ build-project ]
@@ -49,12 +48,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workflow }}/build
+          path: ${{ github.workspace }}/build
 
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+          mv ${{ github.workspace }}/build/* ${{ github.workspace }}/build
 
       - name: Test
         run: |
@@ -67,7 +66,7 @@ jobs:
           cd ${{ github.workspace }}/build/Tests/
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
-          ls -la ${{ github.workflow }}
+          ls -la ${{ github.workspace }}
           cd ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir
           gcov tests.cpp.o
           lcov -t . -o coverage_report.info -c -d .
@@ -77,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: tests-artifact
-          path: ${{ github.workflow }}/build/**/*
+          path: ${{ github.workspace }}/build/**/*
 
   valgrind:
     needs: [ build-project ]
@@ -92,12 +91,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workflow }}/build
+          path: ${{ github.workspace }}/build
 
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+          mv ${{ github.workspace }}/build/* ${{ github.workspace }}/build
 
       - name: valgrind
         run: |
