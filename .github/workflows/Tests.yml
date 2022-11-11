@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: run_linters
-        run: bash scripts/linters/linters.sh --cppcheck ./Tests/*.cpp
+        run: bash scripts/linters/linters.sh --cpplint ./Tests/*.cpp
 
   build-project:
     runs-on: ubuntu-latest
