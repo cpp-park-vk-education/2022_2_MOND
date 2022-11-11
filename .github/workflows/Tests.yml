@@ -90,7 +90,7 @@ jobs:
 
       - name: coverage
         run: |
-          cd ${{ github.workspace }}/build/Tests/
+          cd ${{ github.workspace }}/build/
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
