@@ -64,6 +64,9 @@ jobs:
 
       - name: Coverage
         run: |
+          cd ${{ github.workspace }}/build/Tests/
+          chmod 777 MOND_DB_TESTS
+          ./MOND_DB_TESTS
           cd ${{ github.workspace }}/build/
           lcov -d Tests -t . -o coverage_report.info -c --include "Tests/*"
           genhtml -o coverage_report coverage_report.info
