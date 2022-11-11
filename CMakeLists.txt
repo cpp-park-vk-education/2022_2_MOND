@@ -10,6 +10,16 @@ option(RELEASE_BUILD "Release build" OFF)
 option(SERVERDB_BUILD "Server build" ON)
 option(CLIENTDB_BUILD "Client build" ON)
 
+include(CMake/clangformat.cmake)
+# cmake --build build --target clangformat
+# or
+# cd build
+# make clangformat
+clangformat_setup(
+        Tests/tests.cpp
+        main.cpp
+)
+
 # adding flags for current project
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wconversion")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wunreachable-code -pedantic -pthread")
