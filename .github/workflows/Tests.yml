@@ -69,7 +69,7 @@ jobs:
           ./MOND_DB_TESTS
           cd ${{ github.workspace }}
           ls ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir
-          lcov --d . -t . -o coverage_report.info -c --include "Tests/*"
+          lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
       - name: Upload tests artifacts
