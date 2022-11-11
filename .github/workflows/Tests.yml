@@ -101,7 +101,7 @@ jobs:
 
       - name: Coverage
         run: |
-          ls -la -R ${{ github.workspace }}
+          ls -la -R ${{ github.workflow }}
           cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
           cd ${{ github.workspace }}/build/
           lcov -t . -o coverage_report.info -c -d .
