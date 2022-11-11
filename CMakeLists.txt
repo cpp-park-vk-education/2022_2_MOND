@@ -13,7 +13,6 @@ if (DEBUG_BUILD)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
     add_subdirectory(Tests)
     enable_testing()
-
 endif()
 
 #add_executable(${PROJECT_NAME} main.cpp)

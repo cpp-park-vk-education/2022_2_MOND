@@ -6,7 +6,6 @@
 
 int main(){
     Connector conn;
-
     std::cout << sum(1, 2) << " " << conn.mul(1, 2) << std::endl;
     return 0;
 }
