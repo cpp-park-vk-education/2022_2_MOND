@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 project(MOND_DB CXX)
 
-option(DEBUG_BUILD "Build for test" OFF)
-
 set(CMAKE_CXX_STANDARD 17)
+
+option(SERVERDB_BUILD "Server build" OFF)
+option(CLIENTDB_BUILD "Client build" ON)
+option(DEBUG_BUILD "Build for test" ON)
+
+add_subdirectory(project)
 
 add_executable(${PROJECT_NAME} main.cpp)
 if (DEBUG_BUILD)
