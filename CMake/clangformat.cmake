@@ -38,6 +38,7 @@ function(prefix_clangformat_setup prefix)
 endfunction()
 
 function(clangformat_setup)
+    message("hello from function clangformat_setup!")
     prefix_clangformat_setup(${PROJECT_NAME} ${ARGN})
 endfunction()
 
