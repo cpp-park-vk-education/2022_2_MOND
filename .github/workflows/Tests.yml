@@ -62,11 +62,11 @@ jobs:
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
-        - name: Upload tests artifacts
-          uses: actions/upload-artifact@v3
-          with:
-            name: tests-artifact
-            path: ${{ github.workflow }}/build/**/*
+      - name: Upload tests artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: tests-artifact
+          path: ${{ github.workflow }}/build/**/*
 
   coverage:
     needs: [ tests ]
