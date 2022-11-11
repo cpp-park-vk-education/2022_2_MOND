@@ -22,7 +22,7 @@ if (RELEASE_BUILD)
 
 elseif(DEBUG_BUILD)
     # adding additional flags for debug build
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -fprofile-arcs -ftest-coverage -fPIC")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
     #include(coverage)
     add_subdirectory(Tests)
