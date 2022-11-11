@@ -62,6 +62,12 @@ jobs:
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
+        - name: Upload tests artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: tests-artifact
+            path: ${{ github.workflow }}/build/**/*
+
   coverage:
     needs: [ tests ]
 
@@ -71,10 +77,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download build artifacts
+      - name: Download tests artifacts
         uses: actions/download-artifact@v3
         with:
-          name: build-artifact
+          name: tests-artifact
           path: ${{ github.workflow }}/build
 
       - name: Move to workspace
@@ -84,7 +90,6 @@ jobs:
 
       - name: coverage
         run: |
-          cd ${{ github.workspace }}/build/Tests/
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info
 
