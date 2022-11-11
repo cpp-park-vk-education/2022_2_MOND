@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 option(DEBUG_BUILD "Debug build" ON)
 option(RELEASE_BUILD "Release build" OFF)
 
-option(SERVERDB_BUILD "Server build" OFF)
+option(SERVERDB_BUILD "Server build" ON)
 option(CLIENTDB_BUILD "Client build" ON)
 
 # adding flags for current project
