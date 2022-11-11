@@ -10,7 +10,7 @@ env:
 jobs:
   linters:
     runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
+    container: morapresence/mond_db_debug
 
     steps:
       - uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
 
   build-project:
     runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
+    container: morapresence/mond_db_debug
 
     steps:
       - uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
     needs: [ build-project ]
 
     runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
+    container: morapresence/mond_db_debug
 
     steps:
       - uses: actions/checkout@v3
@@ -66,7 +66,7 @@ jobs:
     needs: [ tests ]
 
     runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
+    container: morapresence/mond_db_debug
 
     steps:
       - uses: actions/checkout@v3
@@ -91,7 +91,7 @@ jobs:
     needs: [ build-project ]
 
     runs-on: ubuntu-latest
-    container: morapresence/mond_db_tests
+    container: morapresence/mond_db_debug
 
     steps:
       - uses: actions/checkout@v3
