@@ -74,33 +74,6 @@ jobs:
           name: tests-artifact
           path: ${{ github.workflow }}/build/**/*
 
-  coverage:
-    needs: [ tests ]
-
-    runs-on: ubuntu-latest
-    container: morapresence/mond_db_debug
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Download tests artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: tests-artifact
-          path: ${{ github.workflow }}/build
-
-      - name: Move to workspace
-        run: |
-          mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
-
-      - name: coverage
-        run: |
-          cd ${{ github.workspace }}/build/
-          chmod +777
-          lcov -t . -o coverage_report.info -c -d .
-          genhtml -o coverage_report coverage_report.info
-
   valgrind:
     needs: [ build-project ]
 
