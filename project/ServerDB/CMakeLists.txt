@@ -14,6 +14,12 @@ set(SOURCES
         )
 add_executable(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp ${SOURCES} ${HEADERS})
 
+clangformat_setup(
+        ${SOURCES}
+        ${HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
+)
+
 # adding libraries for this project, e.g. LibConnector
 target_link_libraries(
         ${PROJECT_NAME}

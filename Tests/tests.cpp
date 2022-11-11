@@ -2,9 +2,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(Test, test_for_test) {
-    EXPECT_TRUE(true);
-}
+TEST(Test, test_for_test) { EXPECT_TRUE(true); }
 
 int main() {
     ::testing::InitGoogleTest();

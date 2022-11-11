@@ -28,7 +28,7 @@ jobs:
         run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run: cmake --build ${{ github.workflow }}/build --target clangformat
+        run: cmake --build ${{ github.workflow }}/build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3

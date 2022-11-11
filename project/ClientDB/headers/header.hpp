@@ -5,4 +5,4 @@
 
 int sum(int a, int b);
 
-#endif //MOND_DB_CLIENT_HEADER_H
+#endif  // MOND_DB_CLIENT_HEADER_H
