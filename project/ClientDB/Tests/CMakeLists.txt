@@ -23,3 +23,5 @@ target_include_directories(
         ${LIB_CONNECTOR_INCLUDE_DIRS}
         ${CLIENT_DB_INCLUDE_DIRS}
 )
+enable_testing()
+add_test(NAME test_mul COMMAND A_mul_B)

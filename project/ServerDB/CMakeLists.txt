@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(MOND_DB_CLIENT CXX)
+project(MOND_DB_SERVER CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
