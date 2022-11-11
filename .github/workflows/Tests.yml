@@ -98,11 +98,10 @@ jobs:
           cd ${{ github.workspace }}/build/project/ClientDB/Tests
           chmod 777 MOND_DB_CLIENT_TESTS
           ./MOND_DB_CLIENT_TESTS
-          ls -la -R
 
       - name: Coverage
         run: |
-          ls -la -R
+          ls -la -R ${{ github.workspace }}
           cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
           cd ${{ github.workspace }}/build/
           lcov -t . -o coverage_report.info -c -d .
