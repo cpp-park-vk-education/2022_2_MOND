@@ -15,6 +15,11 @@ function(add_coverage_target exclude)
         message(WARNING "program genhtml not found")
     endif()
 
+    find_program(ECHO echo)
+    if (NOT ECHO)
+        message(WARNING "program echo not found")
+    endif()
+
     if (LCOV AND GCOV AND GENHTML)
         set(covname cov.info)
         add_compile_options(-fprofile-arcs -ftest-coverage)

@@ -84,8 +84,8 @@ jobs:
 
       - name: coverage
         run: |
-          chmod 777 ${{github.workspace}}/build/Tests/MOND_DB_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+          lcov -t /build/Tests/ -o ./coverage_report.info -c -d .
+          genhtml -o ./coverage_report ./coverage_report.info
 
   valgrind:
     needs: [ build-project ]

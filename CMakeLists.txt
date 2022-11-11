@@ -13,8 +13,8 @@ endif ()
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/CMake")
 
-include(coverage)
+#include(coverage)
 
 enable_testing()
-add_coverage_target("Tests/*")
+#add_coverage_target("Tests/*")//не получилось(((
 add_subdirectory(Tests)
