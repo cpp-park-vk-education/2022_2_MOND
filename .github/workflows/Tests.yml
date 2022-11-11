@@ -63,7 +63,7 @@ jobs:
 
       - name: Coverage
         run: |
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+          cp ${{ github.workflow }}/build/* ${{ github.workspace }}/build
           cd ${{ github.workspace }}/build/Tests/
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
