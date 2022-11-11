@@ -61,6 +61,8 @@ jobs:
           cd ${{ github.workspace }}/build/Tests/
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
+          lcov -t . -o coverage_report.info -c -d .
+          genhtml -o coverage_report coverage_report.info
 
       - name: Upload tests artifacts
         uses: actions/upload-artifact@v3
