@@ -1,0 +1,6 @@
+BasedOnStyle: Google
+Standard: Latest
+IndentWidth: 4
+Language: Cpp
+DerivePointerAlignment: false
+PointerAlignment: Left
