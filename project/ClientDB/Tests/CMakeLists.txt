@@ -14,6 +14,10 @@ target_link_libraries(
         ${LIB_CONNECTOR_LIBRARIES}
 )
 
+clangformat_setup(
+        tests.cpp
+)
+
 target_include_directories(
         ${PROJECT_NAME} PUBLIC
         ${LIB_CONNECTOR_INCLUDE_DIRS}
