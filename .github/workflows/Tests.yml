@@ -68,7 +68,8 @@ jobs:
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
           cd ${{ github.workspace }}/build/
-          lcov --base-directory Tests -t . -o coverage_report.info -c --include "Tests/*"
+          ls ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir
+          lcov --base-directory . -t . -o coverage_report.info -c --include "Tests/*"
           genhtml -o coverage_report coverage_report.info
 
       - name: Upload tests artifacts
