@@ -23,24 +23,9 @@ elseif(DEBUG_BUILD)
     # adding additional flags for debug build
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
-
+    #include(coverage)
     add_subdirectory(Tests)
     enable_testing()
-
+    #add_coverage_target("Tests/*")//не получилось(((
     add_subdirectory(project)
 endif()
-
-
-#add_executable(${PROJECT_NAME} main.cpp)
-#if (DEBUG_BUILD)
-#    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov" )
-#endif ()
-#
-#
-#set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/CMake")
-#
-##include(coverage)
-#
-#enable_testing()
-##add_coverage_target("Tests/*")//не получилось(((
-#add_subdirectory(Tests)

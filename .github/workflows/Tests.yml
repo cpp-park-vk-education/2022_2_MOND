@@ -15,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: run_linters
-        working-directory: ${{github.workspace}}
         run: bash scripts/linters/linters.sh
 
   build-project:
@@ -62,30 +61,18 @@ jobs:
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
 
-  coverage:
-    needs: [ tests ]
+      - name: Coverage
+        run: |
+          cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+          cd ${{ github.workspace }}/build/
+          lcov -t . -o coverage_report.info -c -d .
+          genhtml -o coverage_report coverage_report.info
 
-    runs-on: ubuntu-latest
-    container: morapresence/mond_db_debug
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
+      - name: Upload tests artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: build-artifact
-          path: ${{ github.workflow }}/build
-
-      - name: Move to workspace
-        run: |
-          mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
-
-      - name: coverage
-        run: |
-          lcov -t /build/Tests/ -o ./coverage_report.info -c -d .
-          genhtml -o ./coverage_report ./coverage_report.info
+          name: tests-artifact
+          path: ${{ github.workflow }}/build/**/*
 
   valgrind:
     needs: [ build-project ]
