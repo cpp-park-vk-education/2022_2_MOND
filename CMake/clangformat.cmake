@@ -21,7 +21,7 @@ function(prefix_clangformat_setup prefix)
     add_custom_target(${prefix}_clangformat
             COMMAND
             ${CLANGFORMAT_EXECUTABLE}
-            -style=file
+            -style=.clang-format
             -i
             ${clangformat_sources}
             WORKING_DIRECTORY

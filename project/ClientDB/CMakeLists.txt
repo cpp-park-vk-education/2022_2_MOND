@@ -40,3 +40,10 @@ if (DEBUG_BUILD)
     enable_testing()
     add_test(NAME test_mul COMMAND A_mul_B)
 endif ()
+
+set(CMAKE_CXX_CLANG_TIDY
+        clang-tidy;
+        -header-filter=.;
+        -checks=*;
+        -warnings-as-errors=*;
+        -extra-arg=-std=c++17;)

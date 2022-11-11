@@ -21,3 +21,10 @@ target_include_directories(
 )
 enable_testing()
 add_test(NAME test_mul COMMAND A_mul_B)
+
+set(CMAKE_CXX_CLANG_TIDY
+        clang-tidy;
+        -header-filter=.;
+        -checks=*;
+        -warnings-as-errors=*;
+        -extra-arg=-std=c++17;)

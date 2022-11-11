@@ -40,3 +40,10 @@ elseif(DEBUG_BUILD)
     #add_coverage_target("Tests/*")//не получилось(((
     add_subdirectory(project)
 endif()
+
+set(CMAKE_CXX_CLANG_TIDY
+        clang-tidy;
+        -header-filter=.;
+        -checks=*;
+        -warnings-as-errors=*;
+        -extra-arg=-std=c++17;)

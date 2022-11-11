@@ -17,3 +17,10 @@ add_library(${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS})
 
 set(LIB_CONNECTOR_LIBRARIES ${PROJECT_NAME} PARENT_SCOPE)
 set(LIB_CONNECTOR_INCLUDE_DIRS ${INCLUDE_DIRS} PARENT_SCOPE)
+
+set(CMAKE_CXX_CLANG_TIDY
+        clang-tidy;
+        -header-filter=.;
+        -checks=*;
+        -warnings-as-errors=*;
+        -extra-arg=-std=c++17;)

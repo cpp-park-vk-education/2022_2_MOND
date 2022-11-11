@@ -10,3 +10,10 @@ if(CLIENTDB_BUILD)
     message("BUILDING CLIENT...")
     add_subdirectory(ClientDB)
 endif()
+
+set(CMAKE_CXX_CLANG_TIDY
+        clang-tidy;
+        -header-filter=.;
+        -checks=*;
+        -warnings-as-errors=*;
+        -extra-arg=-std=c++17;)
