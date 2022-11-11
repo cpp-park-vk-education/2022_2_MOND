@@ -173,6 +173,8 @@ jobs:
       - name: valgrind
         run: |
           chmod 777 ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+          chmod 777 ${{github.workspace}}/build/project/ServerDB/Tests/MOND_DB_SERVER_TESTS
+          chmod 777 ${{github.workspace}}/build/project/ClientDB/Tests/MOND_DB_CLIENT_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/project/ServerDB/Tests/MOND_DB_SERVER_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/project/ClientDB/Tests/MOND_DB_CLIENT_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
