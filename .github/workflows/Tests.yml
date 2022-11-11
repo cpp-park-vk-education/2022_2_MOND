@@ -25,16 +25,16 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configure CMake
-        run: cmake -B ${{ github.workspace }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run: cmake --build ${{ github.workspace }}/build
+        run: cmake --build ${{ github.workflow }}/build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workspace }}/build/**/*
+          path: ${{ github.workflow }}/build/**/*
 
   tests:
     needs: [ build-project ]
@@ -48,12 +48,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workspace }}/build
+          path: ${{ github.workflow }}/build
 
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workspace }}/build/* ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: Test
         run: |
@@ -66,7 +66,7 @@ jobs:
           cd ${{ github.workspace }}/build/Tests/
           chmod 777 MOND_DB_TESTS
           ./MOND_DB_TESTS
-          ls -la ${{ github.workspace }}
+          echo ${{ github.workflow }}
           cd ${{ github.workspace }}/build/Tests/CMakeFiles/MOND_DB_TESTS.dir
           gcov tests.cpp.o
           lcov -t . -o coverage_report.info -c -d .
@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: tests-artifact
-          path: ${{ github.workspace }}/build/**/*
+          path: ${{ github.workflow }}/build/**/*
 
   valgrind:
     needs: [ build-project ]
@@ -91,12 +91,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifact
-          path: ${{ github.workspace }}/build
+          path: ${{ github.workflow }}/build
 
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workspace }}/build/* ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
       - name: valgrind
         run: |
