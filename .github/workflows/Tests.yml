@@ -18,6 +18,8 @@ jobs:
         run: bash scripts/linters/linters.sh --cpplint ./Tests/*.cpp
 
   build-project:
+    needs: [ linters ]
+
     runs-on: ubuntu-latest
     container: morapresence/mond_db_debug
 
