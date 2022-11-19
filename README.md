@@ -1,5 +1,5 @@
 # 2022_2_MOND
-
+[![CMake](https://github.com/cpp-park-vk-education/2022_2_MOND/actions/workflows/Tests.yml/badge.svg)](https://github.com/cpp-park-vk-education/2022_2_MOND/actions/workflows/Tests.yml)
 MOND_DB - in-memory key-value database
 
 <div class="app">
