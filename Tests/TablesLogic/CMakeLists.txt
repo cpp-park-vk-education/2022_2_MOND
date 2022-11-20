@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(MOND_DB_TESTS CXX)
+project(CORE_DB_TESTS CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -29,4 +29,5 @@ set(CMAKE_CXX_CLANG_TIDY
         -warnings-as-errors=*;
         -extra-arg=-std=c++17;)
 
-add_subdirectory(TablesLogic)
+enable_testing()
+add_test(NAME HASHTABLE_tests COMMAND HASHTABLE_tests)
