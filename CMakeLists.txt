@@ -23,6 +23,12 @@ set(CMAKE_CXX_CLANG_TIDY
         -warnings-as-errors=*;
         -extra-arg=-std=c++17;)
 
+add_subdirectory(InternalEntities)
+
 add_subdirectory(DBCore)
 
+add_subdirectory(Serializer)
+
 add_subdirectory(Tests/TablesLogic)
+
+add_subdirectory(Tests/Serializer)
