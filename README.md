@@ -43,5 +43,13 @@
         <li class="list__item item">Реализован набор тестов, покрывающий требования к будущему продукту и к интерфейсам - как к внешним по отношению к пользователю, так и между компонентами в рамках разрабатываемой библиотеки.</li>
     </ul>
 </section>
+# Компонент DBCore
+![ConnectionHandler](https://user-images.githubusercontent.com/54858588/203075827-02303e5d-a798-46b9-a21f-eaf7d09a2fee.png)
 
+# Компонент Serializer
+![Serializer](https://user-images.githubusercontent.com/54858588/203076062-337a0efc-97bb-4594-87c5-f8f6a68393b8.png)
+
+
+# Компонент ConnectionHandler
+![ConnectionHandler](https://user-images.githubusercontent.com/54858588/203076119-063a6446-c6cd-4868-9501-4813aa268ed2.png)
 
