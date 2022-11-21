@@ -12,7 +12,15 @@ option(CLIENTDB_BUILD "Client build" ON)
 include(CMake/clangformat.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wconversion")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wunreachable-code -pedantic -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunreachable-code -pedantic -pthread")
+
+
+add_subdirectory(InternalEntities)
+add_subdirectory(BoostIFace)
+add_subdirectory(ConnectionWorker)
+add_subdirectory(ConnectionHander)
+add_subdirectory(Tests/ConnectionWorkerTests)
+
 
 if (RELEASE_BUILD)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")

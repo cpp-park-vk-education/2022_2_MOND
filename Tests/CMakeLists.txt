@@ -10,7 +10,8 @@ clangformat_setup(
 )
 
 add_executable(${PROJECT_NAME} tests.cpp)
-target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
+target_link_libraries(${PROJECT_NAME} GTest::gtest_main ${BOOST_IFACE_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${BOOST_IFACE_INCLUDE_DIRS})
 
 set(CMAKE_CXX_CLANG_TIDY
         clang-tidy;
