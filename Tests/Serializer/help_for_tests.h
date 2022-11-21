@@ -5,4 +5,3 @@
 #include "ISerializer.h"
 
 #include <gtest/gtest.h>
-

@@ -22,12 +22,5 @@ target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
 target_include_directories(${PROJECT_NAME} PUBLIC ${DBCORE_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${DBCORE_LIBRARIES})
 
-set(CMAKE_CXX_CLANG_TIDY
-        clang-tidy;
-        -header-filter=.;
-        -checks=*;
-        -warnings-as-errors=*;
-        -extra-arg=-std=c++17;)
-
 enable_testing()
 add_test(NAME HASHTABLE_tests COMMAND HASHTABLE_tests)

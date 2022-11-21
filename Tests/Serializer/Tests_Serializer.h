@@ -25,6 +25,7 @@ protected:
     uint8_t *value;
     Request request;
     ISerializer *serializer;
+
 };
 
 TEST_F(Serializer_Tests, Marshal_Success) {
@@ -38,11 +39,11 @@ TEST_F(Serializer_Tests, Marshal_Failure) {
 }
 
 TEST_F(Serializer_Tests, Unmarshal_Success) {
-    serializer->Unmarshal(value);
-    EXPECT_TRUE(true);
+    auto req = serializer->Unmarshal(value);
+    EXPECT_EQ(req.value, value);
 }
 
 TEST_F(Serializer_Tests, Unmarshal_Failure) {
-    serializer->Unmarshal(value);
-    EXPECT_TRUE(true);
+    auto req = serializer->Unmarshal(value);
+    EXPECT_EQ(req.value, value);
 }
