@@ -45,7 +45,8 @@
 </section>
 
 # Компонент DBCore
-![ConnectionHandler](https://user-images.githubusercontent.com/54858588/203075827-02303e5d-a798-46b9-a21f-eaf7d09a2fee.png)
+![DBCore](https://user-images.githubusercontent.com/54858588/203076304-5e021063-0838-4f89-b40b-eda7a1e72eb4.png)
+
 
 # Компонент Serializer
 ![Serializer](https://user-images.githubusercontent.com/54858588/203076062-337a0efc-97bb-4594-87c5-f8f6a68393b8.png)
