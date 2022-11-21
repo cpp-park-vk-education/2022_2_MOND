@@ -39,3 +39,14 @@ MOND_DB - in-memory key-value database
         <li class="list__item item">Настроен собственный CI</li>
     </ul>
 </section>
+
+<div class="app">
+    <h1 class="app__name">UML - диаграмма компонента ConnectionWorker</h1>
+    ![ConnectionWorker](https://user-images.githubusercontent.com/54839638/203078586-1ecd1926-a82e-441a-a32b-f9e22b6ee41e.png)
+</div>
+
+<div class="app">
+    <h1 class="app__name">UML - диаграмма компонента Initializer</h1>
+    ![Initializer](https://user-images.githubusercontent.com/54839638/203078965-8189ec2e-d3c5-4bd6-a86d-f01d60f569c2.png)
+</div>
+
