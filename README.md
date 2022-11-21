@@ -20,7 +20,7 @@ MOND_DB - in-memory key-value database
 
 <section class="results">
     <h2 class="results__header">Итого</h2>
-    <p class="results__description">При выполнения DZ№1 были выполнены следующие задачи</p>
+    <p class="results__description">При выполнения DZ были выполнены следующие задачи</p>
     <ul class="results__list list">
         <li class="list__item item">
         <a href="https://docs.google.com/document/d/1RvbiWdBpI0jNViS_Hw-taQofH6p0EgdFMJ7AQlFA_RA/edit?usp=sharing" class="item__title" target="Official documentation">Подготовлена документация к проекту:</a>
