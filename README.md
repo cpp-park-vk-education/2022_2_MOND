@@ -30,6 +30,10 @@ MOND_DB - in-memory key-value database
         <a href="https://drive.google.com/file/d/19N2j03h68hMEgx0oiqq4SI08X5r4qp0T/view?usp=sharing" class="item__title" target="Official documentation">Подготовлена UML-диаграмма к проекту:</a>
         <p class="item__description">Выполнена диаграмма классов для компонентов будущего проекта</p>
         </li>
+        <li class="list__item item">
+        <a href="https://app.diagrams.net/?libs=general;uml#G1QQFzOHb03kM8O1LgjOGCnMQ_srTo4axX" class="item__title" target="Official documentation">Подготовлена UML-диаграмма к индивидульным компонентам проекта</a>
+        <p class="item__description">Выполнена диаграмма классов для индивидуальных компонентов</p>
+        </li>
         <li class="list__item item">Настроена автоматическая сборка</li>
         <li class="list__item item">Настроен инструментарий для статического анализа, линтеров, unit-тестов и др. проверок и внедрение в рабочий процесс для будущего проекта</li>
         <li class="list__item item">Настроен собственный CI</li>
