@@ -16,15 +16,8 @@ option(CLIENTDB_BUILD "Client build" ON)
 
 include(CMake/clangformat.cmake)
 
-set(CMAKE_CXX_CLANG_TIDY
-        clang-tidy;
-        -header-filter=.;
-        -checks=*;
-        -warnings-as-errors=*;
-        -extra-arg=-std=c++17;)
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wconversion")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wunreachable-code -pedantic -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunreachable-code -pedantic -pthread")
 
 if (RELEASE_BUILD)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
