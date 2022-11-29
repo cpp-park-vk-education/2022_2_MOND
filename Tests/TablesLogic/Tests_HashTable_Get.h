@@ -46,7 +46,6 @@ TEST_F(DB_GET_TESTS, Get_one_node) {
     EXPECT_TRUE(!memcmp(quadratic->Get(key01, 2), value, 10));
 }
 
-
 TEST_F(DB_GET_TESTS, Get_all_nodes) {
     auto key01 = new uint8_t[]{0x00, 0x01};
     auto key02 = new uint8_t[]{0x00, 0x02};
