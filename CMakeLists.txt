@@ -16,12 +16,12 @@ include(CMake/clangformat.cmake)
 # cd build
 # make clangformat
 
-set(CMAKE_CXX_CLANG_TIDY
-        clang-tidy;
-        -header-filter=.;
-        -checks=*;
-        -warnings-as-errors=*;
-        -extra-arg=-std=c++17;)
+#set(CMAKE_CXX_CLANG_TIDY
+#        clang-tidy;
+#        -header-filter=.;
+#        -checks=*;
+#        -warnings-as-errors=*;
+#        -extra-arg=-std=c++17;)
 
 add_subdirectory(InternalEntities)
 

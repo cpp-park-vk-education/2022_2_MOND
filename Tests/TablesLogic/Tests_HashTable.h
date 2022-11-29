@@ -1,7 +1,7 @@
 // Copyright 2022 mora
 
 #include "help_for_tests.h"
-#include "ITableStorage.h"
+//#include "ITableStorage.h"
 #include "TableStorage.h"
 #include "IHashTable.h"
 #include "QuadraticProbingTable.h"

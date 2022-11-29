@@ -9,9 +9,9 @@
 
 class IHashTable {
 public:
-    virtual bool Insert(const uint8_t *key,
+    virtual bool Insert(uint8_t *key,
                         const size_t &key_len,
-                        const uint8_t *value,
+                        uint8_t *value,
                         const size_t &value_len) = 0;
 
     virtual bool Remove(const uint8_t *key,
@@ -27,10 +27,13 @@ public:
     virtual uint8_t *Get(const uint8_t *key,
                          const size_t &key_len) const = 0;
 
-    virtual bool Update(const uint8_t *key,
+    virtual bool Update(uint8_t *key,
                         const size_t &key_len,
-                        const uint8_t *value,
+                        uint8_t *value,
                         const size_t &value_len) = 0;
 
     virtual ~IHashTable() = default;
+
+private:
+    virtual void grow() = 0;
 };
