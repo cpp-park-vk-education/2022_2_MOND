@@ -23,5 +23,4 @@ private:
     IHashTable *_tableStorage = nullptr;
 };
 
-
 #endif // DBCORE_TABLESTORAGE_H

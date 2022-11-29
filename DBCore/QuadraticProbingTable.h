@@ -6,9 +6,9 @@
 
 #include <cstring>
 #include <fstream>
+#include <functional>
 #include <utility>
 #include <vector>
-#include <functional>
 
 enum class nodeStatus {
     FREE = 0,
@@ -137,9 +137,6 @@ QuadraticProbingTable::HashNode::operator=(QuadraticProbingTable::HashNode &&oth
 }
 
 QuadraticProbingTable::HashNode::~HashNode() {
-    if (key) {
-        std::cout << unsigned(key[0]) << unsigned(key[1]) << " | ";
-    }
     delete[] key;
     delete[] value;
 }
@@ -277,7 +274,6 @@ bool QuadraticProbingTable::Find(
 }
 
 bool QuadraticProbingTable::Clear() {
-    HashNode* a = &_cells[0];
     _cells.clear();
     _size = 0;
     _cells.resize(MINIMAL_SIZE);
