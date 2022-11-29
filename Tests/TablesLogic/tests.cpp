@@ -1,14 +1,13 @@
 // Copyright 2022 MOND
 
-//#include "Tests_HashTable.h"
 //#include "Tests_TableStorage.h"
-#include "Tests_DB_Clear.h"
-#include "Tests_DB_Find.h"
-#include "Tests_DB_Get.h"
-#include "Tests_DB_Insert.h"
-#include "Tests_DB_Remove.h"
-#include "Tests_DB_Size.h"
-#include "Tests_DB_Update.h"
+#include "Tests_HashTable_Clear.h"
+#include "Tests_HashTable_Find.h"
+#include "Tests_HashTable_Get.h"
+#include "Tests_HashTable_Insert.h"
+#include "Tests_HashTable_Remove.h"
+#include "Tests_HashTable_Size.h"
+#include "Tests_HashTable_Update.h"
 
 #include <gtest/gtest.h>
 

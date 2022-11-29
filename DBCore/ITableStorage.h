@@ -6,10 +6,11 @@
 #include "IHashTable.h"
 
 #include <iostream>
+#include <functional>
 
 class ITableStorage {
 public:
-    virtual bool CreateTable(const std::string&, const size_t (*h)(size_t)) = 0;
+    virtual bool CreateTable(const std::string&, std::function<size_t(const uint8_t *, const size_t &)> hash) = 0;
 
     virtual bool CreateTable(const std::string&) = 0;
 

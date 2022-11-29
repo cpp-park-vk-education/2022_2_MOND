@@ -4,8 +4,6 @@
 
 #include "IHashTable.h"
 
-#include <iostream>
-#include <string>
 #include <cstring>
 #include <fstream>
 #include <utility>
@@ -146,8 +144,8 @@ QuadraticProbingTable::HashNode::operator=(QuadraticProbingTable::HashNode &&oth
 }
 
 QuadraticProbingTable::HashNode::~HashNode() {
-//    delete[] key;
-//    delete[] value;
+    delete[] key;
+    delete[] value;
 }
 
 QuadraticProbingTable::HashNode::HashNode(
