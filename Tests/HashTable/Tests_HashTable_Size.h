@@ -2,10 +2,10 @@
 
 #include "help_for_tests.h"
 
-class DB_CLEAR_TESTS : public testing::Test {
+class DB_SIZE_TESTS : public testing::Test {
 protected:
     void SetUp() override {
-        quadratic = new QuadraticProbingTable(hash);
+        quadratic = new QuadraticProbingTable(defaultHash);
     }
 
     void TearDown() override{
@@ -16,20 +16,16 @@ protected:
     IHashTable *quadratic = nullptr;
 };
 
-TEST_F(DB_CLEAR_TESTS, Clear_one_node) {
+TEST_F(DB_SIZE_TESTS, Size_one_node) {
     auto key01 = new uint8_t[]{0x00,0x01};
     auto value = new uint8_t[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09};
 
     quadratic->Insert(key01, 2, value, 10);
 
     EXPECT_EQ(quadratic->GetSize(), 1);
-
-    quadratic->Clear();
-
-    EXPECT_EQ(quadratic->GetSize(), 0);
 }
 
-TEST_F(DB_CLEAR_TESTS, Clear_before_grow_nodes) {
+TEST_F(DB_SIZE_TESTS, Size_before_grow_nodes) {
     auto key01 = new uint8_t[]{0x00,0x01};
     auto key02 = new uint8_t[]{0x00,0x02};
     auto key03 = new uint8_t[]{0x00,0x03};
@@ -47,13 +43,9 @@ TEST_F(DB_CLEAR_TESTS, Clear_before_grow_nodes) {
     quadratic->Insert(key06, 2, value, 10);
 
     EXPECT_EQ(quadratic->GetSize(), 6);
-
-    quadratic->Clear();
-
-    EXPECT_EQ(quadratic->GetSize(), 0);
 }
 
-TEST_F(DB_CLEAR_TESTS, Clear_after_grow_nodes) {
+TEST_F(DB_SIZE_TESTS, Size_after_grow_nodes) {
     auto key01 = new uint8_t[]{0x00,0x01};
     auto key02 = new uint8_t[]{0x00,0x02};
     auto key03 = new uint8_t[]{0x00,0x03};
@@ -79,13 +71,9 @@ TEST_F(DB_CLEAR_TESTS, Clear_after_grow_nodes) {
     quadratic->Insert(key10, 2, value, 10);
 
     EXPECT_EQ(quadratic->GetSize(), 10);
-
-    quadratic->Clear();
-
-    EXPECT_EQ(quadratic->GetSize(), 0);
 }
 
-TEST_F(DB_CLEAR_TESTS, Clear_same_nodes) {
+TEST_F(DB_SIZE_TESTS, Size_same_nodes) {
     auto key01 = new uint8_t[]{0x00,0x01};
     auto value = new uint8_t[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09};
 
@@ -93,8 +81,4 @@ TEST_F(DB_CLEAR_TESTS, Clear_same_nodes) {
     quadratic->Insert(key01, 2, value, 10);
 
     EXPECT_EQ(quadratic->GetSize(), 1);
-
-    quadratic->Clear();
-
-    EXPECT_EQ(quadratic->GetSize(), 0);
 }

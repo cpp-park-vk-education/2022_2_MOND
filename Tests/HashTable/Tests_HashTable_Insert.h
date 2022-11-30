@@ -5,7 +5,7 @@
 class DB_INSERT_TESTS : public testing::Test {
 protected:
     void SetUp() override {
-        quadratic = new QuadraticProbingTable(hash);
+        quadratic = new QuadraticProbingTable(defaultHash);
     }
 
     void TearDown() override{

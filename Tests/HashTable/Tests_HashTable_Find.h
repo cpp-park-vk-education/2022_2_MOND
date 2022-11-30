@@ -5,7 +5,7 @@
 class DB_FIND_TESTS : public testing::Test {
 protected:
     void SetUp() override {
-        quadratic = new QuadraticProbingTable(hash);
+        quadratic = new QuadraticProbingTable(defaultHash);
 
         auto key01 = new uint8_t[]{0x00, 0x01};
         auto key02 = new uint8_t[]{0x00, 0x02};

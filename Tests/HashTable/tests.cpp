@@ -1,6 +1,5 @@
 // Copyright 2022 MOND
 
-//#include "Tests_TableStorage.h"
 #include "Tests_HashTable_Clear.h"
 #include "Tests_HashTable_Find.h"
 #include "Tests_HashTable_Get.h"
