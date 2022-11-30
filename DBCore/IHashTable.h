@@ -9,22 +9,15 @@
 
 class IHashTable {
 public:
-    virtual bool Insert(uint8_t *key,
-                        const size_t &key_len,
-                        uint8_t *value,
-                        const size_t &value_len) = 0;
-    virtual bool Remove(const uint8_t *key,
-                        const size_t &key_len) = 0;
-    virtual bool Find(const uint8_t *key,
-                      const size_t &key_len) const = 0;
-    virtual bool Clear() = 0;
+    [[nodiscard]] virtual bool Insert(const std::vector<uint8_t> &key,
+                                      const std::vector<uint8_t> &value) = 0;
+    [[nodiscard]] virtual bool Remove(const std::vector<uint8_t> &key) = 0;
+    [[nodiscard]] virtual bool Find(const std::vector<uint8_t> &key) const = 0;
+    [[nodiscard]] virtual bool Clear() = 0;
     [[nodiscard]] virtual size_t GetSize() const = 0;
-    virtual uint8_t *Get(const uint8_t *key,
-                         const size_t &key_len) const = 0;
-    virtual bool Update(uint8_t *key,
-                        const size_t &key_len,
-                        uint8_t *value,
-                        const size_t &value_len) = 0;
+    [[nodiscard]] virtual std::vector<uint8_t> Get(const std::vector<uint8_t> &key) const = 0;
+    [[nodiscard]] virtual bool Update(const std::vector<uint8_t> &key,
+                                      const std::vector<uint8_t> &value) = 0;
     virtual ~IHashTable() = default;
 
 private:

@@ -2,190 +2,141 @@
 
 #pragma once
 
-#include "IHashTable.h"
-
 #include <cstring>
 #include <fstream>
 #include <functional>
 #include <utility>
 #include <vector>
 
-enum class nodeStatus {
-    FREE = 0,
-    BUSY = 1,
-    REMOVED = 2
-};
+#include "IHashTable.h"
+
+enum class nodeStatus { FREE = 0, BUSY = 1, REMOVED = 2 };
 
 class QuadraticProbingTable : public IHashTable {
-private:
+   private:
     const static size_t MINIMAL_SIZE = 8;
     constexpr const static double REHASH_INDEX = 0.75;
 
     struct HashNode {
-        size_t key_len = 0;
-        size_t value_len = 0;
         nodeStatus state = nodeStatus::FREE;
-        uint8_t *key = nullptr;
-        uint8_t *value = nullptr;
+        std::vector<uint8_t> key;
+        std::vector<uint8_t> value;
 
         HashNode() = default;
-        HashNode(
-                const size_t &key_len,
-                const size_t &value_len,
-                const nodeStatus &status,
-                uint8_t *key,
-                uint8_t *value);
-        HashNode(const HashNode &other);
-        HashNode(HashNode &&other) noexcept;
-        HashNode &operator=(const HashNode &);
-        HashNode &operator=(HashNode &&) noexcept;
+        HashNode(const nodeStatus& status, const std::vector<uint8_t>& key,
+                 const std::vector<uint8_t>& value);
+        HashNode(const HashNode& other);
+        HashNode(HashNode&& other) noexcept;
+        HashNode& operator=(const HashNode&);
+        HashNode& operator=(HashNode&&) noexcept;
 
         ~HashNode();
     };
 
     size_t _size;
     std::vector<HashNode> _cells;
-    const std::function<size_t(const uint8_t *, const size_t &)> _hash;
+    const std::function<size_t(const std::vector<uint8_t>&)> _hash;
 
-public:
-    explicit QuadraticProbingTable(std::function<size_t(const uint8_t *, const size_t &)> hash);
-    QuadraticProbingTable(const uint32_t &tableSize, std::function<size_t(const uint8_t *, const size_t &)> hash);
-    QuadraticProbingTable(const QuadraticProbingTable &table);
+   public:
+    explicit QuadraticProbingTable(
+        const std::function<size_t(const std::vector<uint8_t>&)>& hash);
+    QuadraticProbingTable(
+        const size_t& tableSize,
+        const std::function<size_t(const std::vector<uint8_t>&)>& hash);
+    QuadraticProbingTable(const QuadraticProbingTable& table);
     ~QuadraticProbingTable() override;
 
-    bool Insert(uint8_t *key,
-                const size_t &key_len,
-                uint8_t *value,
-                const size_t &value_len) override;
-    bool Remove(const uint8_t *key,
-                const size_t &key_len) override;
-    bool Find(const uint8_t *key,
-              const size_t &key_len) const override;
+    bool Insert(const std::vector<uint8_t>& key,
+                const std::vector<uint8_t>& value) override;
+    bool Remove(const std::vector<uint8_t>& key) override;
+    bool Find(const std::vector<uint8_t>& key) const override;
     bool Clear() override;
     [[nodiscard]] size_t GetSize() const override;
-    uint8_t *Get(const uint8_t *key,
-                 const size_t &key_len) const override;
-    bool Update(uint8_t *key,
-                const size_t &key_len,
-                uint8_t *value,
-                const size_t &value_len) override;
+    [[nodiscard]] std::vector<uint8_t> Get(
+        const std::vector<uint8_t>& key) const override;
+    bool Update(const std::vector<uint8_t>& key,
+                const std::vector<uint8_t>& value) override;
 
-private:
+   private:
     void grow() override;
 };
 
-QuadraticProbingTable::HashNode::HashNode(const QuadraticProbingTable::HashNode &other)
-        : key_len(other.key_len),
-          value_len(other.value_len),
-          state(other.state) {
-    key = new uint8_t[key_len];
-    value = new uint8_t[value_len];
+QuadraticProbingTable::HashNode::HashNode(
+    const QuadraticProbingTable::HashNode& other)
+    : state(other.state), key(other.key), value(other.value) {}
 
-    memcpy(key, other.key, key_len);
-    memcpy(value, other.value, value_len);
-}
+QuadraticProbingTable::HashNode::HashNode(
+    QuadraticProbingTable::HashNode&& other) noexcept
+    : state(other.state),
+      key(std::move(other.key)),
+      value(std::move(other.value)) {}
 
-QuadraticProbingTable::HashNode::HashNode(QuadraticProbingTable::HashNode &&other) noexcept
-        : key_len(other.key_len),
-          value_len(other.value_len),
-          state(other.state){
-    key = other.key;
-    value = other.value;
-
-    other.key = nullptr;
-    other.value = nullptr;
-}
-
-QuadraticProbingTable::HashNode &QuadraticProbingTable::HashNode
-::operator=(const QuadraticProbingTable::HashNode &other) {
+QuadraticProbingTable::HashNode& QuadraticProbingTable::HashNode ::operator=(
+    const QuadraticProbingTable::HashNode& other) {
     if (&other != this) {
-        delete[] key;
-        delete[] value;
+        key.clear();
+        value.clear();
 
-        key_len = other.key_len;
-        value_len = other.value_len;
         state = other.state;
 
-        key = new uint8_t[key_len];
-        value = new uint8_t[value_len];
-
-        memcpy(key, other.key, key_len);
-        memcpy(value, other.value, value_len);
+        key = other.key;
+        value = other.value;
     }
     return *this;
 }
 
-QuadraticProbingTable::HashNode &
-QuadraticProbingTable::HashNode::operator=(QuadraticProbingTable::HashNode &&other) noexcept {
-    delete key;
-    delete value;
+QuadraticProbingTable::HashNode& QuadraticProbingTable::HashNode::operator=(
+    QuadraticProbingTable::HashNode&& other) noexcept {
+    key.clear();
+    value.clear();
 
-    key_len = other.key_len;
-    value_len = other.value_len;
     state = other.state;
 
-    key = new uint8_t[key_len];
-    value = new uint8_t[value_len];
-
-    memcpy(key, other.key, key_len);
-    memcpy(value, other.value, value_len);
-
-    other.key = nullptr;
-    other.value = nullptr;
+    key = std::move(other.key);
+    value = std::move(other.value);
 
     return *this;
 }
 
 QuadraticProbingTable::HashNode::~HashNode() {
-    delete[] key;
-    delete[] value;
+    key.clear();
+    value.clear();
 }
 
-QuadraticProbingTable::HashNode::HashNode(
-        const size_t &key_len,
-        const size_t &value_len,
-        const nodeStatus &status,
-        uint8_t *key,
-        uint8_t *value)
-        : key_len(key_len),
-          value_len(value_len),
-          state(status),
-          key(key),
-          value(value) {
-}
+QuadraticProbingTable::HashNode::HashNode(const nodeStatus& status,
+                                          const std::vector<uint8_t>& key,
+                                          const std::vector<uint8_t>& value)
+    : state(status), key(key), value(value) {}
 
-QuadraticProbingTable::QuadraticProbingTable(std::function<size_t(const uint8_t *, const size_t &)> hash)
-: _size(0), _hash(std::move(hash)) {
+QuadraticProbingTable::QuadraticProbingTable(
+    const std::function<size_t(const std::vector<uint8_t>&)>& hash)
+    : _size(0), _hash(std::move(hash)) {
     _cells.resize(MINIMAL_SIZE);
 }
 
 QuadraticProbingTable::QuadraticProbingTable(
-        const uint32_t &tableSize,
-        std::function<size_t(const uint8_t *, const size_t &)> hash)
-        : _size(0), _hash(std::move(hash)) {
-    if (tableSize < MINIMAL_SIZE){
+    const size_t& tableSize,
+    const std::function<size_t(const std::vector<uint8_t>&)>& hash)
+    : _size(0), _hash(std::move(hash)) {
+    if (tableSize < MINIMAL_SIZE) {
         _cells.resize(MINIMAL_SIZE);
-    }else{
+    } else {
         _cells.resize(tableSize);
     }
 }
 
-QuadraticProbingTable::QuadraticProbingTable(const QuadraticProbingTable &table)
-: _size(table._size), _hash(table._hash) {
+QuadraticProbingTable::QuadraticProbingTable(const QuadraticProbingTable& table)
+    : _size(table._size), _hash(table._hash) {
     _cells.resize(table._size);
     std::copy(table._cells.begin(), table._cells.end(), _cells.begin());
 }
 
-bool QuadraticProbingTable::Insert(
-        uint8_t *key,
-        const size_t &key_len,
-        uint8_t *value,
-        const size_t &value_len) {
-
+bool QuadraticProbingTable::Insert(const std::vector<uint8_t>& key,
+                                   const std::vector<uint8_t>& value) {
     size_t sequenceLength = 0;
-    auto hash = _hash(key, key_len);
+    auto hash = _hash(key);
 
-    if (((double) _size / (double) _cells.capacity()) >= REHASH_INDEX) {
+    if (((double)_size / (double)_cells.capacity()) >= REHASH_INDEX) {
         grow();
     }
 
@@ -195,19 +146,18 @@ bool QuadraticProbingTable::Insert(
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY
-            && _cells[index].key_len == key_len
-            && !memcmp(_cells[index].key, key, key_len)) {
+        if (_cells[index].state == nodeStatus::BUSY &&
+            _cells[index].key == key) {
             return false;
         }
 
-        if (_cells[index].state == nodeStatus::REMOVED
-            && first_deleted_index == UINT64_MAX) {
+        if (_cells[index].state == nodeStatus::REMOVED &&
+            first_deleted_index == UINT64_MAX) {
             first_deleted_index = index;
         }
 
         if (_cells[index].state == nodeStatus::FREE) {
-            _cells[index] = HashNode(key_len, value_len, nodeStatus::BUSY, key, value);
+            _cells[index] = HashNode(nodeStatus::BUSY, key, value);
             _size++;
             return true;
         }
@@ -215,7 +165,8 @@ bool QuadraticProbingTable::Insert(
     }
 
     if (first_deleted_index != UINT64_MAX) {
-        _cells[first_deleted_index] = HashNode(key_len, value_len, nodeStatus::BUSY, key, value);;
+        _cells[first_deleted_index] = HashNode(nodeStatus::BUSY, key, value);
+        ;
         _size++;
         return true;
     }
@@ -223,19 +174,16 @@ bool QuadraticProbingTable::Insert(
     return false;
 }
 
-bool QuadraticProbingTable::Remove(
-        const uint8_t *key,
-        const size_t &key_len) {
+bool QuadraticProbingTable::Remove(const std::vector<uint8_t>& key) {
     size_t sequenceLength = 0;
-    auto hash = _hash(key, key_len);
+    auto hash = _hash(key);
 
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY
-            && _cells[index].key_len == key_len
-            && !memcmp(_cells[index].key, key, key_len)) {
+        if (_cells[index].state == nodeStatus::BUSY &&
+            _cells[index].key == key) {
             _cells[index].state = nodeStatus::REMOVED;
             _size--;
             return true;
@@ -249,19 +197,16 @@ bool QuadraticProbingTable::Remove(
     return false;
 }
 
-bool QuadraticProbingTable::Find(
-        const uint8_t *key,
-        const size_t &key_len) const {
+bool QuadraticProbingTable::Find(const std::vector<uint8_t>& key) const {
     size_t sequenceLength = 0;
-    auto hash = _hash(key, key_len);
+    auto hash = _hash(key);
 
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY
-            && _cells[index].key_len == key_len
-            && !memcmp(_cells[index].key, key, key_len)) {
+        if (_cells[index].state == nodeStatus::BUSY &&
+            _cells[index].key == key) {
             return true;
         }
 
@@ -280,59 +225,45 @@ bool QuadraticProbingTable::Clear() {
     return true;
 }
 
-size_t QuadraticProbingTable::GetSize() const {
-    return _size;
-}
+size_t QuadraticProbingTable::GetSize() const { return _size; }
 
-uint8_t *QuadraticProbingTable::Get(
-        const uint8_t *key,
-        const size_t &key_len) const {
+std::vector<uint8_t> QuadraticProbingTable::Get(
+    const std::vector<uint8_t>& key) const {
     size_t sequenceLength = 0;
-    auto hash = _hash(key, key_len);
+    auto hash = _hash(key);
 
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY
-            && _cells[index].key_len == key_len
-            && !memcmp(_cells[index].key, key, key_len)) {
+        if (_cells[index].state == nodeStatus::BUSY &&
+            _cells[index].key == key) {
             return _cells[index].value;
         }
 
         if (_cells[index].state == nodeStatus::FREE) {
-            return nullptr;
+            return std::vector<uint8_t>();
         }
         sequenceLength++;
     }
-    return nullptr;
+    return std::vector<uint8_t>();
 }
 
-QuadraticProbingTable::~QuadraticProbingTable() {
-    _cells.clear();
-}
+QuadraticProbingTable::~QuadraticProbingTable() { _cells.clear(); }
 
-bool QuadraticProbingTable::Update(
-        uint8_t *key,
-        const size_t &key_len,
-        uint8_t *value,
-        const size_t &value_len) {
+bool QuadraticProbingTable::Update(const std::vector<uint8_t>& key,
+                                   const std::vector<uint8_t>& value) {
     size_t sequenceLength = 0;
-    auto hash = _hash(key, key_len);
+    auto hash = _hash(key);
 
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY
-            && _cells[index].key_len == key_len
-            && !memcmp(_cells[index].key, key, key_len)) {
-            if(_cells[index].value_len == value_len){
-                memcpy(_cells[index].value, value, value_len);
-                return true;
-            }else{
-                return false;
-            }
+        if (_cells[index].state == nodeStatus::BUSY &&
+            _cells[index].key == key) {
+            _cells[index].value = value;
+            return true;
         }
 
         if (_cells[index].state == nodeStatus::FREE) {
@@ -347,16 +278,16 @@ bool QuadraticProbingTable::Update(
 void QuadraticProbingTable::grow() {
     std::vector<HashNode> tmp;
     tmp.resize(_size);
-    std::copy_if(_cells.begin(), _cells.end(), tmp.begin(), [](const HashNode& x) -> bool {
-        return x.state == nodeStatus::BUSY;
-    });
+    std::copy_if(
+        _cells.begin(), _cells.end(), tmp.begin(),
+        [](const HashNode& x) -> bool { return x.state == nodeStatus::BUSY; });
 
     auto cap = _cells.capacity();
     _cells.clear();
     _size = 0;
     _cells.resize(cap * 2);
 
-    for (HashNode &it : tmp) {
-        Insert(it.key, it.key_len, it.value, it.value_len);
+    for (HashNode& it : tmp) {
+        Insert(it.key, it.value);
     }
 }

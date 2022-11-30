@@ -3,11 +3,12 @@
 #ifndef TMP_2022_2_MOND_DBCORE_HASHES_H
 #define TMP_2022_2_MOND_DBCORE_HASHES_H
 #include <iostream>
+#include <vector>
 
-size_t defaultHash(const uint8_t* key, const size_t &key_len){
+size_t defaultHash(const std::vector<uint8_t> &key){
     size_t hash = 0;
-    for (size_t i = 0; i < key_len; ++i) {
-        hash = (hash * 13 + key[i]);
+    for (auto &i : key) {
+        hash = (hash * 13 + i);
     }
     return hash;
 }
