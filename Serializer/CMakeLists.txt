@@ -5,6 +5,8 @@ if (DEBUG_BUILD)
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -ftest-coverage -O0")
 endif ()
 
+find_package(Boost COMPONENTS thread REQUIRED)
+
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(${PROJECT_NAME} INTERFACE)
@@ -14,3 +16,8 @@ set(SERIALIZER_INCLUDE_DIRS ${INCLUDE_DIRS} PARENT_SCOPE)
 
 target_include_directories(${PROJECT_NAME} INTERFACE  ${ENTITIES_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} INTERFACE  ${ENTITIES_LIBRARIES})
+
+target_include_directories(${PROJECT_NAME} INTERFACE ${Boost_INCLUDE_DIRS})
+
+target_link_libraries(${PROJECT_NAME} INTERFACE Boost::thread)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -lboost_thread")

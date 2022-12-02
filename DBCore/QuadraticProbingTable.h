@@ -110,14 +110,14 @@ QuadraticProbingTable::HashNode::HashNode(const nodeStatus& status,
 
 QuadraticProbingTable::QuadraticProbingTable(
     const std::function<size_t(const std::vector<uint8_t>&)>& hash)
-    : _size(0), _hash(std::move(hash)) {
+    : _size(0), _hash(hash) {
     _cells.resize(MINIMAL_SIZE);
 }
 
 QuadraticProbingTable::QuadraticProbingTable(
     const size_t& tableSize,
     const std::function<size_t(const std::vector<uint8_t>&)>& hash)
-    : _size(0), _hash(std::move(hash)) {
+    : _size(0), _hash(hash) {
     if (tableSize < MINIMAL_SIZE) {
         _cells.resize(MINIMAL_SIZE);
     } else {

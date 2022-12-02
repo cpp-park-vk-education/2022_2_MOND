@@ -2,8 +2,10 @@
 
 #pragma once
 
-#include <iostream>
 #include "InternalEntities.h"
+
+#include <boost/thread.h>
+#include <iostream>
 
 class ISerializer {
 public:
