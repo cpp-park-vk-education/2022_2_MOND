@@ -11,7 +11,7 @@ class ISerializer {
 public:
     virtual uint8_t * Marshal(Request) = 0;
 
-    virtual Request Unmarshal(uint8_t *) = 0;
+    virtual Request Unmarshal(const uint8_t *) = 0;
 
     virtual ~ISerializer() = default;
 };

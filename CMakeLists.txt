@@ -29,8 +29,12 @@ add_subdirectory(DBCore)
 
 add_subdirectory(Serializer)
 
+add_subdirectory(ConnectionHandler)
+
 add_subdirectory(Tests/HashTable)
 
 add_subdirectory(Tests/Serializer)
 
 add_subdirectory(Tests/TableStorage)
+
+add_subdirectory(Tests/ConnectionHandler)

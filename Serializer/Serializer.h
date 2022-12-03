@@ -13,7 +13,7 @@ public:
 
     uint8_t * Marshal(Request);
 
-    Request Unmarshal(uint8_t *);
+    Request Unmarshal(const uint8_t *);
 
     ~Serializer();
 };
