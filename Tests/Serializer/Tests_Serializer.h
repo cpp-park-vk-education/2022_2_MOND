@@ -1,49 +1,41 @@
 // Copyright 2022 mora
 
 #include "help_for_tests.h"
-#include "ISerializer.h"
-#include "Serializer.h"
 
-class Serializer_Tests : public testing::Test {
+
+class Request_Serializer : public testing::Test {
 protected:
     void SetUp() override {
-        key = new uint8_t[2];
-        value = new uint8_t[2];
-        serializer = new Serializer();
-
-        request = {
-                requestType::INSERT,
-                Status::OK,
-                2,
-                2,
-                key,
-                value
-        };
+        req = {requestType::INSERT, Status::NOTHING, key, value, table_name};
     }
 
-    uint8_t *key;
-    uint8_t *value;
-    Request request;
-    ISerializer *serializer;
-
+    Request req;
+    std::vector<uint8_t> key = {0x01, 0x02};
+    std::vector<uint8_t> value = {0x03, 0x04, 0x05};
+    std::string table_name = "Table01";
 };
 
-TEST_F(Serializer_Tests, Marshal_Success) {
-    serializer->Marshal(request);
-    EXPECT_TRUE(true);
+TEST_F(Request_Serializer, Marshal_Success) {
+    boost::asio::streambuf buf;
+    std::ostream oss(&buf);
+
+    req.save(oss);
+
+    EXPECT_EQ(buf.size(), sizeof(req) + 1);
 }
 
-TEST_F(Serializer_Tests, Marshal_Failure) {
-    serializer->Marshal(request);
-    EXPECT_TRUE(true);
-}
+TEST_F(Request_Serializer, Unmarshal_Success) {
+    boost::asio::streambuf buf;
+    std::ostream oss(&buf);
 
-TEST_F(Serializer_Tests, Unmarshal_Success) {
-    auto req = serializer->Unmarshal(value);
-    EXPECT_EQ(req.value, value);
-}
+    req.save(oss);
 
-TEST_F(Serializer_Tests, Unmarshal_Failure) {
-    auto req = serializer->Unmarshal(value);
-    EXPECT_EQ(req.value, value);
+    std::stringstream ss;
+    ss << oss.rdbuf();
+    std::string str_data = ss.str();
+
+    Request req_test;
+
+    req_test.load(str_data);
+    EXPECT_EQ(req, req_test);
 }

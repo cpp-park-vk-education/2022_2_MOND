@@ -49,7 +49,7 @@ class QuadraticProbingTable : public IHashTable {
     bool Insert(const std::vector<uint8_t>& key,
                 const std::vector<uint8_t>& value) override;
     bool Remove(const std::vector<uint8_t>& key) override;
-    bool Find(const std::vector<uint8_t>& key) const override;
+    [[nodiscard]] bool Find(const std::vector<uint8_t>& key) const override;
     bool Clear() override;
     [[nodiscard]] size_t GetSize() const override;
     [[nodiscard]] std::vector<uint8_t> Get(
@@ -242,11 +242,11 @@ std::vector<uint8_t> QuadraticProbingTable::Get(
         }
 
         if (_cells[index].state == nodeStatus::FREE) {
-            return std::vector<uint8_t>();
+            return {};
         }
         sequenceLength++;
     }
-    return std::vector<uint8_t>();
+    return {};
 }
 
 QuadraticProbingTable::~QuadraticProbingTable() { _cells.clear(); }

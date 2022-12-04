@@ -2,6 +2,7 @@
 
 #pragma once
 
-#include "ISerializer.h"
+#include "InternalEntities.h"
 
+#include <boost/asio.hpp>
 #include <gtest/gtest.h>
