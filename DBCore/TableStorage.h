@@ -10,14 +10,14 @@ class TableStorage : public ITableStorage {
     TableStorage();
 
     explicit TableStorage(const size_t& tableSize);
-    bool CreateTable(const std::vector<uint8_t>& value,
+    bool CreateTable(const std::string&,
                      const std::function<size_t(const std::vector<uint8_t>&)>&
-                         hash) override;
-    bool CreateTable(const std::vector<uint8_t>& value) override;
-    bool DeleteTable(const std::vector<uint8_t>&) override;
-    [[nodiscard]] std::vector<uint8_t> GetTable(const std::vector<uint8_t>&) const override;
+                     ) override;
+    bool CreateTable(const const std::string&) override;
+    bool DeleteTable(const const std::string&) override;
+    [[nodiscard]] IHashTable* GetTable(const const std::string&) const override;
     [[nodiscard]] size_t GetNumTables() const override;
-    [[nodiscard]] std::vector<std::vector<uint8_t>> ShowTables() const override;
+    [[nodiscard]] std::vector<std::string> ShowTables() const override;
     ~TableStorage() override;
 
    private:
@@ -33,11 +33,13 @@ TableStorage::TableStorage(const size_t& tableSize) {
 }
 
 bool TableStorage::CreateTable(
-    const std::vector<uint8_t>& tableName,
+    const std::string& tableName,
     const std::function<size_t(const std::vector<uint8_t>&)>& hash) {
     IHashTable* table = new QuadraticProbingTable(hash);
 
-    return _tableStorage->Insert(tableName, table);
+    std::vector<uint8_t> name(tableName.begin(), tableName.end());
+
+    return _tableStorage->Insert(name, table);
 }
 
 bool TableStorage::CreateTable(const std::vector<uint8_t>& tableName) {
