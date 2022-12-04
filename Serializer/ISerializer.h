@@ -4,7 +4,7 @@
 
 #include "InternalEntities.h"
 
-#include <boost/thread.h>
+//#include <boost/thread.h>
 #include <iostream>
 
 class ISerializer {

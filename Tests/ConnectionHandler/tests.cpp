@@ -10,5 +10,6 @@ TEST(Test, test_for_test) { EXPECT_TRUE(true); }
 
 int main() {
     ::testing::InitGoogleTest();
+    ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
 }

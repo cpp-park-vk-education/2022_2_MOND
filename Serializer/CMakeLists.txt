@@ -17,7 +17,7 @@ set(SERIALIZER_INCLUDE_DIRS ${INCLUDE_DIRS} PARENT_SCOPE)
 target_include_directories(${PROJECT_NAME} INTERFACE  ${ENTITIES_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} INTERFACE  ${ENTITIES_LIBRARIES})
 
-target_include_directories(${PROJECT_NAME} INTERFACE ${Boost_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC INTERFACE ${Boost_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME} INTERFACE Boost::thread)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -lboost_thread")

@@ -13,17 +13,20 @@
 
 class IWorker {
 public:
-    explicit IWorker(Request request, ITableStorage* storage): request(std::move(request)), storage(storage){}
+    explicit IWorker(Request request, ITableStorage* storage, IHashTable* table):
+    request(std::move(request)), storage(storage), table(table){}
     virtual Request operate() = 0;
 
     Request request;
     ITableStorage* storage;
+    IHashTable* table;
 };
 
 class InsertWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override {
-
+        table->Insert(std::vector<uint8_t>(), std::vector<uint8_t>());
+        return request;
     }
 };
 
@@ -126,12 +129,12 @@ public:
         factory.add<DeleteTableWorker>(requestType::DELETE_TABLE);
     }
 
-    IWorker* get(Request& request, ITableStorage* storage){
-        return factory.get(request.type)(request, storage);
+    IWorker* get(Request& request, ITableStorage* storage, IHashTable* table){
+        return factory.get(request.type)(request, storage, table);
     }
 
 private:
-    GenericObjectFactory<requestType, IWorker, Request, ITableStorage*> factory;
+    GenericObjectFactory<requestType, IWorker, Request, ITableStorage*, IHashTable*> factory;
 };
 
 #endif // IWORKER_H

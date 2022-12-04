@@ -1,5 +1,8 @@
 // Copyright 2022 mora
 
+#ifndef MOND_DB_INTERNAL_ENTITIES_H
+#define MOND_DB_INTERNAL_ENTITIES_H
+
 #include <iostream>
 
 enum class requestType{
@@ -34,3 +37,5 @@ struct Request{
     uint8_t *value;
     std::string table_name;
 };
+
+#endif // MOND_DB_INTERNAL_ENTITIES_H

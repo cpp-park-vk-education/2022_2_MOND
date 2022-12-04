@@ -12,31 +12,13 @@
 #include "Serializer.h"
 
 
-enum ConnectionStatus {
-    waiting,
-    onRead,
-    onWrite,
-    disconnected
-};
-
-struct Connection {
-    Connection(boost::asio::io_context* ioContext) : sock(*ioContext), status(ConnectionStatus::waiting) {}
-
-    boost::asio::ip::tcp::socket sock;
-    boost::asio::streambuf buff; // reads the answer from the client
-    std::atomic_int status;
-    IHashTable* table;
-};
-
-
 class ConnectionHandler : public IConnectionHandler {
 public:
+    explicit ConnectionHandler(ITableStorage* storage): storage(storage){}
 
-    std::mutex newConnectionsMutex;
-    std::vector<std::shared_ptr<Connection>> handledConnections;
-    std::queue<std::shared_ptr<Connection>> newConnections;
-
-    ConnectionHandler(ITableStorage* storage): storage(storage){}
+    ITableStorage* getStorage() override {
+        return storage;
+    }
 
     void listenConnections(boost::asio::io_context *ioContext) override {
         boost::asio::ip::tcp::acceptor acceptor(*ioContext,
@@ -60,6 +42,10 @@ public:
     }
 
 private:
+    std::mutex newConnectionsMutex;
+    std::vector<std::shared_ptr<Connection>> handledConnections;
+    std::queue<std::shared_ptr<Connection>> newConnections;
+    ITableStorage* storage;
 
     void onRead(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t read_bytes) {
 
@@ -76,8 +62,8 @@ private:
 //        std::cout << msg;
 
         ISerializer* serializer = new Serializer;
-        Request request = serializer->Unmarshal(msg.c_str()); //?
-        IWorker *worker = wFactory.get(request, storage);
+        Request request /*= serializer->Unmarshal(msg.c_str())*/; //?
+        IWorker *worker = wFactory.get(request, storage, connection->table);
         Request answer = worker->operate();
         delete worker;
 

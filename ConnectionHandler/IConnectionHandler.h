@@ -9,10 +9,25 @@
 #include "boost/asio.hpp"
 #include "InternalEntities.h"
 
+enum ConnectionStatus {
+    waiting,
+    onRead,
+    onWrite,
+    disconnected
+};
+
+struct Connection {
+    Connection(boost::asio::io_context* ioContext) : sock(*ioContext), status(ConnectionStatus::waiting) {}
+
+    boost::asio::ip::tcp::socket sock;
+    boost::asio::streambuf buff; // reads the answer from the client
+    std::atomic_int status;
+    IHashTable* table;
+};
+
 class IConnectionHandler {
 public:
-    ITableStorage* storage;
-
+    virtual ITableStorage* getStorage() = 0;
     virtual void listenConnections(boost::asio::io_context* ioContext) = 0;
     virtual void handleSessions() = 0;
 };
