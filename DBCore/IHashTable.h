@@ -7,17 +7,19 @@
 #include <iostream>
 #include <vector>
 
+template <typename Key, typename Value>
 class IHashTable {
 public:
-    [[nodiscard]] virtual bool Insert(const std::vector<uint8_t> &key,
-                                      const std::vector<uint8_t> &value) = 0;
-    [[nodiscard]] virtual bool Remove(const std::vector<uint8_t> &key) = 0;
-    [[nodiscard]] virtual bool Find(const std::vector<uint8_t> &key) const = 0;
+    [[nodiscard]] virtual bool Insert(const Key &key,
+                                      const Value &value) = 0;
+    [[nodiscard]] virtual bool Remove(const Key &key) = 0;
+    [[nodiscard]] virtual bool Find(const Key &key) const = 0;
     [[nodiscard]] virtual bool Clear() = 0;
     [[nodiscard]] virtual size_t GetSize() const = 0;
-    [[nodiscard]] virtual std::vector<uint8_t> Get(const std::vector<uint8_t> &key) const = 0;
-    [[nodiscard]] virtual bool Update(const std::vector<uint8_t> &key,
-                                      const std::vector<uint8_t> &value) = 0;
+    [[nodiscard]] virtual Value Get(const Key &key) const = 0;
+    [[nodiscard]] virtual bool Update(const Key &key,
+                                      const Value &value) = 0;
+    [[nodiscard]] virtual std::vector<Key> GetKeys() = 0;
     virtual ~IHashTable() = default;
 
 private:

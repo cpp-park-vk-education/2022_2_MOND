@@ -46,7 +46,7 @@ TEST_F(STORAGE_CREATE_TESTS, Create_before_grow_nodes_with_hash) {
     EXPECT_TRUE(ITS->CreateTable("Table06", defaultHash));
 }
 
-TEST_F(STORAGE_CREATE_TESTS, Insert_after_grow_nodes) {
+TEST_F(STORAGE_CREATE_TESTS, Create_after_grow_nodes) {
     EXPECT_TRUE(ITS->CreateTable("Table01"));
     EXPECT_TRUE(ITS->CreateTable("Table02"));
     EXPECT_TRUE(ITS->CreateTable("Table03"));
@@ -59,7 +59,7 @@ TEST_F(STORAGE_CREATE_TESTS, Insert_after_grow_nodes) {
     EXPECT_TRUE(ITS->CreateTable("Table10"));
 }
 
-TEST_F(STORAGE_CREATE_TESTS, Insert_after_grow_nodes_with_hash) {
+TEST_F(STORAGE_CREATE_TESTS, Create_after_grow_nodes_with_hash) {
     EXPECT_TRUE(ITS->CreateTable("Table01", defaultHash));
     EXPECT_TRUE(ITS->CreateTable("Table02", defaultHash));
     EXPECT_TRUE(ITS->CreateTable("Table03", defaultHash));
@@ -72,12 +72,12 @@ TEST_F(STORAGE_CREATE_TESTS, Insert_after_grow_nodes_with_hash) {
     EXPECT_TRUE(ITS->CreateTable("Table10", defaultHash));
 }
 
-TEST_F(STORAGE_CREATE_TESTS, Insert_same_nodes) {
+TEST_F(STORAGE_CREATE_TESTS, Create_same_nodes) {
     EXPECT_TRUE(ITS->CreateTable("Table01"));
     EXPECT_FALSE(ITS->CreateTable("Table01"));
 }
 
-TEST_F(STORAGE_CREATE_TESTS, Insert_same_nodes_with_hash) {
+TEST_F(STORAGE_CREATE_TESTS, Create_same_nodes_with_hash) {
     EXPECT_TRUE(ITS->CreateTable("Table01", defaultHash));
     EXPECT_FALSE(ITS->CreateTable("Table01", defaultHash));
 }

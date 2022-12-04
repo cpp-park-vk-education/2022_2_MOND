@@ -5,7 +5,9 @@
 class DB_SIZE_TESTS : public testing::Test {
 protected:
     void SetUp() override {
-        quadratic = new QuadraticProbingTable(defaultHash);
+        quadratic = new QuadraticProbingTable<std::vector<uint8_t>,
+                                                       std::vector<uint8_t>>(
+            defaultHash);
     }
 
     void TearDown() override{
@@ -14,7 +16,7 @@ protected:
 
     std::vector<uint8_t> value = {0x00, 0x01, 0x02, 0x03, 0x04,
                                   0x05, 0x06, 0x07, 0x08, 0x09};
-    IHashTable *quadratic = nullptr;
+    IHashTable<std::vector<uint8_t>, std::vector<uint8_t>> *quadratic = nullptr;
 };
 
 TEST_F(DB_SIZE_TESTS, Size_one_node) {

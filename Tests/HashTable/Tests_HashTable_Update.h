@@ -5,7 +5,9 @@
 class DB_CHANGE_VALUE_TESTS : public testing::Test {
    protected:
     void SetUp() override {
-        quadratic = new QuadraticProbingTable(defaultHash);
+        quadratic = new QuadraticProbingTable<std::vector<uint8_t>,
+                                                       std::vector<uint8_t>>(
+            defaultHash);
 
         quadratic->Insert({0x00, 0x01}, value);
         quadratic->Insert({0x00, 0x02}, value);
@@ -26,7 +28,7 @@ class DB_CHANGE_VALUE_TESTS : public testing::Test {
 
     std::vector<uint8_t> value_new = {0x12, 0x12, 0x12, 0x12, 0x12,
                                       0x12, 0x12, 0x12, 0x12, 0x12};
-    IHashTable* quadratic = nullptr;
+    IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* quadratic = nullptr;
 };
 
 TEST_F(DB_CHANGE_VALUE_TESTS, Change_value_one_node) {

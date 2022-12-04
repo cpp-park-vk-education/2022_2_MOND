@@ -20,25 +20,25 @@ protected:
     ITableStorage *ITS = nullptr;
 };
 
-TEST_F(STORAGE_DELETE_TESTS, Create_one_table) {
-    EXPECT_TRUE(ITS->CreateTable("Table01"));
+TEST_F(STORAGE_DELETE_TESTS, Delete_one_table) {
+    ITS->CreateTable("Table01");
 
     EXPECT_TRUE(ITS->DeleteTable("Table01"));
 }
 
-TEST_F(STORAGE_DELETE_TESTS, Create_one_table_with_hash) {
-    EXPECT_TRUE(ITS->CreateTable("Table01", defaultHash));
+TEST_F(STORAGE_DELETE_TESTS, Delete_one_table_with_hash) {
+    ITS->CreateTable("Table01", defaultHash);
 
     EXPECT_TRUE(ITS->DeleteTable("Table01"));
 }
 
-TEST_F(STORAGE_DELETE_TESTS, Create_before_grow_nodes) {
-    EXPECT_TRUE(ITS->CreateTable("Table01"));
-    EXPECT_TRUE(ITS->CreateTable("Table02"));
-    EXPECT_TRUE(ITS->CreateTable("Table03"));
-    EXPECT_TRUE(ITS->CreateTable("Table04"));
-    EXPECT_TRUE(ITS->CreateTable("Table05"));
-    EXPECT_TRUE(ITS->CreateTable("Table06"));
+TEST_F(STORAGE_DELETE_TESTS, Delete_before_grow_nodes) {
+    ITS->CreateTable("Table01");
+    ITS->CreateTable("Table02");
+    ITS->CreateTable("Table03");
+    ITS->CreateTable("Table04");
+    ITS->CreateTable("Table05");
+    ITS->CreateTable("Table06");
 
     EXPECT_TRUE(ITS->DeleteTable("Table01"));
     EXPECT_TRUE(ITS->DeleteTable("Table02"));
@@ -48,17 +48,17 @@ TEST_F(STORAGE_DELETE_TESTS, Create_before_grow_nodes) {
     EXPECT_TRUE(ITS->DeleteTable("Table06"));
 }
 
-TEST_F(STORAGE_DELETE_TESTS, Insert_after_grow_nodes) {
-    EXPECT_TRUE(ITS->CreateTable("Table01"));
-    EXPECT_TRUE(ITS->CreateTable("Table02"));
-    EXPECT_TRUE(ITS->CreateTable("Table03"));
-    EXPECT_TRUE(ITS->CreateTable("Table04"));
-    EXPECT_TRUE(ITS->CreateTable("Table05"));
-    EXPECT_TRUE(ITS->CreateTable("Table06"));
-    EXPECT_TRUE(ITS->CreateTable("Table07"));
-    EXPECT_TRUE(ITS->CreateTable("Table08"));
-    EXPECT_TRUE(ITS->CreateTable("Table09"));
-    EXPECT_TRUE(ITS->CreateTable("Table10"));
+TEST_F(STORAGE_DELETE_TESTS, Delete_after_grow_nodes) {
+    ITS->CreateTable("Table01");
+    ITS->CreateTable("Table02");
+    ITS->CreateTable("Table03");
+    ITS->CreateTable("Table04");
+    ITS->CreateTable("Table05");
+    ITS->CreateTable("Table06");
+    ITS->CreateTable("Table07");
+    ITS->CreateTable("Table08");
+    ITS->CreateTable("Table09");
+    ITS->CreateTable("Table10");
 
     EXPECT_TRUE(ITS->DeleteTable("Table01"));
     EXPECT_TRUE(ITS->DeleteTable("Table02"));
@@ -72,9 +72,10 @@ TEST_F(STORAGE_DELETE_TESTS, Insert_after_grow_nodes) {
     EXPECT_TRUE(ITS->DeleteTable("Table10"));
 }
 
-TEST_F(STORAGE_DELETE_TESTS, Insert_same_nodes) {
-    EXPECT_TRUE(ITS->CreateTable("Table01"));
-    EXPECT_FALSE(ITS->CreateTable("Table01"));
+TEST_F(STORAGE_DELETE_TESTS, Delete_same_nodes) {
+    ITS->CreateTable("Table01");
+    ITS->CreateTable("Table01");
 
     EXPECT_TRUE(ITS->DeleteTable("Table01"));
+    EXPECT_FALSE(ITS->DeleteTable("Table01"));
 }

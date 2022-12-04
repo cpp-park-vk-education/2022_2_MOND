@@ -29,6 +29,6 @@ add_subdirectory(DBCore)
 
 add_subdirectory(Tests/HashTable)
 
-add_subdirectory(Tests/Serializer)
+add_subdirectory(Tests/Request_Serializer)
 
 add_subdirectory(Tests/TableStorage)

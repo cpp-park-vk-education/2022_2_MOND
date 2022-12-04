@@ -12,111 +12,81 @@
 
 enum class nodeStatus { FREE = 0, BUSY = 1, REMOVED = 2 };
 
-class QuadraticProbingTable : public IHashTable {
-   private:
+template <typename Key, typename Value>
+class QuadraticProbingTable : public IHashTable<Key, Value> {
+   protected:
     const static size_t MINIMAL_SIZE = 8;
     constexpr const static double REHASH_INDEX = 0.75;
 
     struct HashNode {
         nodeStatus state = nodeStatus::FREE;
-        std::vector<uint8_t> key;
-        std::vector<uint8_t> value;
+        Key key;
+        Value value;
 
         HashNode() = default;
-        HashNode(const nodeStatus& status, const std::vector<uint8_t>& key,
-                 const std::vector<uint8_t>& value);
+        HashNode(const nodeStatus& status, const Key& key, const Value& value);
         HashNode(const HashNode& other);
         HashNode(HashNode&& other) noexcept;
-        HashNode& operator=(const HashNode&);
-        HashNode& operator=(HashNode&&) noexcept;
 
-        ~HashNode();
+        HashNode& operator=(const HashNode&) = default;
+        HashNode& operator=(HashNode&&) noexcept = default;
+
+        ~HashNode() = default;
     };
 
     size_t _size;
     std::vector<HashNode> _cells;
-    const std::function<size_t(const std::vector<uint8_t>&)> _hash;
+    const std::function<size_t(const Key&)> _hash;
 
    public:
     explicit QuadraticProbingTable(
-        const std::function<size_t(const std::vector<uint8_t>&)>& hash);
+        const std::function<size_t(const Key&)>& hash);
     QuadraticProbingTable(
-        const size_t& tableSize,
-        const std::function<size_t(const std::vector<uint8_t>&)>& hash);
+        const size_t& tableSize, const std::function<size_t(const Key&)>& hash);
     QuadraticProbingTable(const QuadraticProbingTable& table);
     ~QuadraticProbingTable() override;
 
-    bool Insert(const std::vector<uint8_t>& key,
-                const std::vector<uint8_t>& value) override;
-    bool Remove(const std::vector<uint8_t>& key) override;
-    [[nodiscard]] bool Find(const std::vector<uint8_t>& key) const override;
+    bool Insert(const Key& key, const Value& value) override;
+    bool Remove(const Key& key) override;
+    [[nodiscard]] bool Find(const Key& key) const override;
     bool Clear() override;
     [[nodiscard]] size_t GetSize() const override;
-    [[nodiscard]] std::vector<uint8_t> Get(
-        const std::vector<uint8_t>& key) const override;
-    bool Update(const std::vector<uint8_t>& key,
-                const std::vector<uint8_t>& value) override;
+    [[nodiscard]] Value Get(const Key& key) const override;
+    bool Update(const Key& key, const Value& value) override;
 
-   private:
+    std::vector<Key> GetKeys() override;
+
+   protected:
     void grow() override;
 };
 
-QuadraticProbingTable::HashNode::HashNode(
+template <typename Key, typename Value>
+QuadraticProbingTable<Key, Value>::HashNode::HashNode(
     const QuadraticProbingTable::HashNode& other)
     : state(other.state), key(other.key), value(other.value) {}
 
-QuadraticProbingTable::HashNode::HashNode(
+template <typename Key, typename Value>
+QuadraticProbingTable<Key, Value>::HashNode::HashNode(
     QuadraticProbingTable::HashNode&& other) noexcept
     : state(other.state),
       key(std::move(other.key)),
       value(std::move(other.value)) {}
 
-QuadraticProbingTable::HashNode& QuadraticProbingTable::HashNode ::operator=(
-    const QuadraticProbingTable::HashNode& other) {
-    if (&other != this) {
-        key.clear();
-        value.clear();
-
-        state = other.state;
-
-        key = other.key;
-        value = other.value;
-    }
-    return *this;
-}
-
-QuadraticProbingTable::HashNode& QuadraticProbingTable::HashNode::operator=(
-    QuadraticProbingTable::HashNode&& other) noexcept {
-    key.clear();
-    value.clear();
-
-    state = other.state;
-
-    key = std::move(other.key);
-    value = std::move(other.value);
-
-    return *this;
-}
-
-QuadraticProbingTable::HashNode::~HashNode() {
-    key.clear();
-    value.clear();
-}
-
-QuadraticProbingTable::HashNode::HashNode(const nodeStatus& status,
-                                          const std::vector<uint8_t>& key,
-                                          const std::vector<uint8_t>& value)
+template <typename Key, typename Value>
+QuadraticProbingTable<Key, Value>::HashNode::HashNode(
+    const nodeStatus& status, const Key& key, const Value& value)
     : state(status), key(key), value(value) {}
 
-QuadraticProbingTable::QuadraticProbingTable(
-    const std::function<size_t(const std::vector<uint8_t>&)>& hash)
+template <typename Key, typename Value>
+QuadraticProbingTable<Key, Value>::QuadraticProbingTable(
+    const std::function<size_t(const Key&)>& hash)
     : _size(0), _hash(hash) {
     _cells.resize(MINIMAL_SIZE);
 }
 
-QuadraticProbingTable::QuadraticProbingTable(
-    const size_t& tableSize,
-    const std::function<size_t(const std::vector<uint8_t>&)>& hash)
+template <typename Key, typename Value>
+QuadraticProbingTable<Key, Value>::QuadraticProbingTable(
+    const size_t& tableSize, const std::function<size_t(const Key&)>& hash)
     : _size(0), _hash(hash) {
     if (tableSize < MINIMAL_SIZE) {
         _cells.resize(MINIMAL_SIZE);
@@ -125,14 +95,17 @@ QuadraticProbingTable::QuadraticProbingTable(
     }
 }
 
-QuadraticProbingTable::QuadraticProbingTable(const QuadraticProbingTable& table)
+template <typename Key, typename Value>
+QuadraticProbingTable<Key, Value>::QuadraticProbingTable(
+    const QuadraticProbingTable& table)
     : _size(table._size), _hash(table._hash) {
     _cells.resize(table._size);
     std::copy(table._cells.begin(), table._cells.end(), _cells.begin());
 }
 
-bool QuadraticProbingTable::Insert(const std::vector<uint8_t>& key,
-                                   const std::vector<uint8_t>& value) {
+template <typename Key, typename Value>
+bool QuadraticProbingTable<Key, Value>::Insert(const Key& key,
+                                               const Value& value) {
     size_t sequenceLength = 0;
     auto hash = _hash(key);
 
@@ -166,7 +139,6 @@ bool QuadraticProbingTable::Insert(const std::vector<uint8_t>& key,
 
     if (first_deleted_index != UINT64_MAX) {
         _cells[first_deleted_index] = HashNode(nodeStatus::BUSY, key, value);
-        ;
         _size++;
         return true;
     }
@@ -174,7 +146,8 @@ bool QuadraticProbingTable::Insert(const std::vector<uint8_t>& key,
     return false;
 }
 
-bool QuadraticProbingTable::Remove(const std::vector<uint8_t>& key) {
+template <typename Key, typename Value>
+bool QuadraticProbingTable<Key, Value>::Remove(const Key& key) {
     size_t sequenceLength = 0;
     auto hash = _hash(key);
 
@@ -197,7 +170,8 @@ bool QuadraticProbingTable::Remove(const std::vector<uint8_t>& key) {
     return false;
 }
 
-bool QuadraticProbingTable::Find(const std::vector<uint8_t>& key) const {
+template <typename Key, typename Value>
+bool QuadraticProbingTable<Key, Value>::Find(const Key& key) const {
     size_t sequenceLength = 0;
     auto hash = _hash(key);
 
@@ -218,17 +192,21 @@ bool QuadraticProbingTable::Find(const std::vector<uint8_t>& key) const {
     return false;
 }
 
-bool QuadraticProbingTable::Clear() {
+template <typename Key, typename Value>
+bool QuadraticProbingTable<Key, Value>::Clear() {
     _cells.clear();
     _size = 0;
     _cells.resize(MINIMAL_SIZE);
     return true;
 }
 
-size_t QuadraticProbingTable::GetSize() const { return _size; }
+template <typename Key, typename Value>
+size_t QuadraticProbingTable<Key, Value>::GetSize() const {
+    return _size;
+}
 
-std::vector<uint8_t> QuadraticProbingTable::Get(
-    const std::vector<uint8_t>& key) const {
+template <typename Key, typename Value>
+Value QuadraticProbingTable<Key, Value>::Get(const Key& key) const {
     size_t sequenceLength = 0;
     auto hash = _hash(key);
 
@@ -249,10 +227,14 @@ std::vector<uint8_t> QuadraticProbingTable::Get(
     return {};
 }
 
-QuadraticProbingTable::~QuadraticProbingTable() { _cells.clear(); }
+template <typename Key, typename Value>
+QuadraticProbingTable<Key, Value>::~QuadraticProbingTable() {
+    _cells.clear();
+}
 
-bool QuadraticProbingTable::Update(const std::vector<uint8_t>& key,
-                                   const std::vector<uint8_t>& value) {
+template <typename Key, typename Value>
+bool QuadraticProbingTable<Key, Value>::Update(const Key& key,
+                                               const Value& value) {
     size_t sequenceLength = 0;
     auto hash = _hash(key);
 
@@ -275,12 +257,14 @@ bool QuadraticProbingTable::Update(const std::vector<uint8_t>& key,
     return false;
 }
 
-void QuadraticProbingTable::grow() {
+template <typename Key, typename Value>
+void QuadraticProbingTable<Key, Value>::grow() {
     std::vector<HashNode> tmp;
     tmp.resize(_size);
     std::copy_if(
         _cells.begin(), _cells.end(), tmp.begin(),
-        [](const HashNode& x) -> bool { return x.state == nodeStatus::BUSY; });
+        [](const HashNode& x) -> bool { return x.state == nodeStatus::BUSY;
+        });
 
     auto cap = _cells.capacity();
     _cells.clear();
@@ -290,4 +274,16 @@ void QuadraticProbingTable::grow() {
     for (HashNode& it : tmp) {
         Insert(it.key, it.value);
     }
+}
+template <typename Key, typename Value>
+std::vector<Key> QuadraticProbingTable<Key, Value>::GetKeys() {
+    std::vector<Key> result;
+
+    for (auto &it : _cells) {
+        if(it.state == nodeStatus::BUSY){
+            result.push_back(it.key);
+        }
+    }
+
+    return result;
 }

@@ -10,56 +10,66 @@ class TableStorage : public ITableStorage {
     TableStorage();
 
     explicit TableStorage(const size_t& tableSize);
-    bool CreateTable(const std::string&,
-                     const std::function<size_t(const std::vector<uint8_t>&)>&
-                     ) override;
-    bool CreateTable(const const std::string&) override;
-    bool DeleteTable(const const std::string&) override;
-    [[nodiscard]] IHashTable* GetTable(const const std::string&) const override;
+    bool CreateTable(
+        const std::string&,
+        const std::function<size_t(const std::vector<uint8_t>&)>&) override;
+    bool CreateTable(const std::string&) override;
+    bool DeleteTable(const std::string&) override;
+    [[nodiscard]] IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*
+    GetTable(const std::string&) const override;
     [[nodiscard]] size_t GetNumTables() const override;
     [[nodiscard]] std::vector<std::string> ShowTables() const override;
     ~TableStorage() override;
 
    private:
-    IHashTable* _tableStorage = nullptr;
+    IHashTable<std::string,
+               IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*>*
+        _tableStorage = nullptr;
 };
 
 TableStorage::TableStorage() {
-    _tableStorage = new QuadraticProbingTable(defaultHash);
+    _tableStorage = new QuadraticProbingTable<
+        std::string, IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*>(
+        stringHash);
 }
 
 TableStorage::TableStorage(const size_t& tableSize) {
-    _tableStorage = new QuadraticProbingTable(tableSize, defaultHash);
+    _tableStorage = new QuadraticProbingTable<
+        std::string, IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*>(
+        tableSize, stringHash);
 }
 
 bool TableStorage::CreateTable(
     const std::string& tableName,
     const std::function<size_t(const std::vector<uint8_t>&)>& hash) {
-    IHashTable* table = new QuadraticProbingTable(hash);
-
-    std::vector<uint8_t> name(tableName.begin(), tableName.end());
-
-    return _tableStorage->Insert(name, table);
-}
-
-bool TableStorage::CreateTable(const std::vector<uint8_t>& tableName) {
-    IHashTable* table = new QuadraticProbingTable(defaultHash);
+    auto table =
+        new QuadraticProbingTable<std::vector<uint8_t>, std::vector<uint8_t>>(
+            hash);
 
     return _tableStorage->Insert(tableName, table);
 }
 
-bool TableStorage::DeleteTable(const std::vector<uint8_t>& tableName) {
+bool TableStorage::CreateTable(const std::string& tableName) {
+    auto table =
+        new QuadraticProbingTable<std::vector<uint8_t>, std::vector<uint8_t>>(
+            defaultHash);
+
+    return _tableStorage->Insert(tableName, table);
+}
+
+bool TableStorage::DeleteTable(const std::string& tableName) {
     return _tableStorage->Remove(tableName);
 }
 
-std::vector<uint8_t> TableStorage::GetTable(const std::vector<uint8_t>& tableName) const {
-        return _tableStorage->Get(tableName);
+IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* TableStorage::GetTable(
+    const std::string& tableName) const {
+    return _tableStorage->Get(tableName);
 }
 
 size_t TableStorage::GetNumTables() const { return _tableStorage->GetSize(); }
 
-std::vector<std::vector<uint8_t>> TableStorage::ShowTables() const {
-    return std::vector<std::vector<uint8_t>>();
+std::vector<std::string> TableStorage::ShowTables() const {
+    return _tableStorage->GetKeys();
 }
 
 TableStorage::~TableStorage() { delete _tableStorage; }

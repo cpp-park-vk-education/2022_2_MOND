@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include "IHashTable.h"
-#include "QuadraticProbingTable.h"
-
 #include <gtest/gtest.h>
 
+#include "IHashTable.h"
+#include "QuadraticProbingTable.h"
