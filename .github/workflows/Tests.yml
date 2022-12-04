@@ -55,18 +55,31 @@ jobs:
           mkdir -p ${{ github.workspace }}/build
           mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
-      - name: Test
+      - name: Test_HashTable
         run: |
-          cd ${{ github.workspace }}/build/Tests/
-          chmod 777 MOND_DB_TESTS
-          ./MOND_DB_TESTS
+          cd ${{ github.workspace }}/build/Tests/HashTable/
+          chmod 777 CORE_DB_TESTS
+          ./CORE_DB_TESTS
+
+      - name: Test_Request_Serializer
+        run: |
+          cd ${{ github.workspace }}/build/Tests/Request_Serializer/
+          chmod 777 SERIALIZER_TESTS
+          ./SERIALIZER_TESTS
+
+      - name: Test_TableStorage
+        run: |
+          cd ${{ github.workspace }}/build/Tests/TableStorage/
+          chmod 777 CORE_STORAGE_TESTS
+          ./CORE_STORAGE_TESTS          
 
       - name: Coverage
         run: |
           cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
           cd ${{ github.workspace }}/build/
           lcov -t . -o coverage_report.info -c -d .
-          genhtml -o coverage_report coverage_report.info
+          genhtml -o coverage_report coverage_report.info          
+          
 
   valgrind:
     needs: [ build-project ]
@@ -88,7 +101,17 @@ jobs:
           mkdir -p ${{ github.workspace }}/build
           mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
-      - name: valgrind
+      - name: valgrind_HashTable
         run: |
-          chmod 777 ${{github.workspace}}/build/Tests/MOND_DB_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+          chmod 777 ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
+
+      - name: valgrind_Request_Serializer
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
+
+      - name: valgrind_TableStorage
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS          
