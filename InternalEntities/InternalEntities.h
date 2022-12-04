@@ -31,11 +31,18 @@ enum class Status {
 struct Request{
     requestType type;
     Status status;
-    size_t key_len;
-    size_t value_len;
-    uint8_t *key;
-    uint8_t *value;
+    std::vector<uint8_t> key;
+    std::vector<uint8_t> value;
     std::string table_name;
+
+    template<class Archive>
+    void serialize(Archive & ar){
+        ar & type;
+        ar & status;
+        ar & key;
+        ar & value;
+        ar & table_name;
+    }
 };
 
 #endif // MOND_DB_INTERNAL_ENTITIES_H

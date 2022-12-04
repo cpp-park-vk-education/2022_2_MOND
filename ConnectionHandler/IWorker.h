@@ -16,6 +16,7 @@ public:
     explicit IWorker(Request request, ITableStorage* storage, IHashTable* table):
     request(std::move(request)), storage(storage), table(table){}
     virtual Request operate() = 0;
+    virtual ~IWorker() = default;
 
     Request request;
     ITableStorage* storage;
@@ -25,7 +26,7 @@ public:
 class InsertWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override {
-        table->Insert(std::vector<uint8_t>(), std::vector<uint8_t>());
+        table->Insert(request.key, request.value);
         return request;
     }
 };
@@ -33,65 +34,92 @@ class InsertWorker : public IWorker{
 class RemoveWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        table->Remove(request.key);
+        return request;
     }
 };
 
 class FindWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        table->Find(request.key);
+        return request;
     }
 };
 
 class ClearWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        table->Clear();
+        return request;
     }
 };
 
 class GetSizeWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        table->GetSize();
+        return request;
     }
 };
 
 class GetWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        table->Get(request.key);
+        return request;
     }
 };
 
 class UpdateWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        table->Update(request.key, request.value);
+        return request;
     }
 };
 
 class CreateTableWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        storage->CreateTable(request.key);
+        return request;
     }
 };
 
 class GetTableWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        storage->GetTable(request.key);
+        return request;
     }
 };
 
 class DeleteTableWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-
+        storage->DeleteTable(request.key);
+        return request;
     }
 };
+
+class GetNumTablesWorker : public IWorker{
+    using IWorker::IWorker;
+    Request operate() override{
+        storage->GetNumTables();
+        return request;
+    }
+};
+
+class ShowTablesWorker : public IWorker{
+    using IWorker::IWorker;
+    Request operate() override{
+        storage->ShowTables();
+        return request;
+    }
+};
+
+
 
 
 template<class ID,class Base, class ... Args> class GenericObjectFactory{
@@ -127,6 +155,8 @@ public:
         factory.add<GetTableWorker>(requestType::GET_TABLE);
         factory.add<CreateTableWorker>(requestType::CREATE_TABLE);
         factory.add<DeleteTableWorker>(requestType::DELETE_TABLE);
+        factory.add<GetNumTablesWorker>(requestType::GET_NUM_TABLES);
+        factory.add<ShowTablesWorker>(requestType::SHOW_TABLES);
     }
 
     IWorker* get(Request& request, ITableStorage* storage, IHashTable* table){

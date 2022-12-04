@@ -20,32 +20,31 @@ public:
         return storage;
     }
 
-    void listenConnections(boost::asio::io_context *ioContext) override {
+    void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool* stop) override {
         boost::asio::ip::tcp::acceptor acceptor(*ioContext,
                                                 boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8001));
-        while (true) {
+        while (!(*stop)) {
             std::shared_ptr<Connection> conn = std::make_shared<Connection>(ioContext);
             acceptor.accept(conn->sock);
-//            std::cout << "client connected" << std::endl;
             newConnectionsMutex.lock();
             newConnections.push(std::move(conn));
             newConnectionsMutex.unlock();
         }
     }
 
-    void handleSessions() override {
-        while (true) {
+    void handleSessions(std::atomic_bool* stop) override {
+        while (!(*stop)) {
             loadNewConnections();
             setAliveConnectionsToRecieve();
             removeDeadConnections();
         }
+        closeAllConnections();
     }
 
+    ~ConnectionHandler() = default;
+
 private:
-    std::mutex newConnectionsMutex;
-    std::vector<std::shared_ptr<Connection>> handledConnections;
-    std::queue<std::shared_ptr<Connection>> newConnections;
-    ITableStorage* storage;
+
 
     void onRead(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t read_bytes) {
 
@@ -82,7 +81,6 @@ private:
             connection->status = ConnectionStatus::disconnected;
             return;
         }
-
         connection->status = ConnectionStatus::waiting;
     }
 
@@ -121,8 +119,24 @@ private:
         }
     }
 
+    void closeAllConnections(){
+        for (auto connection = handledConnections.begin(); connection != handledConnections.end();) {
+            if (((*connection)->status == ConnectionStatus::waiting) || ((*connection)->status == ConnectionStatus::disconnected)) {
+                (*connection)->sock.close();
+                connection = handledConnections.erase(connection);
+            } else {
+                ++connection;
+            }
+        }
+    }
 
+    std::mutex newConnectionsMutex;
+    std::vector<std::shared_ptr<Connection>> handledConnections;
+    std::queue<std::shared_ptr<Connection>> newConnections;
+    ITableStorage* storage;
     workerFactory wFactory;
+
+
 };
 
 #endif //MOND_DB_CONNECTIONHANDLER_H
