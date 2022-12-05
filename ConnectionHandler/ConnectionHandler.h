@@ -62,7 +62,7 @@ private:
 
         ISerializer* serializer = new Serializer;
         Request request /*= serializer->Unmarshal(msg.c_str())*/; //?
-        IWorker *worker = wFactory.get(request, storage, connection->table);
+        IWorker *worker = wFactory.get(request, storage);
         Request answer = worker->operate();
         delete worker;
 

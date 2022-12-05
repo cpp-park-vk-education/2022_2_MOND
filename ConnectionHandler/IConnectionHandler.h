@@ -22,7 +22,6 @@ struct Connection {
     boost::asio::ip::tcp::socket sock;
     boost::asio::streambuf buff; // reads the answer from the client
     std::atomic_int status;
-    IHashTable* table;
 };
 
 class IConnectionHandler {
