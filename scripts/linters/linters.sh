@@ -20,7 +20,7 @@ function check_log() {
 }
 
 if [ $# != 2 ]; then
-  echo "Invalid number of parameters"
+  echo "Invalid number of parameters: $#"
   exit 0
 fi
 
@@ -31,6 +31,6 @@ fi
 
 if [ "$1" = "--cppcheck" ] || [ "$1" = "--all" ]; then
   print_header "RUN cppcheck"
-  check_log "cppcheck $2 --enable=all --inconclusive --error-exitcode=1 --suppress=missingIncludeSystem" "cppcheck failed"
+  check_log "cppcheck $2 --std=c++17 --language=c++ --enable=all --inconclusive --error-exitcode=1 --suppress=missingIncludeSystem" "cppcheck failed"
 fi
 print_header "SUCCESS"
