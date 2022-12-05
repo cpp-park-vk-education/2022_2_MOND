@@ -20,17 +20,17 @@ jobs:
       - name: run_cppcheck
         run: bash scripts/linters/linters.sh --cppcheck ./InternalEntities/*.h
 
-    cpplint:
-      runs-on: ubuntu-latest
-      container: morapresence/mond_db_tests
+  cpplint:
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_tests
 
-      steps:
-        - uses: actions/checkout@v3
-        - name: run_cpplint
-          run: bash scripts/linters/linters.sh --cpplint ./DBCore/*.h
+    steps:
+      - uses: actions/checkout@v3
+      - name: run_cpplint
+        run: bash scripts/linters/linters.sh --cpplint ./DBCore/*.h
 
-        - name: run_cpplint
-          run: bash scripts/linters/linters.sh --cpplint ./InternalEntities/*.h
+      - name: run_cpplint
+        run: bash scripts/linters/linters.sh --cpplint ./InternalEntities/*.h
 
   build-project:
     needs: [ cpplint,  cppcheck]
