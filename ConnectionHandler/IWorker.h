@@ -14,12 +14,12 @@
 class IWorker {
 public:
     explicit IWorker(Request request, ITableStorage* storage):
-    request(std::move(request)), storage(storage){}
+            _request(std::move(request)), _storage(storage){}
     virtual Request operate() = 0;
     virtual ~IWorker() = default;
 
-    Request request;
-    ITableStorage* storage;
+    Request _request;
+    ITableStorage* _storage;
 };
 
 class InsertWorker : public IWorker{
@@ -27,19 +27,19 @@ class InsertWorker : public IWorker{
     Request operate() override {
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        if(table->Insert(request.key, request.value)){
-            answer.status = Status::OK;
+        if(table->Insert(_request._key, _request._value)){
+            answer._status = Status::OK;
         } else {
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
         }
         return answer;
     }
@@ -50,19 +50,19 @@ class RemoveWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        if(table->Remove(request.key)){
-            answer.status = Status::OK;
+        if(table->Remove(_request._key)){
+            answer._status = Status::OK;
         } else {
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
         }
         return answer;
     }
@@ -73,19 +73,19 @@ class FindWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        if(table->Find(request.key)){
-            answer.status = Status::OK;
+        if(table->Find(_request._key)){
+            answer._status = Status::OK;
         } else {
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
         }
         return answer;
     }
@@ -96,19 +96,19 @@ class ClearWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
         if(table->Clear()){
-            answer.status = Status::OK;
+            answer._status = Status::OK;
         } else {
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
         }
         return answer;
     }
@@ -119,12 +119,12 @@ class GetSizeWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
@@ -132,9 +132,9 @@ class GetSizeWorker : public IWorker{
 
         const auto* begin = reinterpret_cast<const uint8_t*>(&size);
         const auto* end = begin + sizeof(size);
-        answer.value = std::vector<uint8_t>(begin, end);
+        answer._value = std::vector<uint8_t>(begin, end);
 
-        answer.status = Status::OK;
+        answer._status = Status::OK;
         return answer;
     }
 };
@@ -144,24 +144,24 @@ class GetWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        answer.value = table->Get(request.key);
+        answer._value = table->Get(_request._key);
 
-        if(!answer.value.empty()){
-            answer.status = Status::OK;
+        if(!answer._value.empty()){
+            answer._status = Status::OK;
         } else {
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
         }
 
-        answer.key = request.key;
+        answer._key = _request._key;
         return answer;
     }
 };
@@ -171,19 +171,19 @@ class UpdateWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        if(table->Update(request.key, request.value)){
-            answer.status = Status::OK;
+        if(table->Update(_request._key, _request._value)){
+            answer._status = Status::OK;
         } else {
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
         }
         return answer;
     }
@@ -194,19 +194,19 @@ class CreateTableWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        if(storage->CreateTable(request.key)){
-            answer.status = Status::OK;
+        if(_storage->CreateTable(_request._table_name)){
+            answer._status = Status::OK;
         } else {
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
         }
 
         return answer;
@@ -218,16 +218,16 @@ class GetTableWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        auto table = storage->GetTable(request.table_name);
+        auto table = _storage->GetTable(_request._table_name);
         if(!table){
-            answer.status = Status::FAILURE;
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        answer.status = Status::OK;
+        answer._status = Status::OK;
         return answer;
     }
 };
@@ -237,15 +237,15 @@ class DeleteTableWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        if(!storage->DeleteTable(request.table_name)){
-            answer.status = Status::FAILURE;
+        if(!_storage->DeleteTable(_request._table_name)){
+            answer._status = Status::FAILURE;
             return answer;
         }
 
-        answer.status = Status::OK;
+        answer._status = Status::OK;
         return answer;
     }
 };
@@ -255,16 +255,16 @@ class GetNumTablesWorker : public IWorker{
     Request operate() override{
         Request answer;
 
-        answer.table_name = request.table_name;
-        answer.type = request.type;
+        answer._table_name = _request._table_name;
+        answer._type = _request._type;
 
-        size_t size = storage->GetNumTables();
+        size_t size = _storage->GetNumTables();
 
         const auto* begin = reinterpret_cast<const uint8_t*>(&size);
         const auto* end = begin + sizeof(size);
-        answer.value = std::vector<uint8_t>(begin, end);
+        answer._value = std::vector<uint8_t>(begin, end);
 
-        answer.status = Status::OK;
+        answer._status = Status::OK;
         return answer;
     }
 };
@@ -272,8 +272,8 @@ class GetNumTablesWorker : public IWorker{
 class ShowTablesWorker : public IWorker{
     using IWorker::IWorker;
     Request operate() override{
-        storage->ShowTables();
-        return request; //will be implemented as a feature
+//        _storage->ShowTables();
+        return _request; //will be implemented as a feature
     }
 };
 
@@ -318,7 +318,7 @@ public:
     }
 
     IWorker* get(Request& request, ITableStorage* storage){
-        return factory.get(request.type)(request, storage);
+        return factory.get(request._type)(request, storage);
     }
 
 private:

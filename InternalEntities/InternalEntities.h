@@ -48,7 +48,7 @@ class Request {
     void save(std::ostream& oss) const;
     void load(const std::string& str_data);
 
- private:
+
     requestType _type = requestType::DEFAULT;
     Status _status = Status::FAILURE;
     std::vector<uint8_t> _key;

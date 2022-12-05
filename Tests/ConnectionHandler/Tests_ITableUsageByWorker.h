@@ -7,8 +7,9 @@
 
 #include <gmock/gmock.h>
 #include "IWorker.h"
+#include "IHashTable.h"
 
-class MockTable: public IHashTable {
+class MockTable: public IHashTable<std::vector<uint8_t>, std::vector<uint8_t>> {
 public:
     ~MockTable() override = default;
     MOCK_METHOD(bool, Insert, (const std::vector<uint8_t> &, const std::vector<uint8_t> &), (override));
@@ -18,6 +19,7 @@ public:
     MOCK_METHOD(size_t, GetSize, (), (const, override));
     MOCK_METHOD(std::vector<uint8_t>, Get, (const std::vector<uint8_t> &key), (const, override));
     MOCK_METHOD(bool, Update, (const std::vector<uint8_t> &, const std::vector<uint8_t> &), (override));
+    MOCK_METHOD(std::vector<std::vector<uint8_t>>, GetKeys, (), (override));
 private:
     void grow(){}
 };
@@ -31,54 +33,52 @@ public:
 };
 
 TEST_F(CheckingWorkersForITableUsage, insertValueWorker) {
-    request.type = requestType::INSERT;
-    auto worker = factory.get(request, storage, &table);
-    EXPECT_CALL(table, Insert(request.key, request.value)).Times(1);
+    request._type = requestType::INSERT;
+    auto worker = factory.get(request, storage);
+    EXPECT_CALL(table, Insert(request._key, request._value)).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForITableUsage, removeWorker) {
-    request.type = requestType::REMOVE;
-    auto worker = factory.get(request, storage, &table);
-    EXPECT_CALL(table, Remove(request.key)).Times(1);
+    request._type = requestType::REMOVE;
+    auto worker = factory.get(request, storage);
+    EXPECT_CALL(table, Remove(request._key)).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForITableUsage, clearWorker) {
-    request.type = requestType::FIND;
-    auto worker = factory.get(request, storage, &table);
-    EXPECT_CALL(table, Find(request.key)).Times(1);
+    request._type = requestType::FIND;
+    auto worker = factory.get(request, storage);
+    EXPECT_CALL(table, Find(request._key)).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForITableUsage, getSizeWorker) {
-    request.type = requestType::GET_SIZE;
-    auto worker = factory.get(request, storage, &table);
+    request._type = requestType::GET_SIZE;
+    auto worker = factory.get(request, storage);
     EXPECT_CALL(table, GetSize).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForITableUsage, getWorker) {
-    request.type = requestType::GET;
-    auto worker = factory.get(request, storage, &table);
-    EXPECT_CALL(table, Get(request.key)).Times(1);
+    request._type = requestType::GET;
+    auto worker = factory.get(request, storage);
+    EXPECT_CALL(table, Get(request._key)).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForITableUsage, updateWorker) {
-    request.type = requestType::UPDATE;
-    auto worker = factory.get(request, storage, &table);
-    EXPECT_CALL(table, Update(request.key, request.value)).Times(1);
+    request._type = requestType::UPDATE;
+    auto worker = factory.get(request, storage);
+    EXPECT_CALL(table, Update(request._key, request._value)).Times(1);
     worker->operate();
     delete worker;
 }
-
-
 
 
 #endif //MOND_DB_TESTS_ITABLEUSAGEBYWORKER_H

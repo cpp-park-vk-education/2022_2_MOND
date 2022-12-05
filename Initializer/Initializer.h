@@ -24,7 +24,6 @@ public:
 
     void startDB(uint32_t numOfThreads){
 
-
         ConnectionListener = boost::thread(&IConnectionHandler::listenConnections, handler, &ioContext, &stop);
         SessionHandler = boost::thread(&IConnectionHandler::handleSessions, handler, &stop);
 
@@ -35,7 +34,7 @@ public:
         }
     }
 
-    void stopDB(){
+    void stopDB(){ //?
         stop = true;
         guard.reset();
         ConnectionListener.join();
