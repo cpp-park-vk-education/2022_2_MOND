@@ -19,14 +19,14 @@ function check_log() {
   fi
 }
 
-if [ $# != 2 ]; then
+if [ $# -lt 2 ]; then
   echo "Invalid number of parameters: $#"
   exit 0
 fi
 
 if [ "$1" = "--cpplint" ] || [ "$1" = "--all" ]; then
   print_header "RUN cpplint"
-  check_log "cpplint $2" "Can't open for reading"
+  check_log "cpplint.py $2" "Can't open for reading"
 fi
 
 if [ "$1" = "--cppcheck" ] || [ "$1" = "--all" ]; then

@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(InternalEntities CXX)
 
-if (DEBUG_BUILD)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -ftest-coverage -O0")
-endif ()
-
 find_package(Boost REQUIRED COMPONENTS serialization)
 
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
