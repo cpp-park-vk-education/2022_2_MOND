@@ -33,7 +33,7 @@ jobs:
         run: bash scripts/linters/linters.sh --cpplint
 
   build-project:
-    needs: [ cpplint,  cppcheck]
+    needs: [ cpplint,  cppcheck ]
 
     runs-on: ubuntu-latest
     container: morapresence/mond_db_debug
@@ -51,6 +51,27 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
+          path: ${{ github.workflow }}/build/**/*
+
+  build-project-for-valgrind:
+    needs: [ cpplint,  cppcheck ]
+
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_debug
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -ADDRESS_SANITIZER_BUILD=OFF -LEAK_SANITIZER_BUILD=OFF -UNDEFINED_BEHAVIOUR_SANITIZER_BUILD=OFF -THREAD_SANITIZER_BUILD=OFF
+
+      - name: Build
+        run: cmake --build ${{ github.workflow }}/build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-for-valgrind-artifact
           path: ${{ github.workflow }}/build/**/*
 
   tests:
@@ -96,10 +117,10 @@ jobs:
           cd ${{ github.workspace }}/build/
           lcov -t . -o coverage_report.info -c -d .
           genhtml -o coverage_report coverage_report.info          
-          
+  
 
   valgrind:
-    needs: [ build-project ]
+    needs: [ build-project-for-valgrind ]
 
     runs-on: ubuntu-latest
     container: morapresence/mond_db_debug
@@ -110,7 +131,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: build-artifact
+          name: build-for-valgrind-artifact
           path: ${{ github.workflow }}/build
 
       - name: Move to workspace
