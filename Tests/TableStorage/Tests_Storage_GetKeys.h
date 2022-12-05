@@ -23,7 +23,7 @@ class STORAGE_GET_KEYS_TESTS : public testing::Test {
 TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_one_table) {
     ITS->CreateTable("Table01");
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;
@@ -35,7 +35,7 @@ TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_one_table) {
 TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_one_table_with_hash) {
     ITS->CreateTable("Table01", defaultHash);
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;
@@ -52,7 +52,7 @@ TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_before_grow_nodes) {
     ITS->CreateTable("Table05");
     ITS->CreateTable("Table06");
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;
@@ -69,7 +69,7 @@ TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_before_grow_nodes_with_hash) {
     ITS->CreateTable("Table05", defaultHash);
     ITS->CreateTable("Table06", defaultHash);
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;
@@ -90,7 +90,7 @@ TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_after_grow_nodes) {
     ITS->CreateTable("Table09");
     ITS->CreateTable("Table10");
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;
@@ -111,7 +111,7 @@ TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_after_grow_nodes_with_hash) {
     ITS->CreateTable("Table09", defaultHash);
     ITS->CreateTable("Table10", defaultHash);
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;
@@ -124,7 +124,7 @@ TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_same_nodes) {
     ITS->CreateTable("Table01");
     ITS->CreateTable("Table01");
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;
@@ -137,7 +137,7 @@ TEST_F(STORAGE_GET_KEYS_TESTS, Get_Keys_same_nodes_with_hash) {
     ITS->CreateTable("Table01", defaultHash);
     ITS->CreateTable("Table01", defaultHash);
 
-    auto vec = ITS->ShowTables();
+    auto vec = ITS->GetTableNames();
 
     for (auto& it: vec) {
         std::cout << it << std::endl;

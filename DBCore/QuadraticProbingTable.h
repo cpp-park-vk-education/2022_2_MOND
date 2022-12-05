@@ -19,9 +19,9 @@ class QuadraticProbingTable : public IHashTable<Key, Value> {
     constexpr const static double REHASH_INDEX = 0.75;
 
     struct HashNode {
-        nodeStatus state = nodeStatus::FREE;
-        Key key;
-        Value value;
+        nodeStatus _state = nodeStatus::FREE;
+        Key _key;
+        Value _value;
 
         HashNode() = default;
         HashNode(const nodeStatus& status, const Key& key, const Value& value);
@@ -63,19 +63,19 @@ class QuadraticProbingTable : public IHashTable<Key, Value> {
 template <typename Key, typename Value>
 QuadraticProbingTable<Key, Value>::HashNode::HashNode(
     const QuadraticProbingTable::HashNode& other)
-    : state(other.state), key(other.key), value(other.value) {}
+    : _state(other._state), _key(other._key), _value(other._value) {}
 
 template <typename Key, typename Value>
 QuadraticProbingTable<Key, Value>::HashNode::HashNode(
     QuadraticProbingTable::HashNode&& other) noexcept
-    : state(other.state),
-      key(std::move(other.key)),
-      value(std::move(other.value)) {}
+    : _state(other._state),
+      _key(std::move(other._key)),
+      _value(std::move(other._value)) {}
 
 template <typename Key, typename Value>
 QuadraticProbingTable<Key, Value>::HashNode::HashNode(
     const nodeStatus& status, const Key& key, const Value& value)
-    : state(status), key(key), value(value) {}
+    : _state(status), _key(key), _value(value) {}
 
 template <typename Key, typename Value>
 QuadraticProbingTable<Key, Value>::QuadraticProbingTable(
@@ -119,17 +119,17 @@ bool QuadraticProbingTable<Key, Value>::Insert(const Key& key,
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY &&
-            _cells[index].key == key) {
+        if (_cells[index]._state == nodeStatus::BUSY &&
+            _cells[index]._key == key) {
             return false;
         }
 
-        if (_cells[index].state == nodeStatus::REMOVED &&
+        if (_cells[index]._state == nodeStatus::REMOVED &&
             first_deleted_index == UINT64_MAX) {
             first_deleted_index = index;
         }
 
-        if (_cells[index].state == nodeStatus::FREE) {
+        if (_cells[index]._state == nodeStatus::FREE) {
             _cells[index] = HashNode(nodeStatus::BUSY, key, value);
             _size++;
             return true;
@@ -155,14 +155,14 @@ bool QuadraticProbingTable<Key, Value>::Remove(const Key& key) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY &&
-            _cells[index].key == key) {
-            _cells[index].state = nodeStatus::REMOVED;
+        if (_cells[index]._state == nodeStatus::BUSY &&
+            _cells[index]._key == key) {
+            _cells[index]._state = nodeStatus::REMOVED;
             _size--;
             return true;
         }
 
-        if (_cells[index].state == nodeStatus::FREE) {
+        if (_cells[index]._state == nodeStatus::FREE) {
             return false;
         }
         sequenceLength++;
@@ -179,12 +179,12 @@ bool QuadraticProbingTable<Key, Value>::Find(const Key& key) const {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY &&
-            _cells[index].key == key) {
+        if (_cells[index]._state == nodeStatus::BUSY &&
+            _cells[index]._key == key) {
             return true;
         }
 
-        if (_cells[index].state == nodeStatus::FREE) {
+        if (_cells[index]._state == nodeStatus::FREE) {
             return false;
         }
         sequenceLength++;
@@ -214,12 +214,12 @@ Value QuadraticProbingTable<Key, Value>::Get(const Key& key) const {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY &&
-            _cells[index].key == key) {
-            return _cells[index].value;
+        if (_cells[index]._state == nodeStatus::BUSY &&
+            _cells[index]._key == key) {
+            return _cells[index]._value;
         }
 
-        if (_cells[index].state == nodeStatus::FREE) {
+        if (_cells[index]._state == nodeStatus::FREE) {
             return {};
         }
         sequenceLength++;
@@ -242,13 +242,13 @@ bool QuadraticProbingTable<Key, Value>::Update(const Key& key,
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
 
-        if (_cells[index].state == nodeStatus::BUSY &&
-            _cells[index].key == key) {
-            _cells[index].value = value;
+        if (_cells[index]._state == nodeStatus::BUSY &&
+            _cells[index]._key == key) {
+            _cells[index]._value = value;
             return true;
         }
 
-        if (_cells[index].state == nodeStatus::FREE) {
+        if (_cells[index]._state == nodeStatus::FREE) {
             return false;
         }
         sequenceLength++;
@@ -263,7 +263,7 @@ void QuadraticProbingTable<Key, Value>::grow() {
     tmp.resize(_size);
     std::copy_if(
         _cells.begin(), _cells.end(), tmp.begin(),
-        [](const HashNode& x) -> bool { return x.state == nodeStatus::BUSY;
+        [](const HashNode& x) -> bool { return x._state == nodeStatus::BUSY;
         });
 
     auto cap = _cells.capacity();
@@ -272,7 +272,7 @@ void QuadraticProbingTable<Key, Value>::grow() {
     _cells.resize(cap * 2);
 
     for (HashNode& it : tmp) {
-        Insert(it.key, it.value);
+        Insert(it._key, it._value);
     }
 }
 template <typename Key, typename Value>
@@ -280,8 +280,8 @@ std::vector<Key> QuadraticProbingTable<Key, Value>::GetKeys() {
     std::vector<Key> result;
 
     for (auto &it : _cells) {
-        if(it.state == nodeStatus::BUSY){
-            result.push_back(it.key);
+        if(it._state == nodeStatus::BUSY){
+            result.push_back(it._key);
         }
     }
 

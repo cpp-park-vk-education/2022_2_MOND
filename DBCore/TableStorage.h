@@ -14,14 +14,15 @@ class TableStorage : public ITableStorage {
         const std::string&,
         const std::function<size_t(const std::vector<uint8_t>&)>&) override;
     bool CreateTable(const std::string&) override;
-    bool DeleteTable(const std::string&) override;
+    bool DeleteTable(const std::string&) const override;
     [[nodiscard]] IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*
     GetTable(const std::string&) const override;
     [[nodiscard]] size_t GetNumTables() const override;
-    [[nodiscard]] std::vector<std::string> ShowTables() const override;
+    [[nodiscard]] std::vector<std::string> GetTableNames() const override;
     ~TableStorage() override;
 
    private:
+    void clear() const;
     IHashTable<std::string,
                IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*>*
         _tableStorage = nullptr;
@@ -46,7 +47,13 @@ bool TableStorage::CreateTable(
         new QuadraticProbingTable<std::vector<uint8_t>, std::vector<uint8_t>>(
             hash);
 
-    return _tableStorage->Insert(tableName, table);
+    auto result = _tableStorage->Insert(tableName, table);
+
+    if(!result){
+        delete table;
+    }
+
+    return result;
 }
 
 bool TableStorage::CreateTable(const std::string& tableName) {
@@ -54,11 +61,21 @@ bool TableStorage::CreateTable(const std::string& tableName) {
         new QuadraticProbingTable<std::vector<uint8_t>, std::vector<uint8_t>>(
             defaultHash);
 
-    return _tableStorage->Insert(tableName, table);
+    auto result = _tableStorage->Insert(tableName, table);
+
+    if(!result){
+        delete table;
+    }
+
+    return result;
 }
 
-bool TableStorage::DeleteTable(const std::string& tableName) {
-    return _tableStorage->Remove(tableName);
+bool TableStorage::DeleteTable(const std::string& tableName) const {
+    auto table = _tableStorage->Get(tableName);
+    auto result =  _tableStorage->Remove(tableName);
+
+    delete table;
+    return result;
 }
 
 IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* TableStorage::GetTable(
@@ -68,10 +85,19 @@ IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* TableStorage::GetTable(
 
 size_t TableStorage::GetNumTables() const { return _tableStorage->GetSize(); }
 
-std::vector<std::string> TableStorage::ShowTables() const {
+std::vector<std::string> TableStorage::GetTableNames() const {
     return _tableStorage->GetKeys();
 }
 
-TableStorage::~TableStorage() { delete _tableStorage; }
+TableStorage::~TableStorage() {
+    clear();
+    delete _tableStorage;
+}
+void TableStorage::clear() const {
+    auto keys = GetTableNames();
+    for(auto &it: keys){
+        DeleteTable(it);
+    }
+}
 
 #endif  // DBCORE_TABLESTORAGE_H
