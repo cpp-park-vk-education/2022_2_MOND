@@ -1,5 +1,8 @@
 // Copyright 2022 mora
 
+#ifndef MOND_DB_INTERNAL_ENTITIES_H
+#define MOND_DB_INTERNAL_ENTITIES_H
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -112,3 +115,5 @@ void Request::load(const std::string& str_data) {
 }
 
 BOOST_CLASS_VERSION(Request, 1)
+
+#endif // MOND_DB_INTERNAL_ENTITIES_H
