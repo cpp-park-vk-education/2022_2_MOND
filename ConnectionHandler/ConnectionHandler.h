@@ -21,6 +21,7 @@ public:
     void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool* stop) override {
         boost::asio::ip::tcp::acceptor acceptor(*ioContext,
                                                 boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8001));
+        std::cout << "starting listen connections..." << std::endl;
         while (!(*stop)) {
             std::shared_ptr<Connection> conn = std::make_shared<Connection>(ioContext);
             acceptor.accept(conn->sock);
@@ -44,6 +45,8 @@ public:
 private:
     void onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t read_bytes) {
         // make errors handling
+        std::cout << "request async read completed" << std::endl;
+
         if(err){
             connection->status = ConnectionStatus::disconnected;
             return;
@@ -56,12 +59,18 @@ private:
         std::stringstream ss;
         ss<<oss.rdbuf();
         std::string str_data = ss.str();
+        str_data.erase(str_data.end() - 4, str_data.end());
         request.load(str_data);
         //----------------
+
+        std::cout << request._table_name << std::endl;
+
+
 
         IWorker *worker = _wFactory.get(request, _storage);
         Request answer = worker->operate();
         delete worker;
+
 
 //        if(!connection->sock.is_open()){
 //            connection->_status = ConnectionStatus::disconnected;
@@ -69,11 +78,12 @@ private:
 //        }
 
         connection->status = ConnectionStatus::onWrite;
-        sendAnswer(connection, std::move(request));
+        sendAnswer(connection, std::move(answer));
     }
 
     void onWriteComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t write_bytes) {
         // make errors handling
+        std::cout << "async write completed" << std::endl;
         if(err){
             connection->status = ConnectionStatus::disconnected;
             return;
@@ -87,7 +97,7 @@ private:
         std::ostream oss(&connection->buff);
         request.save(oss);
         //----------------
-
+        oss << "\r\n\r\n";
         async_write(connection->sock, connection->buff,
                     boost::bind(&ConnectionHandler::onWriteComplete, this, connection, _1, _2));
     }
@@ -105,7 +115,7 @@ private:
         for (auto& connection: _handledConnections) {
             if (connection->status == ConnectionStatus::waiting) {
                 connection->status = ConnectionStatus::onRead;
-                async_read_until(connection->sock, connection->buff, '\n',
+                async_read_until(connection->sock, connection->buff, "\r\n\r\n",
                                  boost::bind(&ConnectionHandler::onReadComplete, this, connection, _1, _2));
             }
         }

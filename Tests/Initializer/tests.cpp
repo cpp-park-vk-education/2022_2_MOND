@@ -10,6 +10,10 @@ TEST(Test, test_for_test) { EXPECT_TRUE(true); }
 int main() {
     Initializer dataBase;
     dataBase.startDB(2);
+
+    size_t a;
+    std::cin >> a;
+
     dataBase.stopDB();
     ::testing::InitGoogleTest();
     ::testing::InitGoogleMock();

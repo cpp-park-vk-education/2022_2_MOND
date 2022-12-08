@@ -198,7 +198,7 @@ class CreateTableWorker : public IWorker{
         answer._type = _request._type;
 
         auto table = _storage->GetTable(_request._table_name);
-        if(!table){
+        if(table){
             answer._status = Status::FAILURE;
             return answer;
         }
