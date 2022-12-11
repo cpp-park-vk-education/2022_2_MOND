@@ -110,7 +110,7 @@ size_t ActionManager::GetNumTables() {
 
     handle_request();
 
-    return _request._value;//TODO: serializer
+    return 1;//TODO: serializer
 }
 
 std::vector<std::string> ActionManager::GetTableNames() {
@@ -123,7 +123,7 @@ std::vector<std::string> ActionManager::GetTableNames() {
 
     handle_request();
 
-    return _request._value;//TODO: serializer
+    return std::vector<std::string>();//TODO: serializer
 }
 
 bool ActionManager::Insert(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value) {
@@ -188,7 +188,7 @@ size_t ActionManager::GetSize() {
 
     handle_request();
 
-    return _request._value;//TODO: serializer
+    return 1;//TODO: serializer
 }
 
 std::vector<uint8_t> ActionManager::Get(const std::vector<uint8_t> &key) {
