@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
         key.push_back(static_cast<unsigned char>(i));
     }
 
-    for (int i = 0; i < 255; ++i) {
+    for (int i = 0; i < 10000; ++i) {
         value.push_back(static_cast<unsigned char>(i));
     }
 
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
     manager->Insert(key, value);
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 100000; ++i) {
         auto result = manager->Get(key);
     }
 

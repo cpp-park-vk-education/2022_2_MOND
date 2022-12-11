@@ -25,7 +25,7 @@ private:
     void sendAnswer(std::shared_ptr<Connection> &connection, Request request);
 
     void loadNewConnections();
-    void setAliveConnectionsToRecieve();
+    void setWaitingConnectionsToRecieve();
     void removeDeadConnections();
 
     void closeAllConnections();
@@ -45,17 +45,17 @@ void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, st
                                                     boost::asio::ip::tcp::v4(), 8001)
     );
 
-    acceptor.non_blocking(true);
+//    acceptor.non_blocking(true);
 
     std::cout << "starting listen connections..." << std::endl;
     while (!(*stop)) {
-        boost::system::error_code error;
+//        boost::system::error_code error;
         std::shared_ptr<Connection> conn = std::make_shared<Connection>(ioContext);
-        acceptor.accept(conn->sock, error);
+        acceptor.accept(conn->sock);
 
-        if(error == boost::asio::error::would_block){
-            continue;
-        }
+//        if(error == boost::asio::error::would_block){
+//            continue;
+//        }
 
         _newConnectionsMutex.lock();
         _newConnections.push(std::move(conn));
@@ -66,7 +66,7 @@ void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, st
 void ConnectionHandler::handleSessions(std::atomic_bool *stop) {
     while (!(*stop)) {
         loadNewConnections();
-        setAliveConnectionsToRecieve();
+        setWaitingConnectionsToRecieve();
         removeDeadConnections();
     }
     closeAllConnections();
@@ -74,7 +74,6 @@ void ConnectionHandler::handleSessions(std::atomic_bool *stop) {
 
 void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err,
                                        size_t read_bytes) {
-    std::cout << "request async read completed" << std::endl;
 
     if (err) {
         connection->status = ConnectionStatus::disconnected;
@@ -92,7 +91,7 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
     request.load(str_data);
     //----------------
 
-    std::cout << request._table_name << std::endl;
+//    std::cout << request._table_name << std::endl;
 
     IWorker *worker = _wFactory.get(request, _storage);
     Request answer = worker->operate();
@@ -105,12 +104,15 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
 void ConnectionHandler::onWriteComplete(std::shared_ptr<Connection> &connection, const std::error_code &err,
                                         size_t write_bytes) {
     // make errors handling
-    std::cout << "async write completed" << std::endl;
+//    std::cout << "async write completed" << std::endl;
+
     if (err) {
         connection->status = ConnectionStatus::disconnected;
         return;
     }
-    connection->status = ConnectionStatus::waiting;
+    connection->status = ConnectionStatus::onRead;
+    async_read_until(connection->sock, connection->buff, "\r\n\r\n",
+                     boost::bind(&ConnectionHandler::onReadComplete, this, connection, _1, _2));
 }
 
 void ConnectionHandler::sendAnswer(std::shared_ptr<Connection> &connection, Request request) {
@@ -134,7 +136,7 @@ void ConnectionHandler::loadNewConnections() {
     _newConnectionsMutex.unlock();
 }
 
-void ConnectionHandler::setAliveConnectionsToRecieve() {
+void ConnectionHandler::setWaitingConnectionsToRecieve() {
     for (auto &connection: _handledConnections) {
         if (connection->status == ConnectionStatus::waiting) {
             connection->status = ConnectionStatus::onRead;

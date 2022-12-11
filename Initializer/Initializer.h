@@ -49,6 +49,8 @@ void Initializer::startDB(uint32_t numOfThreads) {
     ConnectionListener = boost::thread(&IConnectionHandler::listenConnections, handler, &ioContext, &stop);
     SessionHandler = boost::thread(&IConnectionHandler::handleSessions, handler, &stop);
 
+    std::cout << "creating server with " << numOfThreads << " threads" << std::endl;
+
     for (uint32_t i = 0; i < numOfThreads; ++i) {
         threadGroup.create_thread(
                 boost::bind(&boost::asio::io_service::run, &ioContext)

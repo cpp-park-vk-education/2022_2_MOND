@@ -3,12 +3,12 @@ project(MOND_DB CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-option(DEBUG_BUILD "Debug build" ON)
-option(RELEASE_BUILD "Release build" OFF)
+option(DEBUG_BUILD "Debug build" OFF)
+option(RELEASE_BUILD "Release build" ON)
 
-option(ADDRESS_SANITIZER_BUILD "detecting  memory errors" ON)
-option(LEAK_SANITIZER_BUILD "detecting memory leaks" ON)
-option(UNDEFINED_BEHAVIOUR_SANITIZER_BUILD "detecting undefined behaviour" ON)
+option(ADDRESS_SANITIZER_BUILD "detecting  memory errors" OFF)
+option(LEAK_SANITIZER_BUILD "detecting memory leaks" OFF)
+option(UNDEFINED_BEHAVIOUR_SANITIZER_BUILD "detecting undefined behaviour" OFF)
 option(THREAD_SANITIZER_BUILD "detecting data races for multi-threaded code" OFF)
 
 option(SERVERDB_BUILD "Server build" ON)
@@ -53,23 +53,25 @@ add_subdirectory(Initializer)
 
 if (CLIENTDB_BUILD)
     add_subdirectory(ClientDB)
-    add_subdirectory(Tests/ClientDB)
 endif ()
 
 if (SERVERDB_BUILD)
     add_subdirectory(ServerDB)
 endif ()
 
-add_subdirectory(Tests/HashTable)
 
-add_subdirectory(Tests/Request_Serializer)
-
-add_subdirectory(Tests/TableStorage)
-
-add_subdirectory(Tests/ConnectionHandler)
-
-add_subdirectory(Tests/Initializer)
-
+#add_subdirectory(Tests/ClientDB)
+#
+#add_subdirectory(Tests/HashTable)
+#
+#add_subdirectory(Tests/Request_Serializer)
+#
+#add_subdirectory(Tests/TableStorage)
+#
+#add_subdirectory(Tests/ConnectionHandler)
+#
+#add_subdirectory(Tests/Initializer)
+#
 add_subdirectory(Tests/PerformanceClient)
 
 
