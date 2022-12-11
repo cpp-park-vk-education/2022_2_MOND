@@ -8,3 +8,23 @@ services:
       dockerfile: ./Dockerfile_server
     ports:
       - "8001:8001"
+    networks:
+      - my_network
+
+  client_db_1:
+    depends_on:
+      - server_db
+    container_name: client_db_1
+    build:
+      context: .
+      dockerfile: ./Dockerfile_client
+
+    networks:
+      - my_network
+
+networks:
+  my_network:
+      ipam:
+        config:
+            - subnet: 172.28.0.0/16
+              gateway: 172.28.0.1

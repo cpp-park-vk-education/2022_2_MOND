@@ -5,6 +5,7 @@
 #include <vector>
 
 class IActionManager {
+public:
     virtual bool CreateTable(const std::string &) = 0;
     virtual bool DeleteTable(const std::string &) = 0;
     virtual bool SelectTable(const std::string &) = 0;
@@ -18,5 +19,7 @@ class IActionManager {
     virtual size_t GetSize() = 0;
     virtual std::vector<uint8_t> Get(const std::vector<uint8_t> &key) = 0;
     virtual bool Update(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value) = 0;
+
+    virtual ~IActionManager() = default;
 };
 #endif// MOND_DB_IACTIONMANAGER_H

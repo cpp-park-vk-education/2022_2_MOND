@@ -11,7 +11,7 @@ class ActionManager : public IActionManager {
  public:
     ActionManager() = delete;
     ActionManager(const std::string &address, const uint16_t &port) noexcept;
-    ~ActionManager();
+    ~ActionManager() override;
 
     bool CreateTable(const std::string &) override;
     bool DeleteTable(const std::string &) override;
