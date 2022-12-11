@@ -13,3 +13,12 @@ COPY ServerDB ./ServerDB
 COPY Tests ./Tests
 COPY ./CMakeLists.txt ./
 COPY ./.clang-format ./
+
+RUN mkdir build
+WORKDIR /app/build
+RUN cmake .. && \
+    cmake --build .
+
+WORKDIR /app/build/ServerDB
+ENTRYPOINT ["./SERVER_DB"]
+
