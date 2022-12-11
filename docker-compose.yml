@@ -33,38 +33,38 @@ services:
     networks:
       - my_network
 
-  client_db_3:
-    depends_on:
-      - server_db
-    container_name: client_db_3
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_3
-
-    networks:
-      - my_network
-
-  client_db_4:
-    depends_on:
-      - server_db
-    container_name: client_db_4
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_4
-
-    networks:
-      - my_network
-
-  client_db_5:
-    depends_on:
-      - server_db
-    container_name: client_db_5
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_5
-
-    networks:
-      - my_network
+#  client_db_3:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_3
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_3
+#
+#    networks:
+#      - my_network
+#
+#  client_db_4:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_4
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_4
+#
+#    networks:
+#      - my_network
+#
+#  client_db_5:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_5
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_5
+#
+#    networks:
+#      - my_network
 
 networks:
   my_network:
