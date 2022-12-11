@@ -5,10 +5,17 @@
 #include "Initializer.h"
 
 
-TEST(Test, test_for_test) { EXPECT_TRUE(true); }
+TEST(Test, test_for_test) {
+    EXPECT_TRUE(true);
+}
 
 int main() {
     ::testing::InitGoogleTest();
-    ::testing::InitGoogleMock();
+
+    Initializer dataBase;
+    dataBase.startDB(2);
+    dataBase.handleCommands();
+    dataBase.stopDB();
+
     return RUN_ALL_TESTS();
 }
