@@ -44,10 +44,19 @@ void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, st
                                             boost::asio::ip::tcp::endpoint(
                                                     boost::asio::ip::tcp::v4(), 8001)
     );
+
+    acceptor.non_blocking(true);
+
     std::cout << "starting listen connections..." << std::endl;
     while (!(*stop)) {
+        boost::system::error_code error;
         std::shared_ptr<Connection> conn = std::make_shared<Connection>(ioContext);
-        acceptor.accept(conn->sock);
+        acceptor.accept(conn->sock, error);
+
+        if(error == boost::asio::error::would_block){
+            continue;
+        }
+
         _newConnectionsMutex.lock();
         _newConnections.push(std::move(conn));
         _newConnectionsMutex.unlock();
