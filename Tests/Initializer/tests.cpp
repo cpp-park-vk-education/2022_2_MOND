@@ -11,8 +11,7 @@ int main() {
     Initializer dataBase;
     dataBase.startDB(2);
 
-    size_t a;
-    std::cin >> a;
+    dataBase.handleCommands();
 
     dataBase.stopDB();
     ::testing::InitGoogleTest();

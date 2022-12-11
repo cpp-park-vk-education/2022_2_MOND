@@ -34,6 +34,15 @@ public:
         }
     }
 
+    void handleCommands(){
+        std::string command;
+        while (true){
+            std::cin >> command;
+            if (command == "stop")
+                return;
+        }
+    }
+
     void stopDB(){ //?
         stop = true;
         guard.reset();

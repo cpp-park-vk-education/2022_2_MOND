@@ -1,18 +1,20 @@
 cmake_minimum_required(VERSION 3.0)
-project(ConnectionHandler CXX)
+project(ConnectionHandler)
 
 if (DEBUG_BUILD)
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -ftest-coverage -O0")
 endif ()
 
+find_package(Boost COMPONENTS thread REQUIRED)
+
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package(Boost COMPONENTS thread REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
 
 target_include_directories(${PROJECT_NAME} PUBLIC INTERFACE ${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} INTERFACE Boost::thread)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -lboost_thread")
 
 target_include_directories(${PROJECT_NAME} PUBLIC INTERFACE ${DBCORE_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} INTERFACE ${DBCORE_LIBRARIES})

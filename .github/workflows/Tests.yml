@@ -109,7 +109,13 @@ jobs:
         run: |
           cd ${{ github.workspace }}/build/Tests/TableStorage/
           chmod 777 CORE_STORAGE_TESTS
-          ./CORE_STORAGE_TESTS          
+          ./CORE_STORAGE_TESTS         
+
+      - name: Test_TableStorage
+        run: |
+          cd ${{ github.workspace }}/build/Tests/ConnectionHandler/
+          chmod 777 CONNECTION_HANDLER_TESTS
+          ./CONNECTION_HANDLER_TESTS  
 
       - name: Coverage
         run: |

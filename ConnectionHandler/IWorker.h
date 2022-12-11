@@ -1,4 +1,6 @@
-// Copyright 2022 Ogrebatel
+//
+// Created by ogrebatel on 03.12.22.
+//
 
 #ifndef IWORKER_H
 #define IWORKER_H

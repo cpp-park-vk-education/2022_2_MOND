@@ -5,44 +5,35 @@
 #ifndef MOND_DB_TESTS_ISTORAGEUSAGEBYWORKER_H
 #define MOND_DB_TESTS_ISTORAGEUSAGEBYWORKER_H
 
-#include <gmock/gmock.h>
 #include "IWorker.h"
-
-
-class MockStorage: public ITableStorage {
-public:
-    ~MockStorage() override = default;
-    MOCK_METHOD(bool, CreateTable, (const std::string&, const std::function<size_t(const std::vector<uint8_t>&)>& hash), (override));
-    MOCK_METHOD(bool, CreateTable, (const std::string&), (override));
-    MOCK_METHOD(bool, DeleteTable, (const std::string&), (const, override));
-    MOCK_METHOD((IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*), GetTable, (const std::string&), (const, override));
-    MOCK_METHOD(size_t, GetNumTables, (), (const, override));
-    MOCK_METHOD(std::vector<std::string>, GetTableNames, (), (const, override));
-};
+#include "MockEntities.h"
 
 class CheckingWorkersForIStorageUsage : public testing::Test{
+
+protected:
+    void SetUp() override {
+        request._table_name = "MyFirstTable";
+        ON_CALL(storage, GetTable("MyFirstTable")).WillByDefault(Return(&table));
+        ON_CALL(storage, GetTable("NewTable")).WillByDefault(Return(nullptr));
+    }
+
 public:
     Request request;
-    IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* table = nullptr;
     MockStorage storage;
+    MockTable table;
     workerFactory factory;
 };
 
 TEST_F(CheckingWorkersForIStorageUsage, CreateTableWorker) {
+
     request._type = requestType::CREATE_TABLE;
+    request._table_name = "NewTable";
     auto worker = factory.get(request, &storage);
+    EXPECT_CALL(storage, GetTable(request._table_name)).Times(1);
     EXPECT_CALL(storage, CreateTable(request._table_name)).Times(1);
     worker->operate();
     delete worker;
 }
-
-//TEST_F(CheckingWorkersForITableUsage, CreateTableWithHash) {
-//    _request._type = requestType::INSERT;
-//    auto worker = factory.get(_request, _storage, &table);
-//    EXPECT_CALL(table, Insert).Times(1);
-//    worker->operate();
-//    delete worker;
-//}
 
 TEST_F(CheckingWorkersForIStorageUsage, DeleteTableWorker) {
     request._type = requestType::DELETE_TABLE;
@@ -62,14 +53,6 @@ TEST_F(CheckingWorkersForIStorageUsage, GetTableWorker) {
 
 TEST_F(CheckingWorkersForIStorageUsage, GetNumTablesWorker) {
     request._type = requestType::GET_NUM_TABLES;
-    auto worker = factory.get(request, &storage);
-    EXPECT_CALL(storage, GetNumTables).Times(1);
-    worker->operate();
-    delete worker;
-}
-
-TEST_F(CheckingWorkersForIStorageUsage, ShowTablesWorker) {
-    request._type = requestType::SHOW_TABLES;
     auto worker = factory.get(request, &storage);
     EXPECT_CALL(storage, GetNumTables).Times(1);
     worker->operate();

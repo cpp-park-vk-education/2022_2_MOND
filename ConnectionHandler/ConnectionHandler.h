@@ -65,17 +65,9 @@ private:
 
         std::cout << request._table_name << std::endl;
 
-
-
         IWorker *worker = _wFactory.get(request, _storage);
         Request answer = worker->operate();
         delete worker;
-
-
-//        if(!connection->sock.is_open()){
-//            connection->_status = ConnectionStatus::disconnected;
-//            return;
-//        }
 
         connection->status = ConnectionStatus::onWrite;
         sendAnswer(connection, std::move(answer));
@@ -97,6 +89,7 @@ private:
         std::ostream oss(&connection->buff);
         request.save(oss);
         //----------------
+
         oss << "\r\n\r\n";
         async_write(connection->sock, connection->buff,
                     boost::bind(&ConnectionHandler::onWriteComplete, this, connection, _1, _2));
