@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18.4)
+cmake_minimum_required(VERSION 3.23)
 project(client_db)
 set(CMAKE_CXX_STANDARD 17)
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.23)
 project(DBCore CXX)
 
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
