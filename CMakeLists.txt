@@ -51,7 +51,13 @@ add_subdirectory(ConnectionHandler)
 
 add_subdirectory(Initializer)
 
-add_subdirectory(ClientDB)
+if (CLIENTDB_BUILD)
+    add_subdirectory(ClientDB)
+endif ()
+
+if (SERVERDB_BUILD)
+    add_subdirectory(ServerDB)
+endif ()
 
 add_subdirectory(Tests/HashTable)
 
@@ -62,10 +68,6 @@ add_subdirectory(Tests/TableStorage)
 add_subdirectory(Tests/ConnectionHandler)
 
 add_subdirectory(Tests/Initializer)
-
-if (SERVERDB_BUILD)
-    add_subdirectory(ServerDB)
-endif ()
 
 add_subdirectory(Tests/ClientDB)
 

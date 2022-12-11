@@ -2,7 +2,6 @@
 
 #include "Initializer.h"
 
-
 int main() {
     Initializer dataBase;
     dataBase.startDB(2);

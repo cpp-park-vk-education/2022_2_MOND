@@ -9,13 +9,12 @@
 #include "IConnectionHandler.h"
 #include <boost/bind.hpp>
 
-
 class ConnectionHandler : public IConnectionHandler {
 public:
-    explicit ConnectionHandler(ITableStorage* storage);
+    explicit ConnectionHandler(ITableStorage *storage);
 
-    void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool* stop) override;
-    void handleSessions(std::atomic_bool* stop) override;
+    void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) override;
+    void handleSessions(std::atomic_bool *stop) override;
 
     ~ConnectionHandler() override = default;
 
@@ -34,17 +33,17 @@ private:
     std::mutex _newConnectionsMutex;
     std::vector<std::shared_ptr<Connection>> _handledConnections;
     std::queue<std::shared_ptr<Connection>> _newConnections;
-    ITableStorage* _storage;
+    ITableStorage *_storage;
     workerFactory _wFactory;
 };
 
-ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage){}
+ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage) {}
 
 void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) {
     boost::asio::ip::tcp::acceptor acceptor(*ioContext,
                                             boost::asio::ip::tcp::endpoint(
                                                     boost::asio::ip::tcp::v4(), 8001)
-                                                    );
+    );
     std::cout << "starting listen connections..." << std::endl;
     while (!(*stop)) {
         std::shared_ptr<Connection> conn = std::make_shared<Connection>(ioContext);
@@ -68,7 +67,7 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
                                        size_t read_bytes) {
     std::cout << "request async read completed" << std::endl;
 
-    if(err){
+    if (err) {
         connection->status = ConnectionStatus::disconnected;
         return;
     }
@@ -78,7 +77,7 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
     //----------------
     std::ostream oss(&connection->buff);
     std::stringstream ss;
-    ss<<oss.rdbuf();
+    ss << oss.rdbuf();
     std::string str_data = ss.str();
     str_data.erase(str_data.end() - 4, str_data.end());
     request.load(str_data);
@@ -98,7 +97,7 @@ void ConnectionHandler::onWriteComplete(std::shared_ptr<Connection> &connection,
                                         size_t write_bytes) {
     // make errors handling
     std::cout << "async write completed" << std::endl;
-    if(err){
+    if (err) {
         connection->status = ConnectionStatus::disconnected;
         return;
     }
@@ -127,7 +126,7 @@ void ConnectionHandler::loadNewConnections() {
 }
 
 void ConnectionHandler::setAliveConnectionsToRecieve() {
-    for (auto& connection: _handledConnections) {
+    for (auto &connection: _handledConnections) {
         if (connection->status == ConnectionStatus::waiting) {
             connection->status = ConnectionStatus::onRead;
             async_read_until(connection->sock, connection->buff, "\r\n\r\n",
@@ -148,7 +147,8 @@ void ConnectionHandler::removeDeadConnections() {
 
 void ConnectionHandler::closeAllConnections() {
     for (auto connection = _handledConnections.begin(); connection != _handledConnections.end();) {
-        if (((*connection)->status == ConnectionStatus::waiting) || ((*connection)->status == ConnectionStatus::disconnected)) {
+        if (((*connection)->status == ConnectionStatus::waiting)
+            || ((*connection)->status == ConnectionStatus::disconnected)) {
             (*connection)->sock.close();
             connection = _handledConnections.erase(connection);
         } else {

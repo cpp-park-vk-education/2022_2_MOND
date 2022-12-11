@@ -159,3 +159,8 @@ jobs:
         run: |
           chmod 777 ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS          
+
+      - name: valgrind_ConnectionHandler
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CONNECTION_HANDLER_TESTS

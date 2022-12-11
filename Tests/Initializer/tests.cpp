@@ -8,12 +8,6 @@
 TEST(Test, test_for_test) { EXPECT_TRUE(true); }
 
 int main() {
-    Initializer dataBase;
-    dataBase.startDB(2);
-
-    dataBase.handleCommands();
-
-    dataBase.stopDB();
     ::testing::InitGoogleTest();
     ::testing::InitGoogleMock();
     return RUN_ALL_TESTS();
