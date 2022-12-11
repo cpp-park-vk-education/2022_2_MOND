@@ -26,7 +26,6 @@ struct Connection {
 
 class IConnectionHandler {
 public:
-    virtual ITableStorage* getStorage() = 0;
     virtual void listenConnections(boost::asio::io_context* ioContext, std::atomic_bool* stop) = 0;
     virtual void handleSessions(std::atomic_bool* stop) = 0;
     virtual ~IConnectionHandler() = default;

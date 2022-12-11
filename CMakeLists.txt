@@ -60,3 +60,7 @@ add_subdirectory(Tests/TableStorage)
 add_subdirectory(Tests/ConnectionHandler)
 
 add_subdirectory(Tests/Initializer)
+
+if (SERVERDB_BUILD)
+    add_subdirectory(ServerDB)
+endif ()
