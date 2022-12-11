@@ -51,6 +51,8 @@ add_subdirectory(ConnectionHandler)
 
 add_subdirectory(Initializer)
 
+add_subdirectory(ClientDB)
+
 add_subdirectory(Tests/HashTable)
 
 add_subdirectory(Tests/Request_Serializer)
@@ -64,3 +66,7 @@ add_subdirectory(Tests/Initializer)
 if (SERVERDB_BUILD)
     add_subdirectory(ServerDB)
 endif ()
+
+add_subdirectory(Tests/ClientDB)
+
+
