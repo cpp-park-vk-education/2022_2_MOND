@@ -12,7 +12,7 @@ option(UNDEFINED_BEHAVIOUR_SANITIZER_BUILD "detecting undefined behaviour" ON)
 option(THREAD_SANITIZER_BUILD "detecting data races for multi-threaded code" OFF)
 
 option(SERVERDB_BUILD "Server build" ON)
-option(CLIENTDB_BUILD "Client build" ON)
+option(CLIENTDB_BUILD "Client build" OFF)
 
 include(CMake/clangformat.cmake)
 
@@ -53,6 +53,7 @@ add_subdirectory(Initializer)
 
 if (CLIENTDB_BUILD)
     add_subdirectory(ClientDB)
+    add_subdirectory(Tests/ClientDB)
 endif ()
 
 if (SERVERDB_BUILD)
@@ -69,6 +70,6 @@ add_subdirectory(Tests/ConnectionHandler)
 
 add_subdirectory(Tests/Initializer)
 
-add_subdirectory(Tests/ClientDB)
+
 
 

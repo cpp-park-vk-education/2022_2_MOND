@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  server_db:
+    container_name: server_DB
+    build:
+      context: .
+      dockerfile: ./ServerDB/Dockerfile
+    ports:
+      - "8080:8080"
