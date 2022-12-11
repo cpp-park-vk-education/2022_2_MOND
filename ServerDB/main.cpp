@@ -4,7 +4,7 @@
 
 int main() {
     Initializer dataBase;
-    dataBase.startDB(1);
+    dataBase.startDB(5);
     dataBase.handleCommands();
     dataBase.stopDB();
     return 0;

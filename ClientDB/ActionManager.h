@@ -96,7 +96,7 @@ bool ActionManager::SelectTable(const std::string &table_name) {
             table_name);
 
     handle_request();
-
+    _table_name = _request._table_name;
     return _request._status == Status::OK;
 }
 
