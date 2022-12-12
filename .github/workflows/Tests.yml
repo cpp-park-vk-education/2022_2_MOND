@@ -111,12 +111,6 @@ jobs:
           chmod 777 CORE_STORAGE_TESTS
           ./CORE_STORAGE_TESTS         
 
-      - name: Test_ConnectionHandler
-        run: |
-          cd ${{ github.workspace }}/build/Tests/ConnectionHandler/
-          chmod 777 CONNECTION_HANDLER_TESTS
-          ./CONNECTION_HANDLER_TESTS  
-
       - name: Coverage
         run: |
           cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
@@ -159,11 +153,6 @@ jobs:
         run: |
           chmod 777 ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS          
-
-      - name: valgrind_ConnectionHandler
-        run: |
-          chmod 777 ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
 
       - name: valgrind_Client
         run: |
