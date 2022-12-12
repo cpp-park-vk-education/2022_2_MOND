@@ -3,8 +3,8 @@
 #include "Initializer.h"
 
 int main() {
-    Initializer dataBase;
-    dataBase.startDB(1);
+    Initializer dataBase(2);
+    dataBase.startDB();
 
     std::cout << std::thread::hardware_concurrency() << std::endl;
 

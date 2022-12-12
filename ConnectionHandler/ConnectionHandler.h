@@ -13,7 +13,7 @@ class ConnectionHandler : public IConnectionHandler {
 public:
     explicit ConnectionHandler(ITableStorage *storage);
 
-    void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) override;
+    void listenConnections(std::vector<threadContext> *ioContextVec, std::atomic_bool *stop) override;
     void handleSessions(std::atomic_bool *stop) override;
 
     ~ConnectionHandler() override = default;
@@ -39,20 +39,24 @@ private:
 
 ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage) {}
 
-void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) {
-    boost::asio::ip::tcp::acceptor acceptor(*ioContext,
+void ConnectionHandler::listenConnections(std::vector<threadContext> *ioContextVec, std::atomic_bool *stop) {
+
+    boost::asio::io_context acceptorContext;
+    boost::asio::ip::tcp::acceptor acceptor(acceptorContext,
                                             boost::asio::ip::tcp::endpoint(
                                                     boost::asio::ip::tcp::v4(), 8001)
     );
 
-//    acceptor.non_blocking(true);
 
+//    acceptor.non_blocking(True);
+    unsigned i = 1;
     std::cout << "starting listen connections..." << std::endl;
     while (!(*stop)) {
 //        boost::system::error_code error;
-        std::shared_ptr<Connection> conn = std::make_shared<Connection>(ioContext);
+        std::cout << &((*ioContextVec)[i % ioContextVec->size()].ioContext) << std::endl;
+        std::shared_ptr<Connection> conn = std::make_shared<Connection>(&((*ioContextVec)[i % ioContextVec->size()].ioContext));
         acceptor.accept(conn->sock);
-
+        i++;
 //        if(error == boost::asio::error::would_block){
 //            continue;
 //        }

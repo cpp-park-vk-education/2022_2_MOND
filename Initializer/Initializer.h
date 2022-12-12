@@ -18,7 +18,7 @@
 
 class Initializer {
 public:
-    explicit Initializer(): stop(false), guard(boost::asio::make_work_guard(ioContext)), storage(new TableStorage) {
+    explicit Initializer(uint32_t numOfThreads): stop(false), ioContextVec(numOfThreads), storage(new TableStorage) {
         handler = new ConnectionHandler(storage);
     }
 
@@ -28,34 +28,23 @@ public:
     Initializer& operator=(Initializer &&other) = delete;
     Initializer& operator=(const Initializer &other) = delete;
 
-    void startDB(uint32_t numOfThreads);
+    void startDB();
     void handleCommands();
     void stopDB();
 
     ~Initializer();
 
     std::atomic_bool stop;
-    boost::asio::io_context ioContext;
-    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> guard;
+    std::vector<threadContext> ioContextVec;
     IConnectionHandler* handler;
     ITableStorage* storage;
-    boost::thread_group threadGroup;
     boost::thread ConnectionListener;
     boost::thread SessionHandler;
 };
 
-void Initializer::startDB(uint32_t numOfThreads) {
-
-    ConnectionListener = boost::thread(&IConnectionHandler::listenConnections, handler, &ioContext, &stop);
+void Initializer::startDB() {
+    ConnectionListener = boost::thread(&IConnectionHandler::listenConnections, handler, &ioContextVec, &stop);
     SessionHandler = boost::thread(&IConnectionHandler::handleSessions, handler, &stop);
-
-    std::cout << "creating server with " << numOfThreads << " threads" << std::endl;
-
-    for (uint32_t i = 0; i < numOfThreads; ++i) {
-        threadGroup.create_thread(
-                boost::bind(&boost::asio::io_service::run, &ioContext)
-        );
-    }
 }
 
 void Initializer::handleCommands() {
@@ -69,10 +58,13 @@ void Initializer::handleCommands() {
 
 void Initializer::stopDB() {
     stop = true;
-    guard.reset();
+
     ConnectionListener.join();
     SessionHandler.join();
-    threadGroup.join_all();
+    for (auto &thread: ioContextVec) {
+        thread.guard.reset();
+        thread._thread.join();
+    }
 }
 
 Initializer::~Initializer() {
