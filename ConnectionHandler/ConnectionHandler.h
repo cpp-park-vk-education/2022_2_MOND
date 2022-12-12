@@ -118,7 +118,6 @@ void ConnectionHandler::sendAnswer(std::shared_ptr<Connection> &connection, Requ
     request.save(oss);
     //----------------
 
-    oss << delimiter;
     async_write(connection->sock, connection->buff,
                 boost::bind(&ConnectionHandler::onWriteComplete, this, connection, _1, _2));
 }
