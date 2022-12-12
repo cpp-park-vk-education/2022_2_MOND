@@ -5,6 +5,8 @@
 #ifndef MOND_DB_INITIALIZER_H
 #define MOND_DB_INITIALIZER_H
 
+#include <pthread.h>
+
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
