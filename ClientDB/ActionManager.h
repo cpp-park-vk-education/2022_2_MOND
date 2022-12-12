@@ -57,8 +57,8 @@ void ActionManager::handle_request() {
 
     std::stringstream ss;
     ss << oss.rdbuf();
-
-    _request.load(ss.str());
+    auto ssData = ss.str();
+    _request.load(ssData);
 }
 
 bool ActionManager::CreateTable(const std::string &table_name) {
