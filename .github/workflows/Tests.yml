@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configure CMake
-        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -D -ADDRESS_SANITIZER_BUILD=False -LEAK_SANITIZER_BUILD=False -UNDEFINED_BEHAVIOUR_SANITIZER_BUILD=False -THREAD_SANITIZER_BUILD=False
+        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}  -DADDRESS_SANITIZER_BUILD=False -DLEAK_SANITIZER_BUILD=False -DUNDEFINED_BEHAVIOUR_SANITIZER_BUILD=False -DTHREAD_SANITIZER_BUILD=False
 
       - name: Build
         run: cmake --build ${{ github.workflow }}/build
