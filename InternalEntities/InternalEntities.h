@@ -54,7 +54,7 @@ public:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version);
     void save(std::ostream &oss) const;
-    void load(const std::string &str_data);
+    void load(std::string &str_data);
 
 
     requestType _type = requestType::DEFAULT;
@@ -124,9 +124,11 @@ void Request::save(std::ostream &oss) const {
     oss << "\r\n\r\n"; //TODO: how to make better?
 }
 
-void Request::load(const std::string &str_data) {
+void Request::load(std::string &str_data) {
+    str_data.erase(str_data.end() - 4, str_data.end());
     std::istringstream iss(str_data);
     boost::archive::binary_iarchive ia(iss);
+
     ia &*(this);
 }
 

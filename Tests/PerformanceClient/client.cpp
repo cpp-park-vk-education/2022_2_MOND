@@ -8,7 +8,6 @@
 
 
 int main(int argc, char** argv) {
-    std::cout << argc;
 
     for (int i = 0; i < argc; ++i) {
         std::cout << argv[i] << std::endl;
@@ -20,7 +19,7 @@ int main(int argc, char** argv) {
         key.push_back(static_cast<unsigned char>(i));
     }
 
-    for (int i = 0; i < 10000000; ++i) {
+    for (int i = 0; i < 50000000; ++i) {
         value.push_back(static_cast<unsigned char>(i));
     }
 
@@ -30,10 +29,8 @@ int main(int argc, char** argv) {
 
     IActionManager* manager = new ActionManager(argv[1], static_cast<uint16_t>(std::stoi(argv[2])));
     auto ret = manager->CreateTable(argv[3]);
-    std::cout << ret << std::endl;
 
     manager->SelectTable(argv[3]);
-
     manager->Insert(key, value);
 
     for (int i = 0; i < 500; ++i) {

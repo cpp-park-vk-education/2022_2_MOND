@@ -3,8 +3,8 @@ project(MOND_DB CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-option(DEBUG_BUILD "Debug build" ON)
-option(RELEASE_BUILD "Release build" OFF)
+option(DEBUG_BUILD "Debug build" OFF)
+option(RELEASE_BUILD "Release build" ON)
 
 option(ADDRESS_SANITIZER_BUILD "detecting  memory errors" OFF)
 option(LEAK_SANITIZER_BUILD "detecting memory leaks" OFF)

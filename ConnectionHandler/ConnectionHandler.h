@@ -90,7 +90,6 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
     std::stringstream ss;
     ss << oss.rdbuf();
     std::string str_data = ss.str();
-    str_data.erase(str_data.end() - 4, str_data.end());
     request.load(str_data);
     //----------------
 
