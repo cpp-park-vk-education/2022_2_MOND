@@ -48,22 +48,21 @@ void ConnectionHandler::listenConnections(std::vector<threadContext> *ioContextV
     );
 
 
-//    acceptor.non_blocking(True);
-    unsigned i = 1;
+    acceptor.non_blocking(true);
+    unsigned i = 0;
     std::cout << "starting listen connections..." << std::endl;
     while (!(*stop)) {
-//        boost::system::error_code error;
-        std::cout << &((*ioContextVec)[i % ioContextVec->size()].ioContext) << std::endl;
+        boost::system::error_code error;
         std::shared_ptr<Connection> conn = std::make_shared<Connection>(&((*ioContextVec)[i % ioContextVec->size()].ioContext));
-        acceptor.accept(conn->sock);
-        i++;
-//        if(error == boost::asio::error::would_block){
-//            continue;
-//        }
+        acceptor.accept(conn->sock, error);
 
+        if(error == boost::asio::error::would_block){
+            continue;
+        }
         _newConnectionsMutex.lock();
         _newConnections.push(std::move(conn));
         _newConnectionsMutex.unlock();
+        i++;
     }
 }
 
@@ -95,8 +94,6 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
     request.load(str_data);
     //----------------
 
-//    std::cout << request._table_name << std::endl;
-
     IWorker *worker = _wFactory.get(request, _storage);
     Request answer = worker->operate();
     delete worker;
@@ -107,16 +104,11 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
 
 void ConnectionHandler::onWriteComplete(std::shared_ptr<Connection> &connection, const std::error_code &err,
                                         size_t write_bytes) {
-    // make errors handling
-//    std::cout << "async write completed" << std::endl;
-
     if (err) {
         connection->status = ConnectionStatus::disconnected;
         return;
     }
-    connection->status = ConnectionStatus::onRead;
-    async_read_until(connection->sock, connection->buff, "\r\n\r\n",
-                     boost::bind(&ConnectionHandler::onReadComplete, this, connection, _1, _2));
+    connection->status = ConnectionStatus::waiting;
 }
 
 void ConnectionHandler::sendAnswer(std::shared_ptr<Connection> &connection, Request request) {
@@ -126,7 +118,7 @@ void ConnectionHandler::sendAnswer(std::shared_ptr<Connection> &connection, Requ
     request.save(oss);
     //----------------
 
-    oss << "\r\n\r\n";
+    oss << delimiter;
     async_write(connection->sock, connection->buff,
                 boost::bind(&ConnectionHandler::onWriteComplete, this, connection, _1, _2));
 }
@@ -144,7 +136,7 @@ void ConnectionHandler::setWaitingConnectionsToRecieve() {
     for (auto &connection: _handledConnections) {
         if (connection->status == ConnectionStatus::waiting) {
             connection->status = ConnectionStatus::onRead;
-            async_read_until(connection->sock, connection->buff, "\r\n\r\n",
+            async_read_until(connection->sock, connection->buff, delimiter,
                              boost::bind(&ConnectionHandler::onReadComplete, this, connection, _1, _2));
         }
     }
