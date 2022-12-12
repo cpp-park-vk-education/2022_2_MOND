@@ -11,11 +11,5 @@ TEST(Test, test_for_test) {
 
 int main() {
     ::testing::InitGoogleTest();
-
-    Initializer dataBase;
-    dataBase.startDB(2);
-    dataBase.handleCommands();
-    dataBase.stopDB();
-
     return RUN_ALL_TESTS();
 }

@@ -8,11 +8,11 @@
 #include <string>
 #include <vector>
 
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
 
 enum class requestType {
     INSERT = 0,
@@ -129,13 +129,6 @@ void Request::load(const std::string &str_data) {
     boost::archive::binary_iarchive ia(iss);
     ia &*(this);
 }
-
-struct threadContext{
-    threadContext():  guard(boost::asio::make_work_guard(ioContext)), _thread(boost::bind(&boost::asio::io_service::run, &ioContext)) {}
-    boost::asio::io_context ioContext;
-    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> guard;
-    boost::thread _thread;
-};
 
 BOOST_CLASS_VERSION(Request, 1)
 

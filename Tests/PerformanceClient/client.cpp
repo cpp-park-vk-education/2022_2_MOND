@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
     manager->Insert(key, value);
 
-    for (int i = 0; i < 10000; ++i) {
+    for (int i = 0; i < 50000; ++i) {
         auto result = manager->Get(key);
     }
 

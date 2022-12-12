@@ -3,10 +3,11 @@
 #include "Initializer.h"
 
 int main() {
-    Initializer dataBase(3);
+    Initializer dataBase(5);
     dataBase.startDB();
 
     dataBase.handleCommands();
+
     dataBase.stopDB();
     return 0;
 }

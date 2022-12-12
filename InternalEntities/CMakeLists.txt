@@ -11,5 +11,4 @@ set(ENTITIES_LIBRARIES ${PROJECT_NAME} PARENT_SCOPE)
 set(ENTITIES_INCLUDE_DIRS ${INCLUDE_DIRS} PARENT_SCOPE)
 
 target_include_directories(${PROJECT_NAME} INTERFACE ${Boost_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} INTERFACE Boost::serialization Boost::thread)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -lboost_thread")
+target_link_libraries(${PROJECT_NAME} INTERFACE Boost::serialization)
