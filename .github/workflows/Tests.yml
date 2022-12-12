@@ -163,4 +163,9 @@ jobs:
       - name: valgrind_ConnectionHandler
         run: |
           chmod 777 ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CONNECTION_HANDLER_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
+
+      - name: valgrind_Client
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS

@@ -20,7 +20,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} Boost::thread)
 
 enable_testing()
-add_test(NAME SERIALIZER_tests COMMAND SERIALIZER_tests)
+add_test(NAME CLIENT_tests COMMAND CLIENT_tests)
 
 
 
