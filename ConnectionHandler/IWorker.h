@@ -219,11 +219,6 @@ Request GetWorker::operate() {
     answer._table_name = _request._table_name;
     answer._type = _request._type;
 
-    for (int i = 1; i < 50000; ++i) {
-        std::string s;
-        s.append(std::to_string(i));
-    }
-
     auto table = _storage->GetTable(_request._table_name);
     if(!table){
         answer._status = Status::FAILURE;
