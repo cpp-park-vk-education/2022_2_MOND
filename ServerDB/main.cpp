@@ -6,8 +6,6 @@ int main() {
     Initializer dataBase(3);
     dataBase.startDB();
 
-    std::cout << std::thread::hardware_concurrency() << std::endl;
-
     dataBase.handleCommands();
     dataBase.stopDB();
     return 0;

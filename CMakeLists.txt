@@ -59,19 +59,18 @@ if (SERVERDB_BUILD)
     add_subdirectory(ServerDB)
 endif ()
 
+add_subdirectory(Tests/ClientDB)
 
-#add_subdirectory(Tests/ClientDB)
-#
-#add_subdirectory(Tests/HashTable)
-#
-#add_subdirectory(Tests/Request_Serializer)
-#
-#add_subdirectory(Tests/TableStorage)
-#
-#add_subdirectory(Tests/ConnectionHandler)
-#
-#add_subdirectory(Tests/Initializer)
-#
+add_subdirectory(Tests/HashTable)
+
+add_subdirectory(Tests/Request_Serializer)
+
+add_subdirectory(Tests/TableStorage)
+
+add_subdirectory(Tests/ConnectionHandler)
+
+add_subdirectory(Tests/Initializer)
+
 add_subdirectory(Tests/PerformanceClient)
 
 
