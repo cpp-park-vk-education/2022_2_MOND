@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
         key.push_back(static_cast<unsigned char>(i));
     }
 
-    for (int i = 0; i < 50000000; ++i) {
+    for (int i = 0; i < 500000; ++i) {
         value.push_back(static_cast<unsigned char>(i));
     }
 
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     manager->SelectTable(argv[3]);
     manager->Insert(key, value);
 
-    for (int i = 0; i < 500; ++i) {
+    for (int i = 0; i < 50000; ++i) {
         auto result = manager->Get(key);
     }
 

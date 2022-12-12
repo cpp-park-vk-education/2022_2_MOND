@@ -91,25 +91,7 @@ jobs:
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
-
-      - name: Test_HashTable
-        run: |
-          cd ${{ github.workspace }}/build/Tests/HashTable/
-          chmod 777 CORE_DB_TESTS
-          ./CORE_DB_TESTS
-
-      - name: Test_Request_Serializer
-        run: |
-          cd ${{ github.workspace }}/build/Tests/Request_Serializer/
-          chmod 777 SERIALIZER_TESTS
-          ./SERIALIZER_TESTS
-
-      - name: Test_TableStorage
-        run: |
-          cd ${{ github.workspace }}/build/Tests/TableStorage/
-          chmod 777 CORE_STORAGE_TESTS
-          ./CORE_STORAGE_TESTS         
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build   
 
       - name: Test_ConnectionHandler
         run: |
@@ -143,29 +125,9 @@ jobs:
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
-
-      - name: valgrind_HashTable
-        run: |
-          chmod 777 ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
-
-      - name: valgrind_Request_Serializer
-        run: |
-          chmod 777 ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
-
-      - name: valgrind_TableStorage
-        run: |
-          chmod 777 ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS          
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build  
 
       - name: valgrind_ConnectionHandler
         run: |
           chmod 777 ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
-
-      - name: valgrind_Client
-        run: |
-          chmod 777 ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS

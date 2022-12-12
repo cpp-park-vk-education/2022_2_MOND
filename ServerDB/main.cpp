@@ -3,7 +3,7 @@
 #include "Initializer.h"
 
 int main() {
-    Initializer dataBase(5);
+    Initializer dataBase(1);
     dataBase.startDB();
 
     dataBase.handleCommands();

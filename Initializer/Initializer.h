@@ -39,7 +39,7 @@ public:
     std::atomic_bool stop;
     std::vector<threadContext> ioContextVec;
     IConnectionHandler* handler;
-    ITableStorage* storage;
+
     boost::thread ConnectionListener;
     boost::thread SessionHandler;
 };
