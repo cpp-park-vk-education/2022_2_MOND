@@ -69,8 +69,6 @@ add_subdirectory(Tests/TableStorage)
 
 add_subdirectory(Tests/ConnectionHandler)
 
-add_subdirectory(Tests/Initializer)
-
 add_subdirectory(Tests/PerformanceClient)
 
 

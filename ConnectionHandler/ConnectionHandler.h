@@ -10,7 +10,7 @@
 #include <boost/bind.hpp>
 
 class ConnectionHandler : public IConnectionHandler {
-public:
+ public:
     explicit ConnectionHandler(ITableStorage *storage);
 
     void listenConnections(std::vector<threadContext> *ioContextVec, std::atomic_bool *stop) override;
@@ -18,7 +18,7 @@ public:
 
     ~ConnectionHandler() override = default;
 
-private:
+ private:
     void onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t read_bytes);
     void onWriteComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t write_bytes);
 
@@ -53,7 +53,8 @@ void ConnectionHandler::listenConnections(std::vector<threadContext> *ioContextV
     std::cout << "starting listen connections..." << std::endl;
     while (!(*stop)) {
         boost::system::error_code error;
-        std::shared_ptr<Connection> conn = std::make_shared<Connection>(&((*ioContextVec)[i % ioContextVec->size()].ioContext));
+        std::shared_ptr<Connection> conn =
+                std::make_shared<Connection>(&((*ioContextVec)[i % ioContextVec->size()].ioContext));
         acceptor.accept(conn->sock, error);
 
         if(error == boost::asio::error::would_block){
@@ -77,7 +78,6 @@ void ConnectionHandler::handleSessions(std::atomic_bool *stop) {
 
 void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err,
                                        size_t read_bytes) {
-
     if (err) {
         connection->status = ConnectionStatus::disconnected;
         return;
@@ -85,13 +85,11 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
 
     Request request;
 
-    //----------------
     std::ostream oss(&connection->buff);
     std::stringstream ss;
     ss << oss.rdbuf();
     std::string str_data = ss.str();
     request.load(str_data);
-    //----------------
 
     IWorker *worker = _wFactory.get(request, _storage);
     Request answer = worker->operate();
@@ -111,11 +109,8 @@ void ConnectionHandler::onWriteComplete(std::shared_ptr<Connection> &connection,
 }
 
 void ConnectionHandler::sendAnswer(std::shared_ptr<Connection> &connection, Request request) {
-
-    //----------------
     std::ostream oss(&connection->buff);
     request.save(oss);
-    //----------------
 
     async_write(connection->sock, connection->buff,
                 boost::bind(&ConnectionHandler::onWriteComplete, this, connection, _1, _2));

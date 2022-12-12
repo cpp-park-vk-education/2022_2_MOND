@@ -21,7 +21,7 @@ TEST_F(Request_Serializer, Marshal_Success) {
 
     req.save(oss);
 
-    EXPECT_EQ(buf.size(), sizeof(req) + 1);
+    EXPECT_EQ(buf.size() - 4, sizeof(req) + 1);
 }
 
 TEST_F(Request_Serializer, Unmarshal_Success) {

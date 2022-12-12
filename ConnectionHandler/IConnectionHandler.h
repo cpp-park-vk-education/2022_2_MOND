@@ -9,8 +9,11 @@
 #include "boost/asio.hpp"
 #include "InternalEntities.h"
 
-struct threadContext{
-    threadContext():  guard(boost::asio::make_work_guard(ioContext)), _thread(boost::bind(&boost::asio::io_service::run, &ioContext)) {}
+struct threadContext {
+    threadContext() :
+            guard(boost::asio::make_work_guard(ioContext)),
+            _thread(boost::bind(&boost::asio::io_service::run, &ioContext)) {}
+
     boost::asio::io_context ioContext;
     boost::asio::executor_work_guard<boost::asio::io_context::executor_type> guard;
     boost::thread _thread;
@@ -24,7 +27,7 @@ enum ConnectionStatus {
 };
 
 struct Connection {
-    Connection(boost::asio::io_context* ioContext) : sock(*ioContext), status(ConnectionStatus::waiting) {}
+    Connection(boost::asio::io_context *ioContext) : sock(*ioContext), status(ConnectionStatus::waiting) {}
 
     boost::asio::ip::tcp::socket sock;
     boost::asio::streambuf buff; // reads the answer from the client
@@ -34,8 +37,8 @@ struct Connection {
 
 class IConnectionHandler {
 public:
-    virtual void listenConnections(std::vector<threadContext> *ioContextVec, std::atomic_bool* stop) = 0;
-    virtual void handleSessions(std::atomic_bool* stop) = 0;
+    virtual void listenConnections(std::vector<threadContext> *ioContextVec, std::atomic_bool *stop) = 0;
+    virtual void handleSessions(std::atomic_bool *stop) = 0;
     virtual ~IConnectionHandler() = default;
 };
 
