@@ -7,6 +7,7 @@
 
 #include "IWorker.h"
 #include "IHashTable.h"
+#include "MockEntities.h"
 
 
 class CheckingWorkersForITableUsage : public testing::Test{
