@@ -128,7 +128,6 @@ void Request::load(std::string &str_data) {
     str_data.erase(str_data.end() - 4, str_data.end());
     std::istringstream iss(str_data);
     boost::archive::binary_iarchive ia(iss);
-
     ia &*(this);
 }
 

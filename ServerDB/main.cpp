@@ -3,11 +3,12 @@
 #include "Initializer.h"
 
 int main() {
-    Initializer dataBase(5);
-    dataBase.startDB();
+    Initializer dataBase;
+    dataBase.startDB(1);
+
+    std::cout << std::thread::hardware_concurrency() << std::endl;
 
     dataBase.handleCommands();
-
     dataBase.stopDB();
     return 0;
 }
