@@ -16,6 +16,7 @@ template <typename Key, typename Value>
 class QuadraticProbingTable : public IHashTable<Key, Value> {
    protected:
     const static size_t MINIMAL_SIZE = 8;
+    const static size_t MINIMAL_NODE_COUNT = 4;
     constexpr const static double REHASH_INDEX = 0.75;
 
     struct HashNode {
@@ -34,8 +35,14 @@ class QuadraticProbingTable : public IHashTable<Key, Value> {
         ~HashNode() = default;
     };
 
+    struct NodeHub{
+        std::vector<HashNode> _node_hub;
+        size_t _last_version = 0;
+    }typedef NodeHub;
+
+
     size_t _size;
-    std::vector<HashNode> _cells;
+    std::vector<NodeHub> _cells;
     const std::function<size_t(const Key&)> _hash;
 
    public:
@@ -82,6 +89,10 @@ QuadraticProbingTable<Key, Value>::QuadraticProbingTable(
     const std::function<size_t(const Key&)>& hash)
     : _size(0), _hash(hash) {
     _cells.resize(MINIMAL_SIZE);
+
+    for(auto &it : _cells){
+        it._node_hub.resize(MINIMAL_NODE_COUNT);
+    }
 }
 
 template <typename Key, typename Value>
@@ -93,6 +104,10 @@ QuadraticProbingTable<Key, Value>::QuadraticProbingTable(
     } else {
         _cells.resize(tableSize);
     }
+
+    for(auto &it : _cells){
+        it._node_hub.resize(MINIMAL_NODE_COUNT);
+    }
 }
 
 template <typename Key, typename Value>
@@ -100,6 +115,11 @@ QuadraticProbingTable<Key, Value>::QuadraticProbingTable(
     const QuadraticProbingTable& table)
     : _size(table._size), _hash(table._hash) {
     _cells.resize(table._size);
+
+    for(auto &it : _cells){
+        it._node_hub.resize(MINIMAL_NODE_COUNT);
+    }
+
     std::copy(table._cells.begin(), table._cells.end(), _cells.begin());
 }
 
@@ -118,19 +138,20 @@ bool QuadraticProbingTable<Key, Value>::Insert(const Key& key,
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
+        auto last_version = _cells[index]._last_version;
 
-        if (_cells[index]._state == nodeStatus::BUSY &&
-            _cells[index]._key == key) {
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::BUSY &&
+            _cells[index]._node_hub[last_version]._key == key) {
             return false;
         }
 
-        if (_cells[index]._state == nodeStatus::REMOVED &&
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::REMOVED &&
             first_deleted_index == UINT64_MAX) {
             first_deleted_index = index;
         }
 
-        if (_cells[index]._state == nodeStatus::FREE) {
-            _cells[index] = HashNode(nodeStatus::BUSY, key, value);
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::FREE) {
+            _cells[index]._node_hub[last_version] = HashNode(nodeStatus::BUSY, key, value);
             _size++;
             return true;
         }
@@ -138,7 +159,8 @@ bool QuadraticProbingTable<Key, Value>::Insert(const Key& key,
     }
 
     if (first_deleted_index != UINT64_MAX) {
-        _cells[first_deleted_index] = HashNode(nodeStatus::BUSY, key, value);
+        _cells[first_deleted_index]._node_hub[_cells[first_deleted_index]._last_version]
+                = HashNode(nodeStatus::BUSY, key, value);
         _size++;
         return true;
     }
@@ -154,15 +176,16 @@ bool QuadraticProbingTable<Key, Value>::Remove(const Key& key) {
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
+        auto last_version = _cells[index]._last_version;
 
-        if (_cells[index]._state == nodeStatus::BUSY &&
-            _cells[index]._key == key) {
-            _cells[index]._state = nodeStatus::REMOVED;
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::BUSY &&
+            _cells[index]._node_hub[last_version]._key == key) {
+            _cells[index]._node_hub[last_version]._state = nodeStatus::REMOVED;
             _size--;
             return true;
         }
 
-        if (_cells[index]._state == nodeStatus::FREE) {
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::FREE) {
             return false;
         }
         sequenceLength++;
@@ -178,13 +201,14 @@ bool QuadraticProbingTable<Key, Value>::Find(const Key& key) const {
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
+        auto last_version = _cells[index]._last_version;
 
-        if (_cells[index]._state == nodeStatus::BUSY &&
-            _cells[index]._key == key) {
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::BUSY &&
+            _cells[index]._node_hub[last_version]._key == key) {
             return true;
         }
 
-        if (_cells[index]._state == nodeStatus::FREE) {
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::FREE) {
             return false;
         }
         sequenceLength++;
@@ -194,9 +218,17 @@ bool QuadraticProbingTable<Key, Value>::Find(const Key& key) const {
 
 template <typename Key, typename Value>
 bool QuadraticProbingTable<Key, Value>::Clear() {
+    for(auto &it : _cells){
+        it._node_hub.clear();
+    }
+
     _cells.clear();
     _size = 0;
     _cells.resize(MINIMAL_SIZE);
+
+    for(auto &it : _cells){
+        it._node_hub.resize(MINIMAL_NODE_COUNT);
+    }
     return true;
 }
 
@@ -213,13 +245,14 @@ Value QuadraticProbingTable<Key, Value>::Get(const Key& key) const {
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
+        auto last_version = _cells[index]._last_version;
 
-        if (_cells[index]._state == nodeStatus::BUSY &&
-            _cells[index]._key == key) {
-            return _cells[index]._value;
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::BUSY &&
+            _cells[index]._node_hub[last_version]._key == key) {
+            return _cells[index]._node_hub[last_version]._value;
         }
 
-        if (_cells[index]._state == nodeStatus::FREE) {
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::FREE) {
             return {};
         }
         sequenceLength++;
@@ -229,6 +262,9 @@ Value QuadraticProbingTable<Key, Value>::Get(const Key& key) const {
 
 template <typename Key, typename Value>
 QuadraticProbingTable<Key, Value>::~QuadraticProbingTable() {
+    for(auto &it : _cells){
+        it._node_hub.clear();
+    }
     _cells.clear();
 }
 
@@ -241,14 +277,20 @@ bool QuadraticProbingTable<Key, Value>::Update(const Key& key,
     for (; sequenceLength < _cells.capacity();) {
         auto q = sequenceLength * sequenceLength;
         auto index = (hash + sequenceLength / 2 + q / 2) % _cells.capacity();
+        auto last_version = _cells[index]._last_version;
 
-        if (_cells[index]._state == nodeStatus::BUSY &&
-            _cells[index]._key == key) {
-            _cells[index]._value = value;
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::BUSY &&
+            _cells[index]._node_hub[last_version]._key == key) {
+            _cells[index]._last_version =  (_cells[index]._last_version + 1) % MINIMAL_NODE_COUNT;
+
+            _cells[index]._node_hub[_cells[index]._last_version]._state = nodeStatus::BUSY;
+            _cells[index]._node_hub[_cells[index]._last_version]._key = key;
+            _cells[index]._node_hub[_cells[index]._last_version]._value = value;
+
             return true;
         }
 
-        if (_cells[index]._state == nodeStatus::FREE) {
+        if (_cells[index]._node_hub[last_version]._state == nodeStatus::FREE) {
             return false;
         }
         sequenceLength++;
@@ -259,20 +301,32 @@ bool QuadraticProbingTable<Key, Value>::Update(const Key& key,
 
 template <typename Key, typename Value>
 void QuadraticProbingTable<Key, Value>::grow() {
-    std::vector<HashNode> tmp;
+    std::vector<NodeHub> tmp;
     tmp.resize(_size);
+
+    for(auto &it : tmp){
+        it._node_hub.resize(MINIMAL_NODE_COUNT);
+    }
+
     std::copy_if(
-        _cells.begin(), _cells.end(), tmp.begin(),
-        [](const HashNode& x) -> bool { return x._state == nodeStatus::BUSY;
-        });
+            _cells.begin(), _cells.end(), tmp.begin(),
+            [](const NodeHub &x) -> bool {
+                return x._node_hub[x._last_version]._state == nodeStatus::BUSY;
+            });
 
     auto cap = _cells.capacity();
     _cells.clear();
     _size = 0;
     _cells.resize(cap * 2);
+    for(auto &it : _cells){
+        it._node_hub.resize(MINIMAL_NODE_COUNT);
+    }
 
-    for (HashNode& it : tmp) {
-        Insert(it._key, it._value);
+    for (auto&it_hub: tmp) {
+        Insert(it_hub._node_hub[0]._key, it_hub._node_hub[0]._value);
+        for(size_t i = 1; i < it_hub._node_hub.size(); ++i){
+            Update(it_hub._node_hub[i]._key, it_hub._node_hub[i]._value);
+        }
     }
 }
 template <typename Key, typename Value>
@@ -280,8 +334,8 @@ std::vector<Key> QuadraticProbingTable<Key, Value>::GetKeys() {
     std::vector<Key> result;
 
     for (auto &it : _cells) {
-        if(it._state == nodeStatus::BUSY){
-            result.push_back(it._key);
+        if(it._node_hub[it._last_version]._state == nodeStatus::BUSY){
+            result.push_back(it._node_hub[it._last_version]._key);
         }
     }
 
