@@ -52,7 +52,6 @@ void ActionManager::handle_request() {
 
     _conn->Write(buff);
 
-
     _conn->Read(buff);
 
     std::stringstream ss;

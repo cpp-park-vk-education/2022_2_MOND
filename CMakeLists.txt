@@ -51,6 +51,8 @@ add_subdirectory(ConnectionHandler)
 
 add_subdirectory(Initializer)
 
+add_subdirectory(Backupper)
+
 if (CLIENTDB_BUILD)
     add_subdirectory(ClientDB)
 endif ()
@@ -71,6 +73,4 @@ add_subdirectory(Tests/ConnectionHandler)
 
 add_subdirectory(Tests/PerformanceClient)
 
-
-
-
+add_subdirectory(Tests/Backupper)

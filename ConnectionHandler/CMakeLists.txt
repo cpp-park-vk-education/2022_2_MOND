@@ -9,7 +9,6 @@ find_package(Boost COMPONENTS thread REQUIRED)
 
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-
 add_library(${PROJECT_NAME} INTERFACE)
 
 target_include_directories(${PROJECT_NAME} PUBLIC INTERFACE ${Boost_INCLUDE_DIRS})
