@@ -6,7 +6,7 @@
 class Request_Serializer : public testing::Test {
 protected:
     void SetUp() override {
-        req = {requestType::INSERT, Status::NOTHING, key, value, table_name};
+        req = {RequestType::INSERT, Status::NOTHING, key, value, table_name};
     }
 
     Request req;

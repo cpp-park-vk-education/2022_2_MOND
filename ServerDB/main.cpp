@@ -4,7 +4,7 @@
 
 int main() {
     Initializer dataBase;
-    dataBase.startDB(1);
+    dataBase.startDB(5);
 
     std::cout << std::thread::hardware_concurrency() << std::endl;
 

@@ -6,6 +6,7 @@ COPY ../ClientDB ./ClientDB
 COPY ../CMake ./CMake
 COPY ../ConnectionHandler ./ConnectionHandler
 COPY ../DBCore ./DBCore
+COPY ../AccessController ./AccessController
 COPY ../Initializer ./Initializer
 COPY ../scripts ./scripts
 COPY ../InternalEntities ./InternalEntities
@@ -20,5 +21,5 @@ RUN cmake .. && \
     cmake --build .
 
 WORKDIR /app/build/Tests/PerformanceClient
-ENTRYPOINT ["./PERFORMANCE_CLIENT", "172.28.0.2", "8001", "SecondTable"]
+ENTRYPOINT ["./PERFORMANCE_CLIENT", "172.28.0.2", "8001", "FirstTable", "reading"]
 

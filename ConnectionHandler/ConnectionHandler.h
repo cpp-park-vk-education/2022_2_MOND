@@ -8,6 +8,9 @@
 #include <queue>
 #include "IConnectionHandler.h"
 #include <boost/bind.hpp>
+#include "ITableStorage.h"
+#include "IAccessController.h"
+#include "AccessController.h"
 
 class ConnectionHandler : public IConnectionHandler {
  public:
@@ -16,7 +19,7 @@ class ConnectionHandler : public IConnectionHandler {
     void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) override;
     void handleSessions(std::atomic_bool *stop) override;
 
-    ~ConnectionHandler() override = default;
+    ~ConnectionHandler() override;
 
  private:
     void onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t read_bytes);
@@ -35,16 +38,19 @@ class ConnectionHandler : public IConnectionHandler {
     std::queue<std::shared_ptr<Connection>> _newConnections;
     ITableStorage *_storage;
     workerFactory _wFactory;
+
+    IAccessController *accessController;
 };
 
-ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage) {}
+ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage) {
+    accessController = new AccessController;
+}
 
 void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) {
     boost::asio::ip::tcp::acceptor acceptor(*ioContext,
                                             boost::asio::ip::tcp::endpoint(
                                                     boost::asio::ip::tcp::v4(), 8001)
     );
-
 
     acceptor.non_blocking(true);
     std::cout << "starting listen connections..." << std::endl;
@@ -78,16 +84,19 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
         return;
     }
 
-    Request request;
+    std::shared_ptr<Request> request = std::make_shared<Request>();
 
     std::ostream oss(&connection->buff);
     std::stringstream ss;
     ss << oss.rdbuf();
     std::string str_data = ss.str();
-    request.load(str_data);
+    request->load(str_data);
 
     IWorker *worker = _wFactory.get(request, _storage);
+
+    accessController->getPermission(request);
     Request answer = worker->operate();
+    accessController->releaseResource(request);
     delete worker;
 
     connection->status = ConnectionStatus::onWrite;
@@ -150,6 +159,10 @@ void ConnectionHandler::closeAllConnections() {
             ++connection;
         }
     }
+}
+
+ConnectionHandler::~ConnectionHandler() {
+    delete accessController;
 }
 
 #endif //MOND_DB_CONNECTIONHANDLER_H

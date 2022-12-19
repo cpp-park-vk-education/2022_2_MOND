@@ -63,7 +63,7 @@ void ActionManager::handle_request() {
 
 bool ActionManager::CreateTable(const std::string &table_name) {
     _request = Request(
-            requestType::CREATE_TABLE,
+            RequestType::CREATE_TABLE,
             Status::NOTHING,
             std::vector<uint8_t>(),
             std::vector<uint8_t>(),
@@ -76,7 +76,7 @@ bool ActionManager::CreateTable(const std::string &table_name) {
 
 bool ActionManager::DeleteTable(const std::string &table_name) {
     _request = Request(
-            requestType::DELETE_TABLE,
+            RequestType::DELETE_TABLE,
             Status::NOTHING,
             std::vector<uint8_t>(),
             std::vector<uint8_t>(),
@@ -89,7 +89,7 @@ bool ActionManager::DeleteTable(const std::string &table_name) {
 
 bool ActionManager::SelectTable(const std::string &table_name) {
     _request = Request(
-            requestType::GET_TABLE,
+            RequestType::GET_TABLE,
             Status::NOTHING,
             std::vector<uint8_t>(),
             std::vector<uint8_t>(),
@@ -102,7 +102,7 @@ bool ActionManager::SelectTable(const std::string &table_name) {
 
 size_t ActionManager::GetNumTables() {
     _request = Request(
-            requestType::GET_NUM_TABLES,
+            RequestType::GET_NUM_TABLES,
             Status::NOTHING,
             std::vector<uint8_t>(),
             std::vector<uint8_t>(),
@@ -115,7 +115,7 @@ size_t ActionManager::GetNumTables() {
 
 std::vector<std::string> ActionManager::GetTableNames() {
     _request = Request(
-            requestType::SHOW_TABLES,
+            RequestType::SHOW_TABLES,
             Status::NOTHING,
             std::vector<uint8_t>(),
             std::vector<uint8_t>(),
@@ -128,7 +128,7 @@ std::vector<std::string> ActionManager::GetTableNames() {
 
 bool ActionManager::Insert(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value) {
     _request = Request(
-            requestType::INSERT,
+            RequestType::INSERT,
             Status::NOTHING,
             key,
             value,
@@ -141,7 +141,7 @@ bool ActionManager::Insert(const std::vector<uint8_t> &key, const std::vector<ui
 
 bool ActionManager::Remove(const std::vector<uint8_t> &key) {
     _request = Request(
-            requestType::REMOVE,
+            RequestType::REMOVE,
             Status::NOTHING,
             key,
             std::vector<uint8_t>(),
@@ -154,7 +154,7 @@ bool ActionManager::Remove(const std::vector<uint8_t> &key) {
 
 bool ActionManager::Find(const std::vector<uint8_t> &key) {
     _request = Request(
-            requestType::FIND,
+            RequestType::FIND,
             Status::NOTHING,
             key,
             std::vector<uint8_t>(),
@@ -167,7 +167,7 @@ bool ActionManager::Find(const std::vector<uint8_t> &key) {
 
 bool ActionManager::Clear() {
     _request = Request(
-            requestType::CLEAR,
+            RequestType::CLEAR,
             Status::NOTHING,
             std::vector<uint8_t>(),
             std::vector<uint8_t>(),
@@ -180,7 +180,7 @@ bool ActionManager::Clear() {
 
 size_t ActionManager::GetSize() {
     _request = Request(
-            requestType::GET_SIZE,
+            RequestType::GET_SIZE,
             Status::NOTHING,
             std::vector<uint8_t>(),
             std::vector<uint8_t>(),
@@ -193,7 +193,7 @@ size_t ActionManager::GetSize() {
 
 std::vector<uint8_t> ActionManager::Get(const std::vector<uint8_t> &key) {
     _request = Request(
-            requestType::GET,
+            RequestType::GET,
             Status::NOTHING,
             key,
             std::vector<uint8_t>(),
@@ -206,7 +206,7 @@ std::vector<uint8_t> ActionManager::Get(const std::vector<uint8_t> &key) {
 
 bool ActionManager::Update(const std::vector<uint8_t> &key, const std::vector<uint8_t> &value) {
     _request = Request(
-            requestType::UPDATE,
+            RequestType::UPDATE,
             Status::NOTHING,
             key,
             value,

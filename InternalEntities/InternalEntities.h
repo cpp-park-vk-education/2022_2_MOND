@@ -14,7 +14,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 
-enum class requestType {
+enum class RequestType {
     INSERT = 0,
     REMOVE,
     FIND,
@@ -41,7 +41,7 @@ const std::string delimiter = "\r\n\r\n";
 class Request {
 public:
     Request() = default;
-    Request(const requestType &, const Status &, const std::vector<uint8_t> &,
+    Request(const RequestType &, const Status &, const std::vector<uint8_t> &,
             const std::vector<uint8_t> &, const std::string &);
     Request(const Request &) = default;
     Request(Request &&) noexcept;
@@ -56,8 +56,10 @@ public:
     void save(std::ostream &oss) const;
     void load(std::string &str_data);
 
+    bool isChangingData() const;
 
-    requestType _type = requestType::DEFAULT;
+
+    RequestType _type = RequestType::DEFAULT;
     Status _status = Status::FAILURE;
     std::vector<uint8_t> _key;
     std::vector<uint8_t> _value;
@@ -93,7 +95,7 @@ Request &Request::operator=(Request &&other) noexcept {
     return *this;
 }
 
-Request::Request(const requestType &type, const Status &status,
+Request::Request(const RequestType &type, const Status &status,
                  const std::vector<uint8_t> &key,
                  const std::vector<uint8_t> &value,
                  const std::string &table_name)
@@ -129,6 +131,13 @@ void Request::load(std::string &str_data) {
     std::istringstream iss(str_data);
     boost::archive::binary_iarchive ia(iss);
     ia &*(this);
+}
+
+bool Request::isChangingData() const {
+    return (_type == RequestType::UPDATE)
+           || (_type == RequestType::DELETE_TABLE)
+           || (_type == RequestType::INSERT)
+           || (_type == RequestType::REMOVE);
 }
 
 BOOST_CLASS_VERSION(Request, 1)
