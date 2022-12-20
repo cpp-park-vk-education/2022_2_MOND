@@ -5,18 +5,28 @@
 #ifndef MOND_DB_CONNECTIONHANDLER_H
 #define MOND_DB_CONNECTIONHANDLER_H
 
-#include <queue>
+#include "AccessController.h"
+#include "IAccessController.h"
 #include "IConnectionHandler.h"
+#include "ITableStorage.h"
+
 #include <boost/bind.hpp>
+#include <queue>
 
 class ConnectionHandler : public IConnectionHandler {
  public:
     explicit ConnectionHandler(ITableStorage *storage);
 
-    void listenConnections(std::vector<threadContext> *ioContextVec, std::atomic_bool *stop) override;
+    ConnectionHandler(const ConnectionHandler& other) = delete;
+    ConnectionHandler(ConnectionHandler &&other) = delete;
+
+    ConnectionHandler& operator=(ConnectionHandler &&other) = delete;
+    ConnectionHandler& operator=(const ConnectionHandler &other) = delete;
+
+    void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) override;
     void handleSessions(std::atomic_bool *stop) override;
 
-    ~ConnectionHandler() override = default;
+    ~ConnectionHandler() override;
 
  private:
     void onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t read_bytes);
@@ -35,26 +45,25 @@ class ConnectionHandler : public IConnectionHandler {
     std::queue<std::shared_ptr<Connection>> _newConnections;
     ITableStorage *_storage;
     workerFactory _wFactory;
+
+    IAccessController *accessController;
 };
 
-ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage) {}
+ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage) {
+    accessController = new AccessController;
+}
 
-void ConnectionHandler::listenConnections(std::vector<threadContext> *ioContextVec, std::atomic_bool *stop) {
-
-    boost::asio::io_context acceptorContext;
-    boost::asio::ip::tcp::acceptor acceptor(acceptorContext,
+void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) {
+    boost::asio::ip::tcp::acceptor acceptor(*ioContext,
                                             boost::asio::ip::tcp::endpoint(
                                                     boost::asio::ip::tcp::v4(), 8001)
     );
 
-
     acceptor.non_blocking(true);
-    unsigned i = 0;
     std::cout << "starting listen connections..." << std::endl;
     while (!(*stop)) {
         boost::system::error_code error;
-        std::shared_ptr<Connection> conn =
-                std::make_shared<Connection>(&((*ioContextVec)[i % ioContextVec->size()].ioContext));
+        std::shared_ptr<Connection> conn = std::make_shared<Connection>(ioContext);
         acceptor.accept(conn->sock, error);
 
         if(error == boost::asio::error::would_block){
@@ -63,7 +72,6 @@ void ConnectionHandler::listenConnections(std::vector<threadContext> *ioContextV
         _newConnectionsMutex.lock();
         _newConnections.push(std::move(conn));
         _newConnectionsMutex.unlock();
-        i++;
     }
 }
 
@@ -83,16 +91,19 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
         return;
     }
 
-    Request request;
+    std::shared_ptr<Request> request = std::make_shared<Request>();
 
     std::ostream oss(&connection->buff);
     std::stringstream ss;
     ss << oss.rdbuf();
     std::string str_data = ss.str();
-    request.load(str_data);
+    request->load(str_data);
 
     IWorker *worker = _wFactory.get(request, _storage);
+
+    accessController->getPermission(request);
     Request answer = worker->operate();
+    accessController->releaseResource(request);
     delete worker;
 
     connection->status = ConnectionStatus::onWrite;
@@ -155,6 +166,10 @@ void ConnectionHandler::closeAllConnections() {
             ++connection;
         }
     }
+}
+
+ConnectionHandler::~ConnectionHandler() {
+    delete accessController;
 }
 
 #endif //MOND_DB_CONNECTIONHANDLER_H

@@ -12,13 +12,13 @@ class CheckingWorkersForIStorageUsage : public testing::Test{
 
 protected:
     void SetUp() override {
-        request._table_name = "MyFirstTable";
+        request->_table_name = "MyFirstTable";
         ON_CALL(storage, GetTable("MyFirstTable")).WillByDefault(Return(&table));
         ON_CALL(storage, GetTable("NewTable")).WillByDefault(Return(nullptr));
     }
 
 public:
-    Request request;
+    std::shared_ptr<Request> request;
     MockStorage storage;
     MockTable table;
     workerFactory factory;
@@ -26,33 +26,33 @@ public:
 
 TEST_F(CheckingWorkersForIStorageUsage, CreateTableWorker) {
 
-    request._type = requestType::CREATE_TABLE;
-    request._table_name = "NewTable";
+    request->_type = RequestType::CREATE_TABLE;
+    request->_table_name = "NewTable";
     auto worker = factory.get(request, &storage);
-    EXPECT_CALL(storage, GetTable(request._table_name)).Times(1);
-    EXPECT_CALL(storage, CreateTable(request._table_name)).Times(1);
+    EXPECT_CALL(storage, GetTable(request->_table_name)).Times(1);
+    EXPECT_CALL(storage, CreateTable(request->_table_name)).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForIStorageUsage, DeleteTableWorker) {
-    request._type = requestType::DELETE_TABLE;
+    request->_type = RequestType::DELETE_TABLE;
     auto worker = factory.get(request, &storage);
-    EXPECT_CALL(storage, DeleteTable(request._table_name)).Times(1);
+    EXPECT_CALL(storage, DeleteTable(request->_table_name)).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForIStorageUsage, GetTableWorker) {
-    request._type = requestType::GET_TABLE;
+    request->_type = RequestType::GET_TABLE;
     auto worker = factory.get(request, &storage);
-    EXPECT_CALL(storage, GetTable(request._table_name)).Times(1);
+    EXPECT_CALL(storage, GetTable(request->_table_name)).Times(1);
     worker->operate();
     delete worker;
 }
 
 TEST_F(CheckingWorkersForIStorageUsage, GetNumTablesWorker) {
-    request._type = requestType::GET_NUM_TABLES;
+    request->_type = RequestType::GET_NUM_TABLES;
     auto worker = factory.get(request, &storage);
     EXPECT_CALL(storage, GetNumTables).Times(1);
     worker->operate();
