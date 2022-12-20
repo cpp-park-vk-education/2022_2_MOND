@@ -1,3 +1,6 @@
+# main lib
+../TP2022_CPP_MatrixCalc/main.cpp
+
 # Cmake
 cmake-build*
 
