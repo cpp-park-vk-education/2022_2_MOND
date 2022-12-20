@@ -5,14 +5,15 @@
 #ifndef IWORKER_H
 #define IWORKER_H
 
+#include "genericObjectFactory.h"
+#include "IHashTable.h"
+#include "InternalEntities.h"
+#include "ITableStorage.h"
+
+#include <boost/asio.hpp>
 #include <iostream>
 #include <functional>
 #include <utility>
-#include "boost/asio.hpp"
-#include "InternalEntities.h"
-#include "IHashTable.h"
-#include "ITableStorage.h"
-#include "genericObjectFactory.h"
 
 class IWorker {
 public:

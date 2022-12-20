@@ -5,9 +5,10 @@
 #ifndef MOND_DB_ICONNECTIONHANDLER_H
 #define MOND_DB_ICONNECTIONHANDLER_H
 
-#include "IWorker.h"
-#include "boost/asio.hpp"
 #include "InternalEntities.h"
+#include "IWorker.h"
+
+#include <boost/asio.hpp>
 
 enum ConnectionStatus {
     waiting,

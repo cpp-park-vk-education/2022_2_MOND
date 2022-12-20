@@ -5,16 +5,23 @@
 #ifndef MOND_DB_CONNECTIONHANDLER_H
 #define MOND_DB_CONNECTIONHANDLER_H
 
-#include <queue>
-#include "IConnectionHandler.h"
-#include <boost/bind.hpp>
-#include "ITableStorage.h"
-#include "IAccessController.h"
 #include "AccessController.h"
+#include "IAccessController.h"
+#include "IConnectionHandler.h"
+#include "ITableStorage.h"
+
+#include <boost/bind.hpp>
+#include <queue>
 
 class ConnectionHandler : public IConnectionHandler {
  public:
     explicit ConnectionHandler(ITableStorage *storage);
+
+    ConnectionHandler(const ConnectionHandler& other) = delete;
+    ConnectionHandler(ConnectionHandler &&other) = delete;
+
+    ConnectionHandler& operator=(ConnectionHandler &&other) = delete;
+    ConnectionHandler& operator=(const ConnectionHandler &other) = delete;
 
     void listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) override;
     void handleSessions(std::atomic_bool *stop) override;

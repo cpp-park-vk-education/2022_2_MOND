@@ -5,9 +5,9 @@
 #ifndef MOND_DB_ACCESS_CONTROLLER_H
 #define MOND_DB_ACCESS_CONTROLLER_H
 
-#include <queue>
 #include "IAccessController.h"
 
+#include <queue>
 
 class AccessController: public IAccessController {
  public:
@@ -63,6 +63,5 @@ void AccessController::releaseResource(const std::shared_ptr<Request> &request) 
         tableControl->readers--;
     }
 }
-
 
 #endif //  MOND_DB_ACCESS_CONTROLLER_H
