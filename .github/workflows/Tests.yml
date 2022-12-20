@@ -1,0 +1,96 @@
+name: Tests
+
+on:
+  push:
+    branches: [ "main", 'dev/**' ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  linters:
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_debug
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: run_linters
+        run: bash scripts/linters/linters.sh --cpplint ./Tests/*.cpp
+
+  build-project:
+    needs: [ linters ]
+
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_debug
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build ${{ github.workflow }}/build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: ${{ github.workflow }}/build/**/*
+
+  tests:
+    needs: [ build-project ]
+
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_debug
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifact
+          path: ${{ github.workflow }}/build
+
+      - name: Move to workspace
+        run: |
+          mkdir -p ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+
+      - name: Test
+        run: |
+          cd ${{ github.workspace }}/build/Tests/
+          chmod 777 MOND_DB_TESTS
+          ./MOND_DB_TESTS
+
+      - name: Coverage
+        run: |
+          cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+          cd ${{ github.workspace }}/build/
+          lcov -t . -o coverage_report.info -c -d .
+          genhtml -o coverage_report coverage_report.info
+
+  valgrind:
+    needs: [ build-project ]
+
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_debug
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifact
+          path: ${{ github.workflow }}/build
+
+      - name: Move to workspace
+        run: |
+          mkdir -p ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+
+      - name: valgrind
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
