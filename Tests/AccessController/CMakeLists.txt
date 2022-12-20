@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(MOND_DB_TESTS CXX)
+project(ACCESS_CONTROLLER_TESTS CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -11,9 +11,7 @@ clangformat_setup(
 
 add_executable(${PROJECT_NAME} tests.cpp)
 target_link_libraries(${PROJECT_NAME} GTest::gtest_main)
-target_include_directories(${PROJECT_NAME} PUBLIC ${DBCORE_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${DBCORE_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${ACCESS_CONTROLLER_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${ACCESS_CONTROLLER_LIBRARIES})
 
-add_subdirectory(HashTable)
-
-add_subdirectory(TableStorage)
+enable_testing()

@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.0)
-project(InternalEntities CXX)
+cmake_minimum_required(VERSION 3.23)
+project(InternalEntities)
 
-find_package(Boost REQUIRED COMPONENTS serialization)
+find_package(Boost REQUIRED COMPONENTS serialization thread)
 
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 

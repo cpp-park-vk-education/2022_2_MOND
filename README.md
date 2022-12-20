@@ -40,19 +40,7 @@ MOND_DB - in-memory key-value database
         <li class="list__item item">Настроена автоматическая сборка</li>
         <li class="list__item item">Настроен инструментарий для статического анализа, линтеров, unit-тестов и др. проверок и внедрение в рабочий процесс для будущего проекта</li>
         <li class="list__item item">Настроен собственный CI</li>
-        <li class="list__item item">Реализован программный интерфейсный каркас кода своих компонентов библиотеки в соответствии со спроектированной объектной архитектурой.</li>
+        <li class="list__item item">Написана реализация компонентов ConnectionHandler, Initializer, добавлен каркас к Access Controller, реализованы тесты к Access Controller, Connection Handler, реализован performance Client.</li>
         <li class="list__item item">Реализован набор тестов, покрывающий требования к будущему продукту и к интерфейсам - как к внешним по отношению к пользователю, так и между компонентами в рамках разрабатываемой библиотеки.</li>
     </ul>
 </section>
-
-# Компонент DBCore
-![DBCore](https://user-images.githubusercontent.com/54858588/203076304-5e021063-0838-4f89-b40b-eda7a1e72eb4.png)
-
-
-# Компонент Serializer
-![Serializer](https://user-images.githubusercontent.com/54858588/203076062-337a0efc-97bb-4594-87c5-f8f6a68393b8.png)
-
-
-# Компонент ConnectionHandler
-![ConnectionHandler](https://user-images.githubusercontent.com/54858588/203076119-063a6446-c6cd-4868-9501-4813aa268ed2.png)
-

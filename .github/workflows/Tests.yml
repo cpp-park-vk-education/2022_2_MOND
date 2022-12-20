@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configure CMake
-        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DADDRESS_SANITIZER_BUILD=False -DLEAK_SANITIZER_BUILD=False -DUNDEFINED_BEHAVIOUR_SANITIZER_BUILD=False -DTHREAD_SANITIZER_BUILD=False
+        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}  -DADDRESS_SANITIZER_BUILD=False -DLEAK_SANITIZER_BUILD=False -DUNDEFINED_BEHAVIOUR_SANITIZER_BUILD=False -DTHREAD_SANITIZER_BUILD=False
 
       - name: Build
         run: cmake --build ${{ github.workflow }}/build
@@ -91,25 +91,13 @@ jobs:
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build   
 
-      - name: Test_HashTable
+      - name: Test_ConnectionHandler
         run: |
-          cd ${{ github.workspace }}/build/Tests/HashTable/
-          chmod 777 CORE_DB_TESTS
-          ./CORE_DB_TESTS
-
-      - name: Test_Request_Serializer
-        run: |
-          cd ${{ github.workspace }}/build/Tests/Request_Serializer/
-          chmod 777 SERIALIZER_TESTS
-          ./SERIALIZER_TESTS
-
-      - name: Test_TableStorage
-        run: |
-          cd ${{ github.workspace }}/build/Tests/TableStorage/
-          chmod 777 CORE_STORAGE_TESTS
-          ./CORE_STORAGE_TESTS          
+          cd ${{ github.workspace }}/build/Tests/ConnectionHandler/
+          chmod 777 CONNECTION_HANDLER_TESTS
+          ./CONNECTION_HANDLER_TESTS  
 
       - name: Coverage
         run: |
@@ -137,19 +125,9 @@ jobs:
       - name: Move to workspace
         run: |
           mkdir -p ${{ github.workspace }}/build
-          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
+          mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build  
 
-      - name: valgrind_HashTable
+      - name: valgrind_ConnectionHandler
         run: |
-          chmod 777 ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
-
-      - name: valgrind_Request_Serializer
-        run: |
-          chmod 777 ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
-
-      - name: valgrind_TableStorage
-        run: |
-          chmod 777 ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS          
+          chmod 777 ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ConnectionHandler/CONNECTION_HANDLER_TESTS
