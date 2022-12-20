@@ -7,64 +7,73 @@ services:
       context: .
       dockerfile: DockerFiles/Dockerfile_server
     ports:
-      - "8001:8001"
+      - "6666:6666"
     networks:
       - my_network
 
-  client_db_1:
-    depends_on:
-      - server_db
-    container_name: client_db_1
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_1
+#  server_db:
+#    image: ogrebatel/mond_db_on_str
+#    restart: always
+#    ports:
+#      - 6666:6666
+#    networks:
+#      my_network:
+#        ipv4_address: 172.28.0.2
 
-    networks:
-      - my_network
-
-  client_db_2:
-    depends_on:
-      - server_db
-    container_name: client_db_2
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_2
-
-    networks:
-      - my_network
-
-  client_db_3:
-    depends_on:
-      - server_db
-    container_name: client_db_3
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_3
-
-    networks:
-      - my_network
-
-  client_db_4:
-    depends_on:
-      - server_db
-    container_name: client_db_4
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_4
-
-    networks:
-      - my_network
-
-  client_db_5:
-    depends_on:
-      - server_db
-    container_name: client_db_5
-    build:
-      context: .
-      dockerfile: DockerFiles/Dockerfile_client_5
-
-    networks:
-      - my_network
+#  client_db_1:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_1
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_1
+#
+#    networks:
+#      - my_network
+#
+#  client_db_2:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_2
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_2
+#
+#    networks:
+#      - my_network
+#
+#  client_db_3:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_3
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_3
+#
+#    networks:
+#      - my_network
+#
+#  client_db_4:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_4
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_4
+#
+#    networks:
+#      - my_network
+#
+#  client_db_5:
+#    depends_on:
+#      - server_db
+#    container_name: client_db_5
+#    build:
+#      context: .
+#      dockerfile: DockerFiles/Dockerfile_client_5
+#
+#    networks:
+#      - my_network
 
 networks:
   my_network:

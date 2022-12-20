@@ -132,18 +132,18 @@ bool Request::operator==(const Request &other) const {
            _table_name == other._table_name;
 }
 
-//void Request::save(std::ostream &oss) const {
-//    boost::archive::binary_oarchive oa(oss);
-//    oa &*(this);
-//    oss << "\r\n\r\n"; //TODO: how to make better?
-//}
-//
-//void Request::load(std::string &str_data) {
-//    str_data.erase(str_data.end() - 4, str_data.end());
-//    std::istringstream iss(str_data);
-//    boost::archive::binary_iarchive ia(iss);
-//    ia &*(this);
-//}
+void Request::save(std::ostream &oss) const {
+    boost::archive::binary_oarchive oa(oss);
+    oa &*(this);
+    oss << "\r\n\r\n"; //TODO: how to make better?
+}
+
+void Request::load(std::string &str_data) {
+    str_data.erase(str_data.end() - 4, str_data.end());
+    std::istringstream iss(str_data);
+    boost::archive::binary_iarchive ia(iss);
+    ia &*(this);
+}
 
 //void Request::save(std::ostream &oss) const {
 //    jsoncons::bson::encode_bson(*this, oss);
@@ -155,15 +155,15 @@ bool Request::operator==(const Request &other) const {
 //    *this = jsoncons::bson::decode_bson<Request>(str_data);
 //}
 
-void Request::save(std::ostream &oss) const {
-    jsoncons::encode_json(*this, oss);
-    oss << "\r\n\r\n";
-}
-
-void Request::load(std::string &str_data) {
-    str_data.erase(str_data.end() - 4, str_data.end());
-    *this = jsoncons::decode_json<Request>(str_data);
-}
+//void Request::save(std::ostream &oss) const {
+//    jsoncons::encode_json(*this, oss);
+//    oss << "\r\n\r\n";
+//}
+//
+//void Request::load(std::string &str_data) {
+//    str_data.erase(str_data.end() - 4, str_data.end());
+//    *this = jsoncons::decode_json<Request>(str_data);
+//}
 
 bool Request::isChangingData() const {
     return (_type == RequestType::UPDATE)

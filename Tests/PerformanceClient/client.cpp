@@ -14,10 +14,10 @@ void test_reading(int argc, char** argv){
     std::string key;
     std::string value;
     for (int i = 0; i < 10; ++i) {
-        key+="a";
+        key.push_back(static_cast<char>(i));
     }
     for (int i = 0; i < 5000; ++i) {
-        value+="a";
+        value.push_back(static_cast<char>(i));
     }
     std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
     std::cout << "Doing some work\n";
@@ -50,10 +50,10 @@ void test_writing(int argc, char** argv){
     std::string key;
     std::string value;
     for (int i = 0; i < 10; ++i) {
-        key+="a";
+        key.push_back(static_cast<char>(i));
     }
     for (int i = 0; i < 5000; ++i) {
-        value+="a";;
+        value.push_back(static_cast<char>(i));
     }
     std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
     std::cout << "Doing some work\n";
@@ -66,7 +66,7 @@ void test_writing(int argc, char** argv){
     manager->Insert(key, value);
 
     for (int i = 0; i < 5000; ++i) {
-        key+="a";
+        key.push_back(static_cast<char>(i));
         auto result = manager->Insert(key, value);
     }
     std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();
