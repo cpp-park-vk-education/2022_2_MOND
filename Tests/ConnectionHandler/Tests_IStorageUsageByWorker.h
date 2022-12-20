@@ -18,7 +18,7 @@ protected:
     }
 
 public:
-    std::shared_ptr<Request> request;
+    std::shared_ptr<Request> request = std::make_shared<Request>();
     MockStorage storage;
     MockTable table;
     workerFactory factory;

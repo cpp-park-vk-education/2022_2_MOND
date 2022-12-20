@@ -18,9 +18,6 @@ MOCK_METHOD(size_t, GetSize, (), (const, override));
 MOCK_METHOD(std::vector<uint8_t>, Get, (const std::vector<uint8_t> &key), (const, override));
 MOCK_METHOD(bool, Update, (const std::vector<uint8_t> &, const std::vector<uint8_t> &), (override));
 MOCK_METHOD(std::vector<std::vector<uint8_t>>, GetKeys, (), (override));
-private:
-void grow(){}
-
 };
 
 
@@ -29,7 +26,7 @@ public:
     ~MockStorage() override = default;
     MOCK_METHOD(bool, CreateTable, (const std::string&, const std::function<size_t(const std::vector<uint8_t>&)>& hash), (override));
     MOCK_METHOD(bool, CreateTable, (const std::string&), (override));
-    MOCK_METHOD(bool, DeleteTable, (const std::string&), (const, override));
+    MOCK_METHOD(bool, DeleteTable, (const std::string&), (override));
     MOCK_METHOD((IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*), GetTable, (const std::string&), (const, override));
     MOCK_METHOD(size_t, GetNumTables, (), (const, override));
     MOCK_METHOD(std::vector<std::string>, GetTableNames, (), (const, override));

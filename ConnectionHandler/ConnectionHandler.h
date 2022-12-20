@@ -29,10 +29,10 @@ class ConnectionHandler : public IConnectionHandler {
     ~ConnectionHandler() override;
 
  private:
-    void onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t read_bytes);
-    void onWriteComplete(std::shared_ptr<Connection> &connection, const std::error_code &err, size_t write_bytes);
+    void onReadComplete(std::shared_ptr<Connection> connection, const std::error_code &err, size_t read_bytes);
+    void onWriteComplete(std::shared_ptr<Connection> connection, const std::error_code &err, size_t write_bytes);
 
-    void sendAnswer(std::shared_ptr<Connection> &connection, Request request);
+    void sendAnswer(std::shared_ptr<Connection> connection, Request request);
 
     void loadNewConnections();
     void setWaitingConnectionsToRecieve();
@@ -84,7 +84,7 @@ void ConnectionHandler::handleSessions(std::atomic_bool *stop) {
     closeAllConnections();
 }
 
-void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, const std::error_code &err,
+void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> connection, const std::error_code &err,
                                        size_t read_bytes) {
     if (err) {
         connection->status = ConnectionStatus::disconnected;
@@ -110,7 +110,7 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> &connection, 
     sendAnswer(connection, std::move(answer));
 }
 
-void ConnectionHandler::onWriteComplete(std::shared_ptr<Connection> &connection, const std::error_code &err,
+void ConnectionHandler::onWriteComplete(std::shared_ptr<Connection> connection, const std::error_code &err,
                                         size_t write_bytes) {
     if (err) {
         connection->status = ConnectionStatus::disconnected;
@@ -119,7 +119,7 @@ void ConnectionHandler::onWriteComplete(std::shared_ptr<Connection> &connection,
     connection->status = ConnectionStatus::waiting;
 }
 
-void ConnectionHandler::sendAnswer(std::shared_ptr<Connection> &connection, Request request) {
+void ConnectionHandler::sendAnswer(std::shared_ptr<Connection> connection, Request request) {
     std::ostream oss(&connection->buff);
     request.save(oss);
 

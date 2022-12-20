@@ -17,7 +17,7 @@ class CheckingWorkersForITableUsage : public testing::Test{
     }
 
 public:
-    std::shared_ptr<Request> request;
+    std::shared_ptr<Request> request = std::make_shared<Request>();
     Request answer;
     MockStorage storage;
     MockTable table;

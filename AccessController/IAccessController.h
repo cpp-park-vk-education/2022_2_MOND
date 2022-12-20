@@ -9,8 +9,8 @@
 
 class IAccessController {
  public:
-    virtual void getPermission(const std::shared_ptr<Request> &request) = 0;
-    virtual void releaseResource(const std::shared_ptr<Request> &request) = 0;
+    virtual void getPermission(std::shared_ptr<Request> request) = 0;
+    virtual void releaseResource(std::shared_ptr<Request> request) = 0;
     virtual ~IAccessController() = default;
 };
 

@@ -11,8 +11,8 @@
 
 class AccessController: public IAccessController {
  public:
-    void getPermission(const std::shared_ptr<Request> &request) override;
-    void releaseResource(const std::shared_ptr<Request> &request) override;
+    void getPermission(std::shared_ptr<Request> request) override;
+    void releaseResource(std::shared_ptr<Request> request) override;
 
  private:
     struct ControlNode {
@@ -24,7 +24,7 @@ class AccessController: public IAccessController {
     std::unordered_map<std::string, std::shared_ptr<ControlNode>> controlMap;
 };
 
-void AccessController::getPermission(const std::shared_ptr<Request> &request) {
+void AccessController::getPermission(std::shared_ptr<Request> request) {
 
     if(request->_type == RequestType::CREATE_TABLE){
         controlMap.insert(std::make_pair(request->_table_name, std::make_shared<ControlNode>()));
@@ -37,7 +37,15 @@ void AccessController::getPermission(const std::shared_ptr<Request> &request) {
     tableControl->requestIndexes.push(request);
     tableControl->requestIndexesMutex.unlock();
 
-    while (!(tableControl->requestIndexes.front() == request)) {}
+    while (true) {
+        tableControl->requestIndexesMutex.lock();
+        if(tableControl->requestIndexes.front() == request){
+            tableControl->requestIndexesMutex.unlock();
+            break;
+        }
+        tableControl->requestIndexesMutex.unlock();
+    }
+
     if (request->isChangingData()) {
         while (tableControl->readers != 0) {}
     } else {
@@ -50,7 +58,7 @@ void AccessController::getPermission(const std::shared_ptr<Request> &request) {
     }
 }
 
-void AccessController::releaseResource(const std::shared_ptr<Request> &request) {
+void AccessController::releaseResource(std::shared_ptr<Request> request) {
     if(request->_type == RequestType::CREATE_TABLE){
         return;
     }

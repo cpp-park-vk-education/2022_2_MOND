@@ -16,7 +16,7 @@ enum class nodeStatus { FREE,
 template<typename Key, typename Value>
 class QuadraticProbingTable : public IHashTable<Key, Value> {
 protected:
-    const static size_t MINIMAL_SIZE = 8;
+    const static size_t MINIMAL_SIZE = 4096;
     const static size_t MINIMAL_NODE_COUNT = 4;
     constexpr const static double REHASH_INDEX = 0.75;
 

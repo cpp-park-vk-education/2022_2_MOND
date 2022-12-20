@@ -6,6 +6,7 @@ COPY ../ClientDB ./ClientDB
 COPY ../CMake ./CMake
 COPY ../ConnectionHandler ./ConnectionHandler
 COPY ../DBCore ./DBCore
+COPY ../Backupper ./Backupper
 COPY ../AccessController ./AccessController
 COPY ../Initializer ./Initializer
 COPY ../scripts ./scripts
