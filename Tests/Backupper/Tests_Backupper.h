@@ -5,8 +5,8 @@
 class Backupper_tests : public testing::Test {
 protected:
     void SetUp() override {
-        req01 = {requestType::INSERT, Status::NOTHING, key, value, table_name};
-        req02 = {requestType::INSERT, Status::NOTHING, key, value, table_name2};
+        req01 = {RequestType::INSERT, Status::NOTHING, key, value, table_name};
+        req02 = {RequestType::INSERT, Status::NOTHING, key, value, table_name2};
 
         b = new Backupper();
     }
