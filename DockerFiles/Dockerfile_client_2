@@ -1,0 +1,24 @@
+FROM morapresence/mond_db_debug:latest
+
+WORKDIR /app
+
+COPY ../ClientDB ./ClientDB
+COPY ../CMake ./CMake
+COPY ../ConnectionHandler ./ConnectionHandler
+COPY ../DBCore ./DBCore
+COPY ../Initializer ./Initializer
+COPY ../scripts ./scripts
+COPY ../InternalEntities ./InternalEntities
+COPY ../ServerDB ./ServerDB
+COPY ../Tests ./Tests
+COPY ../CMakeLists.txt ./
+COPY ../.clang-format ./
+
+RUN mkdir build
+WORKDIR /app/build
+RUN cmake .. && \
+    cmake --build .
+
+WORKDIR /app/build/Tests/PerformanceClient
+ENTRYPOINT ["./PERFORMANCE_CLIENT", "172.28.0.2", "8001", "SecondTable"]
+

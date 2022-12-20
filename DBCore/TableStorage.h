@@ -4,6 +4,7 @@
 #define DBCORE_TABLESTORAGE_H
 
 #include "ITableStorage.h"
+#include "QuadraticProbingTable.h"
 
 class TableStorage : public ITableStorage {
    public:

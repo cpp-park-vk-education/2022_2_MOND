@@ -63,7 +63,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configure CMake
-        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DADDRESS_SANITIZER_BUILD=False -DLEAK_SANITIZER_BUILD=False -DUNDEFINED_BEHAVIOUR_SANITIZER_BUILD=False -DTHREAD_SANITIZER_BUILD=False
+        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}  -DADDRESS_SANITIZER_BUILD=False -DLEAK_SANITIZER_BUILD=False -DUNDEFINED_BEHAVIOUR_SANITIZER_BUILD=False -DTHREAD_SANITIZER_BUILD=False
 
       - name: Build
         run: cmake --build ${{ github.workflow }}/build
@@ -109,7 +109,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/build/Tests/TableStorage/
           chmod 777 CORE_STORAGE_TESTS
-          ./CORE_STORAGE_TESTS          
+          ./CORE_STORAGE_TESTS         
 
       - name: Coverage
         run: |
@@ -153,3 +153,8 @@ jobs:
         run: |
           chmod 777 ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS          
+
+      - name: valgrind_Client
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS
