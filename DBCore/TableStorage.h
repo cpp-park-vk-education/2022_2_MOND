@@ -15,7 +15,7 @@ class TableStorage : public ITableStorage {
         const std::string&,
         const std::function<size_t(const std::vector<uint8_t>&)>&) override;
     bool CreateTable(const std::string&) override;
-    bool DeleteTable(const std::string&) const override;
+    bool DeleteTable(const std::string&) override;
     [[nodiscard]] IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*
     GetTable(const std::string&) const override;
     [[nodiscard]] size_t GetNumTables() const override;
@@ -23,7 +23,7 @@ class TableStorage : public ITableStorage {
     ~TableStorage() override;
 
    private:
-    void clear() const;
+    void clear();
     IHashTable<std::string,
                IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>*>*
         _tableStorage = nullptr;
@@ -71,7 +71,7 @@ bool TableStorage::CreateTable(const std::string& tableName) {
     return result;
 }
 
-bool TableStorage::DeleteTable(const std::string& tableName) const {
+bool TableStorage::DeleteTable(const std::string& tableName) {
     auto table = _tableStorage->Get(tableName);
     auto result =  _tableStorage->Remove(tableName);
 
@@ -94,7 +94,7 @@ TableStorage::~TableStorage() {
     clear();
     delete _tableStorage;
 }
-void TableStorage::clear() const {
+void TableStorage::clear() {
     auto keys = GetTableNames();
     for(auto &it: keys){
         DeleteTable(it);

@@ -16,7 +16,7 @@ size_t defaultHash(const std::vector<uint8_t> &key) {
 
 size_t stringHash(const std::string &key) {
     size_t hash = 0;
-    const char *str = key.c_str();
+    auto str = key.c_str();
     for (; *str != 0; ++str) {
         hash = (hash * 13 + static_cast<size_t>(*str));
     }

@@ -3,10 +3,10 @@
 #ifndef DBCORE_ITABLESTORAGE_H
 #define DBCORE_ITABLESTORAGE_H
 
+#include "IHashTable.h"
+
 #include <functional>
 #include <iostream>
-
-#include "IHashTable.h"
 
 class ITableStorage {
    public:
@@ -14,11 +14,11 @@ class ITableStorage {
         const std::string&,
         const std::function<size_t(const std::vector<uint8_t>&)>& hash) = 0;
     virtual bool CreateTable(const std::string&) = 0;
-    virtual bool DeleteTable(const std::string&) const = 0;
-    virtual IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* GetTable(
+    virtual bool DeleteTable(const std::string&) = 0;
+    [[nodiscard]] virtual IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* GetTable(
         const std::string&) const = 0;
-    virtual size_t GetNumTables() const = 0;
-    virtual std::vector<std::string> GetTableNames() const = 0;
+    [[nodiscard]] virtual size_t GetNumTables() const = 0;
+    [[nodiscard]] virtual std::vector<std::string> GetTableNames() const = 0;
     virtual ~ITableStorage() = default;
 };
 

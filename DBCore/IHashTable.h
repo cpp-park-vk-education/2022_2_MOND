@@ -21,7 +21,4 @@ public:
                                       const Value &value) = 0;
     [[nodiscard]] virtual std::vector<Key> GetKeys() = 0;
     virtual ~IHashTable() = default;
-
-private:
-    virtual void grow() = 0;
 };
