@@ -8,17 +8,32 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  linters:
+  cppcheck:
     runs-on: ubuntu-latest
-    container: morapresence/mond_db_debug
+    container: morapresence/mond_db_tests
 
     steps:
       - uses: actions/checkout@v3
-      - name: run_linters
-        run: bash scripts/linters/linters.sh --cpplint ./Tests/*.cpp
+      - name: run_cppcheck
+        run: bash scripts/linters/linters.sh --cppcheck
+
+      - name: run_cppcheck
+        run: bash scripts/linters/linters.sh --cppcheck
+
+  cpplint:
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_tests
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: run_cpplint
+        run: bash scripts/linters/linters.sh --cpplint
+
+      - name: run_cpplint
+        run: bash scripts/linters/linters.sh --cpplint
 
   build-project:
-    needs: [ linters ]
+    needs: [ cpplint,  cppcheck ]
 
     runs-on: ubuntu-latest
     container: morapresence/mond_db_debug
@@ -36,6 +51,27 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
+          path: ${{ github.workflow }}/build/**/*
+
+  build-project-for-valgrind:
+    needs: [ cpplint,  cppcheck ]
+
+    runs-on: ubuntu-latest
+    container: morapresence/mond_db_debug
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DADDRESS_SANITIZER_BUILD=False -DLEAK_SANITIZER_BUILD=False -DUNDEFINED_BEHAVIOUR_SANITIZER_BUILD=False -DTHREAD_SANITIZER_BUILD=False
+
+      - name: Build
+        run: cmake --build ${{ github.workflow }}/build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-for-valgrind-artifact
           path: ${{ github.workflow }}/build/**/*
 
   tests:
@@ -57,21 +93,34 @@ jobs:
           mkdir -p ${{ github.workspace }}/build
           mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
-      - name: Test
+      - name: Test_HashTable
         run: |
-          cd ${{ github.workspace }}/build/Tests/
-          chmod 777 MOND_DB_TESTS
-          ./MOND_DB_TESTS
+          cd ${{ github.workspace }}/build/Tests/HashTable/
+          chmod 777 CORE_DB_TESTS
+          ./CORE_DB_TESTS
+
+      - name: Test_Request_Serializer
+        run: |
+          cd ${{ github.workspace }}/build/Tests/Request_Serializer/
+          chmod 777 SERIALIZER_TESTS
+          ./SERIALIZER_TESTS
+
+      - name: Test_TableStorage
+        run: |
+          cd ${{ github.workspace }}/build/Tests/TableStorage/
+          chmod 777 CORE_STORAGE_TESTS
+          ./CORE_STORAGE_TESTS          
 
       - name: Coverage
         run: |
           cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
           cd ${{ github.workspace }}/build/
           lcov -t . -o coverage_report.info -c -d .
-          genhtml -o coverage_report coverage_report.info
+          genhtml -o coverage_report coverage_report.info          
+  
 
   valgrind:
-    needs: [ build-project ]
+    needs: [ build-project-for-valgrind ]
 
     runs-on: ubuntu-latest
     container: morapresence/mond_db_debug
@@ -82,7 +131,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: build-artifact
+          name: build-for-valgrind-artifact
           path: ${{ github.workflow }}/build
 
       - name: Move to workspace
@@ -90,7 +139,17 @@ jobs:
           mkdir -p ${{ github.workspace }}/build
           mv ${{ github.workflow }}/build/* ${{ github.workspace }}/build
 
-      - name: valgrind
+      - name: valgrind_HashTable
         run: |
-          chmod 777 ${{github.workspace}}/build/Tests/MOND_DB_TESTS
-          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/MOND_DB_TESTS
+          chmod 777 ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/HashTable/CORE_DB_TESTS
+
+      - name: valgrind_Request_Serializer
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/Request_Serializer/SERIALIZER_TESTS
+
+      - name: valgrind_TableStorage
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/TableStorage/CORE_STORAGE_TESTS          

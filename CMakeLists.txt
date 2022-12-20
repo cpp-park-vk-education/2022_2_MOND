@@ -41,7 +41,14 @@ elseif (DEBUG_BUILD)
     if (LEAK_SANITIZER_BUILD)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak")
     endif ()
-
-    add_subdirectory(Tests)
-    enable_testing()
 endif ()
+
+add_subdirectory(InternalEntities)
+
+add_subdirectory(DBCore)
+
+add_subdirectory(Tests/HashTable)
+
+add_subdirectory(Tests/Request_Serializer)
+
+add_subdirectory(Tests/TableStorage)
