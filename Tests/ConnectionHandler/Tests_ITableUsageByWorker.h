@@ -9,7 +9,6 @@
 #include "IHashTable.h"
 #include "MockEntities.h"
 
-
 class CheckingWorkersForITableUsage : public testing::Test{
 
     void SetUp() override {

@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 #include "Tests_IStorageUsageByWorker.h"
 #include "Tests_ITableUsageByWorker.h"
-#include "Tests_WorkerFactory.h"
 
 
 int main() {
