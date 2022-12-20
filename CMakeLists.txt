@@ -16,6 +16,8 @@ option(CLIENTDB_BUILD "Client build" ON)
 
 include(CMake/clangformat.cmake)
 
+include_directories(ThirdParty)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Wconversion")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunreachable-code -pedantic -pthread")
 
@@ -63,18 +65,18 @@ if (SERVERDB_BUILD)
     add_subdirectory(ServerDB)
 endif ()
 
-add_subdirectory(Tests/ClientDB)
-
-add_subdirectory(Tests/HashTable)
-
-add_subdirectory(Tests/Request_Serializer)
-
-add_subdirectory(Tests/TableStorage)
-
-add_subdirectory(Tests/AccessController)
-
-add_subdirectory(Tests/ConnectionHandler)
-
+#add_subdirectory(Tests/ClientDB)
+#
+#add_subdirectory(Tests/HashTable)
+#
+#add_subdirectory(Tests/Request_Serializer)
+#
+#add_subdirectory(Tests/TableStorage)
+#
+#add_subdirectory(Tests/AccessController)
+#
+#add_subdirectory(Tests/ConnectionHandler)
+#
 add_subdirectory(Tests/PerformanceClient)
-
-add_subdirectory(Tests/Backupper)
+#
+#add_subdirectory(Tests/Backupper)

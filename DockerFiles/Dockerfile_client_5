@@ -7,6 +7,7 @@ COPY ../CMake ./CMake
 COPY ../ConnectionHandler ./ConnectionHandler
 COPY ../DBCore ./DBCore
 COPY ../Backupper ./Backupper
+COPY ../ThirdParty ./ThirdParty
 COPY ../AccessController ./AccessController
 COPY ../Initializer ./Initializer
 COPY ../scripts ./scripts

@@ -14,6 +14,9 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 
+#include <jsoncons/json.hpp>
+#include <jsoncons_ext/bson/bson.hpp>
+
 enum class RequestType {
     INSERT = 0,
     REMOVE,
@@ -53,6 +56,7 @@ public:
 
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version);
+
     void save(std::ostream &oss) const;
     void load(std::string &str_data);
 
@@ -65,6 +69,14 @@ public:
     std::vector<uint8_t> _value;
     std::string _table_name;
 };
+
+JSONCONS_ENUM_TRAITS(RequestType, INSERT, REMOVE, FIND, CLEAR, GET_SIZE, GET, UPDATE, CREATE_TABLE,
+                     DELETE_TABLE, GET_TABLE, GET_NUM_TABLES, SHOW_TABLES, DEFAULT);
+
+JSONCONS_ENUM_TRAITS(Status, NOTHING, READY, WORKING, OK, FAILURE);
+
+JSONCONS_ALL_MEMBER_TRAITS(Request, _type, _status, _key,
+                           _value, _table_name);
 
 Request::Request(Request &&other) noexcept
     : _type(other._type),
@@ -120,17 +132,37 @@ bool Request::operator==(const Request &other) const {
            _table_name == other._table_name;
 }
 
+//void Request::save(std::ostream &oss) const {
+//    boost::archive::binary_oarchive oa(oss);
+//    oa &*(this);
+//    oss << "\r\n\r\n"; //TODO: how to make better?
+//}
+//
+//void Request::load(std::string &str_data) {
+//    str_data.erase(str_data.end() - 4, str_data.end());
+//    std::istringstream iss(str_data);
+//    boost::archive::binary_iarchive ia(iss);
+//    ia &*(this);
+//}
+
+//void Request::save(std::ostream &oss) const {
+//    jsoncons::bson::encode_bson(*this, oss);
+//    oss << "\r\n\r\n";
+//}
+//
+//void Request::load(std::string &str_data) {
+//    str_data.erase(str_data.end() - 4, str_data.end());
+//    *this = jsoncons::bson::decode_bson<Request>(str_data);
+//}
+
 void Request::save(std::ostream &oss) const {
-    boost::archive::binary_oarchive oa(oss);
-    oa &*(this);
-    oss << "\r\n\r\n"; //TODO: how to make better?
+    jsoncons::encode_json(*this, oss);
+    oss << "\r\n\r\n";
 }
 
 void Request::load(std::string &str_data) {
     str_data.erase(str_data.end() - 4, str_data.end());
-    std::istringstream iss(str_data);
-    boost::archive::binary_iarchive ia(iss);
-    ia &*(this);
+    *this = jsoncons::decode_json<Request>(str_data);
 }
 
 bool Request::isChangingData() const {

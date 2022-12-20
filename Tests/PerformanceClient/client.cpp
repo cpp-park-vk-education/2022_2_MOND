@@ -16,7 +16,7 @@ void test_reading(int argc, char** argv){
     for (int i = 0; i < 10; ++i) {
         key.push_back(static_cast<unsigned char>(i));
     }
-    for (int i = 0; i < 50000; ++i) {
+    for (int i = 0; i < 5000; ++i) {
         value.push_back(static_cast<unsigned char>(i));
     }
     std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
@@ -29,7 +29,7 @@ void test_reading(int argc, char** argv){
     manager->SelectTable(argv[3]);
     manager->Insert(key, value);
 
-    for (int i = 0; i < 50000; ++i) {
+    for (int i = 0; i < 5000; ++i) {
         auto result = manager->Get(key);
 //        std::cout << result.size() << std::endl;
     }
@@ -52,7 +52,7 @@ void test_writing(int argc, char** argv){
     for (int i = 0; i < 10; ++i) {
         key.push_back(static_cast<unsigned char>(i));
     }
-    for (int i = 0; i < 50000; ++i) {
+    for (int i = 0; i < 5000; ++i) {
         value.push_back(static_cast<unsigned char>(i));
     }
     std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
@@ -65,7 +65,7 @@ void test_writing(int argc, char** argv){
     manager->SelectTable(argv[3]);
     manager->Insert(key, value);
 
-    for (int i = 0; i < 50000; ++i) {
+    for (int i = 0; i < 5000; ++i) {
         key.push_back(i);
         auto result = manager->Insert(key, value);
     }
