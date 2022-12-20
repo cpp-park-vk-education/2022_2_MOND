@@ -56,7 +56,7 @@ ConnectionHandler::ConnectionHandler(ITableStorage *storage) : _storage(storage)
 void ConnectionHandler::listenConnections(boost::asio::io_context *ioContext, std::atomic_bool *stop) {
     boost::asio::ip::tcp::acceptor acceptor(*ioContext,
                                             boost::asio::ip::tcp::endpoint(
-                                                    boost::asio::ip::tcp::v4(), 8001)
+                                                    boost::asio::ip::tcp::v4(), 6666)
     );
 
     acceptor.non_blocking(true);

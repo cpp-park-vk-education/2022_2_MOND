@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-size_t defaultHash(const std::vector<uint8_t> &key) {
+size_t defaultHash(const std::string &key) {
     size_t hash = 0;
     for (auto &i : key) {
         hash = (hash * 13 + i);

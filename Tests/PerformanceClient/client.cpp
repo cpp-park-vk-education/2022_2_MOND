@@ -11,13 +11,13 @@ void test_reading(int argc, char** argv){
         std::cout << argv[i] << std::endl;
     }
 
-    std::vector<uint8_t> key;
-    std::vector<uint8_t> value;
+    std::string key;
+    std::string value;
     for (int i = 0; i < 10; ++i) {
-        key.push_back(static_cast<unsigned char>(i));
+        key+="a";
     }
     for (int i = 0; i < 5000; ++i) {
-        value.push_back(static_cast<unsigned char>(i));
+        value+="a";
     }
     std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
     std::cout << "Doing some work\n";
@@ -47,13 +47,13 @@ void test_writing(int argc, char** argv){
         std::cout << argv[i] << std::endl;
     }
 
-    std::vector<uint8_t> key;
-    std::vector<uint8_t> value;
+    std::string key;
+    std::string value;
     for (int i = 0; i < 10; ++i) {
-        key.push_back(static_cast<unsigned char>(i));
+        key+="a";
     }
     for (int i = 0; i < 5000; ++i) {
-        value.push_back(static_cast<unsigned char>(i));
+        value+="a";;
     }
     std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
     std::cout << "Doing some work\n";
@@ -66,7 +66,7 @@ void test_writing(int argc, char** argv){
     manager->Insert(key, value);
 
     for (int i = 0; i < 5000; ++i) {
-        key.push_back(i);
+        key+="a";
         auto result = manager->Insert(key, value);
     }
     std::chrono::time_point<std::chrono::steady_clock> end = std::chrono::steady_clock::now();

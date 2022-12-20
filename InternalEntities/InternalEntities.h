@@ -44,8 +44,8 @@ const std::string delimiter = "\r\n\r\n";
 class Request {
 public:
     Request() = default;
-    Request(const RequestType &, const Status &, const std::vector<uint8_t> &,
-            const std::vector<uint8_t> &, const std::string &);
+    Request(const RequestType &, const Status &, const std::string &,
+            const std::string &, const std::string &);
     Request(const Request &) = default;
     Request(Request &&) noexcept;
     ~Request() = default;
@@ -65,8 +65,8 @@ public:
 
     RequestType _type = RequestType::DEFAULT;
     Status _status = Status::FAILURE;
-    std::vector<uint8_t> _key;
-    std::vector<uint8_t> _value;
+    std::string _key;
+    std::string _value;
     std::string _table_name;
 };
 
@@ -108,8 +108,8 @@ Request &Request::operator=(Request &&other) noexcept {
 }
 
 Request::Request(const RequestType &type, const Status &status,
-                 const std::vector<uint8_t> &key,
-                 const std::vector<uint8_t> &value,
+                 const std::string &key,
+                 const std::string &value,
                  const std::string &table_name)
     : _type(type),
       _status(status),

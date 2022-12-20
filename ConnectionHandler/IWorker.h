@@ -208,7 +208,7 @@ Request GetSizeWorker::operate() {
 
     const auto* begin = reinterpret_cast<const uint8_t*>(&size);
     const auto* end = begin + sizeof(size);
-    answer._value = std::vector<uint8_t>(begin, end);
+    answer._value = std::string(begin, end);
 
     answer._status = Status::OK;
     return answer;
@@ -320,7 +320,7 @@ Request GetNumTablesWorker::operate() {
 
     const auto* begin = reinterpret_cast<const uint8_t*>(&size);
     const auto* end = begin + sizeof(size);
-    answer._value = std::vector<uint8_t>(begin, end);
+    answer._value = std::string(begin, end);
 
     answer._status = Status::OK;
     return answer;
