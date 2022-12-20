@@ -1,5 +1,11 @@
 // Copyright 2022 mora
 
+#ifndef MOND_DB_INTERNALENTITIES_H
+#define MOND_DB_INTERNALENTITIES_H
+
+#include <iostream>
+
+enum class requestType{
 #include <iostream>
 #include <sstream>
 #include <string>
