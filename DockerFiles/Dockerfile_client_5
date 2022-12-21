@@ -23,5 +23,5 @@ RUN cmake .. && \
     cmake --build .
 
 WORKDIR /app/build/Tests/PerformanceClient
-ENTRYPOINT ["./PERFORMANCE_CLIENT", "172.28.0.2", "6666", "FirstTable", "writing"]
+ENTRYPOINT ["./PERFORMANCE_CLIENT", "172.28.0.2", "6666", "FifthTable", "reading", "50000000", "500"]
 
