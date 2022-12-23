@@ -47,9 +47,7 @@ void AccessController::getPermission(std::shared_ptr<Request> request) {
     }
 
     if (request->isChangingData()) {
-        while (tableControl->readers != 0) {
-            std::cout << "yea";
-        }
+        while (tableControl->readers != 0) {}
     } else {
 
         tableControl->readers++;

@@ -61,9 +61,6 @@ TEST_F(ActionManagerTimeout, withOneThread) {
 
     for (const auto &iter: write_requests) {
         controller.getPermission(iter);
-    }
-
-    for (const auto &iter: write_requests) {
         controller.releaseResource(iter);
     }
 
@@ -92,9 +89,6 @@ TEST_F(ActionManagerTimeout, withTwoThreads) {
     std::thread t2([&] {
         for(const auto& iter: write_requests){
             controller.getPermission(iter);
-        }
-
-        for(const auto& iter: write_requests){
             controller.releaseResource(iter);
         }
     });

@@ -10,8 +10,8 @@ protected:
     }
 
     Request req;
-    std::vector<uint8_t> key = {0x01, 0x02};
-    std::vector<uint8_t> value = {0x03, 0x04, 0x05};
+    std::string key = {0x01, 0x02};
+    std::string value = {0x03, 0x04, 0x05};
     std::string table_name = "Table01";
 };
 

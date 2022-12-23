@@ -5,16 +5,16 @@
 class DB_CLEAR_TESTS : public testing::Test {
    protected:
     void SetUp() override {
-        quadratic = new QuadraticProbingTable<std::vector<uint8_t>,
-                                                       std::vector<uint8_t>>(
+        quadratic = new QuadraticProbingTable<std::string,
+                                              std::string>(
             defaultHash);
     }
 
     void TearDown() override { delete quadratic; }
 
-    std::vector<uint8_t> value = {0x00, 0x01, 0x02, 0x03, 0x04,
+    std::string value = {0x00, 0x01, 0x02, 0x03, 0x04,
                                   0x05, 0x06, 0x07, 0x08, 0x09};
-    IHashTable<std::vector<uint8_t>, std::vector<uint8_t>>* quadratic = nullptr;
+    IHashTable<std::string, std::string>* quadratic = nullptr;
 };
 
 TEST_F(DB_CLEAR_TESTS, Clear_one_node) {
