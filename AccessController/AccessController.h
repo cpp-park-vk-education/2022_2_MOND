@@ -26,9 +26,9 @@ class AccessController: public IAccessController {
 
 void AccessController::getPermission(std::shared_ptr<Request> request) {
 
-    if(request->_type == RequestType::CREATE_TABLE){
+    auto checkExistence = controlMap.find(request->_table_name);
+    if(checkExistence == controlMap.end()){
         controlMap.insert(std::make_pair(request->_table_name, std::make_shared<ControlNode>()));
-        return;
     }
 
     auto tableControl = controlMap[request->_table_name];
@@ -47,7 +47,9 @@ void AccessController::getPermission(std::shared_ptr<Request> request) {
     }
 
     if (request->isChangingData()) {
-        while (tableControl->readers != 0) {}
+        while (tableControl->readers != 0) {
+            std::cout << "yea";
+        }
     } else {
 
         tableControl->readers++;
@@ -59,9 +61,6 @@ void AccessController::getPermission(std::shared_ptr<Request> request) {
 }
 
 void AccessController::releaseResource(std::shared_ptr<Request> request) {
-    if(request->_type == RequestType::CREATE_TABLE){
-        return;
-    }
     auto tableControl = controlMap[request->_table_name];
     if(request->isChangingData()){
         tableControl->requestIndexesMutex.lock();
