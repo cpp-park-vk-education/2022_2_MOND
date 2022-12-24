@@ -99,18 +99,6 @@ void ConnectionHandler::onReadComplete(std::shared_ptr<Connection> connection, c
     std::string str_data = ss.str();
     request->load(str_data);
 
-    if(request->_type == RequestType::CREATE_TABLE){
-        std::cout << "CREATING TABLE" << std::endl;
-    }
-
-    if(request->_type == RequestType::INSERT){
-        std::cout << "INSERT" << std::endl;
-    }
-
-    if(request->_type == RequestType::GET){
-        std::cout << "GET" << std::endl;
-    }
-
     IWorker *worker = _wFactory.get(request, _storage);
 
     accessController->getPermission(request);

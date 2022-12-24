@@ -10,7 +10,7 @@ public:
     virtual bool DeleteTable(const std::string &) = 0;
     virtual bool SelectTable(const std::string &) = 0;
     virtual size_t GetNumTables() = 0;
-    virtual std::vector<std::string> GetTableNames() = 0;
+    virtual std::string GetTableNames() = 0;
 
     virtual bool Insert(const std::string &key, const std::string &value) = 0;
     virtual bool Remove(const std::string &key) = 0;

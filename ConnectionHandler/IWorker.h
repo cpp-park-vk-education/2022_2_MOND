@@ -265,7 +265,12 @@ Request CreateTableWorker::operate() {
     answer._type = _request->_type;
 
     auto table = _storage->GetTable(_request->_table_name);
-    if(table){
+    if(table) {
+        answer._status = Status::FAILURE;
+        return answer;
+    }
+
+    if(_request->_value.find('\n') != UINT64_MAX){
         answer._status = Status::FAILURE;
         return answer;
     }
@@ -318,17 +323,23 @@ Request GetNumTablesWorker::operate() {
 
     size_t size = _storage->GetNumTables();
 
-    const auto* begin = reinterpret_cast<const uint8_t*>(&size);
-    const auto* end = begin + sizeof(size);
-    answer._value = std::string(begin, end);
-
+    answer._value = std::to_string(size);
     answer._status = Status::OK;
+
     return answer;
 }
 
 Request ShowTablesWorker::operate() {
-//        _storage->ShowTables();
-    return {}; //will be implemented as a feature
+    Request answer;
+    answer._type = _request->_type;
+    auto tableNames = _storage->GetTableNames();
+
+    for (const auto& tableName: tableNames) {
+        answer._value += tableName + '\n';
+    }
+
+
+    return answer; //will be implemented as a feature
 }
 
 #endif // IWORKER_H

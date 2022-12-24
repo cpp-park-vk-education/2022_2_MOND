@@ -10,11 +10,11 @@
 #include <queue>
 
 class AccessController: public IAccessController {
- public:
+public:
     void getPermission(std::shared_ptr<Request> request) override;
     void releaseResource(std::shared_ptr<Request> request) override;
 
- private:
+private:
     struct ControlNode {
         std::queue<std::shared_ptr<Request>> requestIndexes;
         std::mutex requestIndexesMutex;

@@ -23,13 +23,13 @@
 class ActionManagerTimeout: public testing::Test {
 protected:
     void SetUp() override{
-        for (size_t i = 0; i < 100; ++i) {
+        for (size_t i = 0; i < 500; ++i) {
             read_requests.push_back(std::make_shared<Request>());
             read_requests[i]->_table_name = "Testing";
             read_requests[i]->_type = RequestType::GET;
         }
 
-        for (size_t i = 0; i < 100; ++i) {
+        for (size_t i = 0; i < 500; ++i) {
             write_requests.push_back(std::make_shared<Request>());
             write_requests[i]->_table_name = "Testing";
             write_requests[i]->_type = RequestType::INSERT;
@@ -96,7 +96,7 @@ TEST_F(ActionManagerTimeout, withTwoThreads) {
     t1.join();
     t2.join();
 
-    TEST_TIMEOUT_FAIL_END(1000)
+    TEST_TIMEOUT_FAIL_END(10000)
 }
 
 #endif //MOND_DB_TESTS_ACTIONMANAGER_H

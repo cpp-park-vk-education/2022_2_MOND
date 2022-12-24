@@ -17,7 +17,7 @@ class ActionManager : public IActionManager {
     bool DeleteTable(const std::string &) override;
     bool SelectTable(const std::string &) override;
     size_t GetNumTables() override;
-    std::vector<std::string> GetTableNames() override;
+    std::string GetTableNames() override;
 
     bool Insert(const std::string &key, const std::string &value) override;
     bool Remove(const std::string &key) override;
@@ -112,7 +112,7 @@ size_t ActionManager::GetNumTables() {
     return 1;//TODO: serializer
 }
 
-std::vector<std::string> ActionManager::GetTableNames() {
+std::string ActionManager::GetTableNames() {
     _request = Request(
             RequestType::SHOW_TABLES,
             Status::NOTHING,
@@ -122,7 +122,7 @@ std::vector<std::string> ActionManager::GetTableNames() {
 
     handle_request();
 
-    return std::vector<std::string>();//TODO: serializer
+    return _request._value;//TODO: serializer
 }
 
 bool ActionManager::Insert(const std::string &key, const std::string &value) {
