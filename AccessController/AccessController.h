@@ -65,7 +65,7 @@ void AccessController::releaseResource(std::shared_ptr<Request> request) {
         tableControl->requestIndexes.pop();
         tableControl->requestIndexesMutex.unlock();
     } else {
-        tableControl->readers--;
+        --tableControl->readers;
     }
 }
 

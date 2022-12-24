@@ -117,6 +117,12 @@ jobs:
           chmod 777 CONNECTION_HANDLER_TESTS
           ./CONNECTION_HANDLER_TESTS  
 
+      - name: Test_AccessController
+        run: |
+          cd ${{ github.workspace }}/build/Tests/AccessController/
+          chmod 777 ACCESS_CONTROLLER_TESTS
+          ./ACCESS_CONTROLLER_TESTS  
+
       - name: Coverage
         run: |
           cp -r ${{ github.workflow }}/build/* ${{ github.workspace }}/build
@@ -169,3 +175,8 @@ jobs:
         run: |
           chmod 777 ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS
           valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/ClientDB/CLIENT_TESTS
+
+      - name: valgrind_AccessController
+        run: |
+          chmod 777 ${{github.workspace}}/build/Tests/AccessController/ACCESS_CONTROLLER_TESTS
+          valgrind --tool=memcheck --leak-check=yes ${{github.workspace}}/build/Tests/AccessController/ACCESS_CONTROLLER_TESTS

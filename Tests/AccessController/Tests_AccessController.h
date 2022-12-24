@@ -25,9 +25,17 @@ protected:
     void SetUp() override{
         for (size_t i = 0; i < 500; ++i) {
             read_requests.push_back(std::make_shared<Request>());
-            read_requests[i]->_table_name = "Testing";
-            read_requests[i]->_type = RequestType::GET;
+            read_requests2.push_back(std::make_shared<Request>());
+            read_requests3.push_back(std::make_shared<Request>());
+            read_requests4.push_back(std::make_shared<Request>());
+
+            read_requests4[i]->_table_name = read_requests3[i]->_table_name =
+                    read_requests2[i]->_table_name = read_requests[i]->_table_name = "Testing";
+
+            read_requests4[i]->_type = read_requests3[i]->_type =
+                    read_requests2[i]->_type = read_requests[i]->_type = RequestType::GET;
         }
+
 
         for (size_t i = 0; i < 500; ++i) {
             write_requests.push_back(std::make_shared<Request>());
@@ -40,6 +48,9 @@ protected:
     AccessController controller;
     std::vector<std::shared_ptr<Request>> read_requests;
     std::vector<std::shared_ptr<Request>> write_requests;
+    std::vector<std::shared_ptr<Request>> read_requests2;
+    std::vector<std::shared_ptr<Request>> read_requests3;
+    std::vector<std::shared_ptr<Request>> read_requests4;
 };
 
 TEST_F(ActionManagerTimeout, withOneThread) {
@@ -67,7 +78,7 @@ TEST_F(ActionManagerTimeout, withOneThread) {
     TEST_TIMEOUT_FAIL_END(1000)
 }
 
-TEST_F(ActionManagerTimeout, withTwoThreads) {
+TEST_F(ActionManagerTimeout, withFiveThreads) {
     TEST_TIMEOUT_BEGIN
 
     auto initializationRequest = std::make_shared<Request>();
@@ -79,14 +90,32 @@ TEST_F(ActionManagerTimeout, withTwoThreads) {
     std::thread t1([&] {
         for(const auto& iter: read_requests){
             controller.getPermission(iter);
-        }
-
-        for(const auto& iter: read_requests){
             controller.releaseResource(iter);
         }
     });
 
     std::thread t2([&] {
+        for(const auto& iter: read_requests2){
+            controller.getPermission(iter);
+            controller.releaseResource(iter);
+        }
+    });
+
+    std::thread t3([&] {
+        for(const auto& iter: read_requests3){
+            controller.getPermission(iter);
+            controller.releaseResource(iter);
+        }
+    });
+
+    std::thread t4([&] {
+        for(const auto& iter: read_requests4){
+            controller.getPermission(iter);
+            controller.releaseResource(iter);
+        }
+    });
+
+    std::thread t5([&] {
         for(const auto& iter: write_requests){
             controller.getPermission(iter);
             controller.releaseResource(iter);
@@ -95,6 +124,9 @@ TEST_F(ActionManagerTimeout, withTwoThreads) {
 
     t1.join();
     t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
 
     TEST_TIMEOUT_FAIL_END(10000)
 }
